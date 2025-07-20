@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_development
+      TZ: Asia/Tokyo
+    ports:
+      - '15432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    command: redis-server
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/var/lib/redis
+
+  web:
+    build: .
+    command: >
+      bash -c "
+        bundle install &&
+        bundle exec rails db:prepare &&
+        rm -f tmp/pids/server.pid &&
+        yarn install &&
+        ./bin/dev
+      "
+    tty: true
+    stdin_open: true
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - bundle_data:/usr/local/bundle:cached
+      - node_modules:/app/node_modules
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  postgres_data:
+  bundle_data:
+  node_modules:
+  redis:
