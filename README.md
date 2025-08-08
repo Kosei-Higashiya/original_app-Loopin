@@ -95,8 +95,14 @@
 ---
 
 
+### ER図
+https://app.diagrams.net/?src=about#
+
+
 ### 画面遷移図
 Figma：https://www.figma.com/design/WUzXJMOsChA0fuLBrvC7nl/Figma-basics?node-id=2765-15&p=f&t=myNpsnSphGYdC7Ay-0
+
+[![Image from Gyazo](https://i.gyazo.com/018a9d7bb971c96b21aecfaa7906bdf1.png)](https://gyazo.com/018a9d7bb971c96b21aecfaa7906bdf1)
 
 ### READMEに記載した機能
 - [x] ユーザー登録機能
