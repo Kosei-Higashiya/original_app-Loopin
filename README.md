@@ -81,6 +81,7 @@
 - **パスワード更新**
 
 - **RSpec（モデルテスト・システムテスト）**
+
 - **レスポンシブ対応**
 
 ■ 機能の実装方針予定 一般的なCRUD以外の実装予定の機能についてそれぞれどのようなイメージ(使用するAPIやgemなど)で実装する予定なのか現状考えているもので良いので教えて下さい。
@@ -111,6 +112,7 @@
 
 ### ER図
 https://app.diagrams.net/?src=about#
+[![Image from Gyazo](https://i.gyazo.com/d7fcbdf506468a30fc7be99b1258787b.png)](https://gyazo.com/d7fcbdf506468a30fc7be99b1258787b)
 
 
 ### 画面遷移図
