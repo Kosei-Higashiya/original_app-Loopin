@@ -15,3 +15,12 @@ WORKDIR $APP
 COPY Gemfile      $APP/Gemfile
 COPY Gemfile.lock $APP/Gemfile.lock
 RUN bundle install
+
+# アプリ全体をコピー
+COPY . $APP
+
+# 必要ならアセットプリコンパイル（本番用）
+RUN RAILS_ENV=production bundle exec rails assets:precompile
+
+# コンテナ起動時に Rails サーバーを実行
+CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0", "-p", "3000"]
