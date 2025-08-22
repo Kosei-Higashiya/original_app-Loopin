@@ -19,8 +19,13 @@ RUN bundle install
 # アプリ全体をコピー
 COPY . $APP
 
-# 必要ならアセットプリコンパイル（本番用）
-RUN RAILS_ENV=production bundle exec rails assets:precompile
+# Webpacker / JSアセットが必要なら yarn install
+RUN yarn install --check-files
 
-# コンテナ起動時に Rails サーバーを実行
-CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0", "-p", "3000"]
+# CMD: 起動時にプリコンパイルして Rails サーバーを起動
+CMD bash -c "\
+    echo 'プリコンパイル開始'; \
+    RAILS_ENV=production bundle exec rails assets:precompile && \
+    echo 'サーバー起動'; \
+    bundle exec rails s -b 0.0.0.0 -p \$PORT \
+"
