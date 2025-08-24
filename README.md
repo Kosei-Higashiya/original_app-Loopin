@@ -107,6 +107,26 @@
 - **データベース**：PostgreSQL
 - **インフラ**：Render
 - **その他**：GitHub / GitHub Actions（CI/CD対応）
+
+## デプロイメント（Render）
+
+このアプリケーションはRenderを使用してデプロイされます。
+
+### 必要な環境変数
+- `DATABASE_URL`: PostgreSQLデータベースのURL（Renderが自動設定）
+- `RAILS_MASTER_KEY`: `config/master.key`の内容
+- `RAILS_SERVE_STATIC_FILES`: `true`（静的ファイル配信用）
+
+### デプロイ手順
+1. Renderでアカウントを作成
+2. GitHubリポジトリを連携
+3. PostgreSQLデータベースサービスを作成
+4. Webサービスを作成し、以下を設定：
+   - Build Command: `./bin/render-build.sh`
+   - Start Command: `bundle exec puma -C config/puma.rb`
+   - 環境変数を設定
+
+または`render.yaml`ファイルを使用してInfrastructure as Codeでデプロイ可能です。
 ---
 
 
