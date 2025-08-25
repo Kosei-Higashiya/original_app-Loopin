@@ -21,14 +21,25 @@
           <div class="navbar-nav">
             <a href="#" class="nav-link">機能</a>
             <a href="#" class="nav-link">使い方</a>
-            <a href="#" class="nav-link">ログイン</a>
-            <a href="#" class="nav-link btn-signup">新規登録</a>
+            <% if user_signed_in? %>
+              <%= link_to "ログアウト", destroy_user_session_path, "data-turbo-method": :delete, class: "nav-link" %>
+              <%= link_to "プロフィール", edit_user_registration_path, class: "nav-link" %>
+            <% else %>
+              <%= link_to "ログイン", new_user_session_path, class: "nav-link" %>
+              <%= link_to "新規登録", new_user_registration_path, class: "nav-link btn-signup" %>
+            <% end %>
           </div>
         </div>
       </nav>
     </header>
 
     <main class="main-content">
+      <% if notice %>
+        <p class="notice"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert"><%= alert %></p>
+      <% end %>
       <%= yield %>
     </main>
 
