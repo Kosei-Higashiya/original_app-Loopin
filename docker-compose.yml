@@ -40,6 +40,9 @@ services:
     depends_on:
       - db
       - redis
+    environment:
+      POSTGRES_PASSWORD: password
+      DB_HOST: db
 
 volumes:
   postgres_data:
