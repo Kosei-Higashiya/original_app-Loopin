@@ -89,6 +89,8 @@ Rails.application.configure do
 
   config.hosts << "original-app-loopin.onrender.com"
 
+  config.action_mailer.default_url_options = { host: 'original-app-loopin.onrender.com', protocol: 'https' }
+
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
