@@ -29,6 +29,8 @@ ENV RACK_ENV=production
 CMD bash -c "\
     echo 'プリコンパイル開始'; \
     RAILS_ENV=production bundle exec rails assets:precompile && \
+    echo 'マイグレーション実行'; \
+    RAILS_ENV=production bundle exec rails db:migrate && \
     echo 'サーバー起動'; \
     bundle exec rails s -b 0.0.0.0 -p \$PORT \
 "
