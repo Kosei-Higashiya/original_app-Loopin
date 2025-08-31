@@ -22,6 +22,9 @@ COPY . $APP
 # Webpacker / JSアセットが必要なら yarn install
 RUN yarn install --check-files
 
+ENV RAILS_ENV=production
+ENV RACK_ENV=production
+
 # CMD: 起動時にプリコンパイルして Rails サーバーを起動
 CMD bash -c "\
     echo 'プリコンパイル開始'; \

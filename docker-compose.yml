@@ -41,11 +41,11 @@ services:
       - db
       - redis
     environment:
-      RAILS_ENV: production
+      RAILS_ENV: development   # ← ローカルでは development
+      DB_HOST: db              # ← development 用のDBホスト
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: app_production
-      DB_HOST: db
+      POSTGRES_DB: app_development
 
 volumes:
   postgres_data:
