@@ -1,0 +1,20 @@
+one:
+  title: "Morning Exercise"
+  content: "Did 30 minutes of cardio and strength training this morning. Feeling energized!"
+  user: one
+  is_public: true
+  recorded_at: <%= Date.current %>
+
+two:
+  title: "Reading Session"
+  content: "Read 20 pages of 'Atomic Habits' before bed. Great insights on habit formation."
+  user: two
+  is_public: true
+  recorded_at: <%= 1.day.ago.to_date %>
+
+three:
+  title: "Private Meditation"
+  content: "10 minutes of mindfulness meditation. Very relaxing."
+  user: one
+  is_public: false
+  recorded_at: <%= Date.current %>

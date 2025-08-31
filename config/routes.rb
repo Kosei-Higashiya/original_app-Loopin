@@ -15,4 +15,7 @@ Rails.application.routes.draw do
 
   # Habits resource routes
   resources :habits
+  
+  # Habit records resource routes
+  resources :habit_records
 end

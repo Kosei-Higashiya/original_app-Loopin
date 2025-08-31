@@ -1,0 +1,39 @@
+<div class="habit-record-detail">
+  <div class="container">
+    <div class="record-header">
+      <h1 class="record-title"><%= @habit_record.title %></h1>
+      <div class="record-meta">
+        <p class="text-muted">
+          投稿者: <%= @habit_record.user.email %> • 
+          記録日: <%= @habit_record.recorded_at.strftime('%Y年%m月%d日') %> •
+          投稿日時: <%= @habit_record.created_at.strftime('%Y年%m月%d日 %H:%M') %>
+        </p>
+      </div>
+    </div>
+
+    <% if @habit_record.content.present? %>
+      <div class="record-content">
+        <h3>内容</h3>
+        <div class="content-text">
+          <%= simple_format(@habit_record.content) %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="record-status">
+      <span class="badge <%= @habit_record.is_public? ? 'bg-success' : 'bg-secondary' %>">
+        <%= @habit_record.is_public? ? '公開' : '非公開' %>
+      </span>
+    </div>
+
+    <div class="record-actions mt-4">
+      <%= link_to "一覧に戻る", habit_records_path, class: "btn btn-secondary" %>
+      <% if @habit_record.user == current_user %>
+        <%= link_to "編集", edit_habit_record_path(@habit_record), class: "btn btn-primary" %>
+        <%= link_to "削除", @habit_record, method: :delete, 
+            data: { confirm: "本当に削除しますか？" }, 
+            class: "btn btn-danger" %>
+      <% end %>
+    </div>
+  </div>
+</div>
