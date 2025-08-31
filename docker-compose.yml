@@ -41,7 +41,10 @@ services:
       - db
       - redis
     environment:
+      RAILS_ENV: production
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_production
       DB_HOST: db
 
 volumes:
