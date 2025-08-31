@@ -13,9 +13,7 @@
         <% @habit_records.each do |record| %>
           <div class="habit-record-card">
             <div class="card-header">
-              <h3 class="record-title">
-                <%= link_to record.title, record, class: "text-decoration-none" %>
-              </h3>
+              <h3 class="record-title"><%= record.title %></h3>
               <div class="record-meta">
                 <small class="text-muted">
                   <%= record.user.email %> • <%= record.recorded_at.strftime('%Y年%m月%d日') %>
@@ -24,15 +22,8 @@
             </div>
             <div class="card-content">
               <% if record.content.present? %>
-                <p class="record-content"><%= truncate(record.content, length: 150) %></p>
+                <p class="record-content"><%= simple_format(record.content) %></p>
               <% end %>
-              <div class="record-actions">
-                <%= link_to "詳細を見る", record, class: "btn btn-sm btn-outline-primary" %>
-                <% if record.user == current_user %>
-                  <%= link_to "編集", edit_habit_record_path(record), class: "btn btn-sm btn-outline-secondary" %>
-                  <%= link_to "削除", record, method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-sm btn-outline-danger" %>
-                <% end %>
-              </div>
             </div>
           </div>
         <% end %>

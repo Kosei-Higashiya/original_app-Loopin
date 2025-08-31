@@ -5,7 +5,6 @@ class HabitRecordsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     @user = users(:one)
-    @other_user = users(:two)
     @habit_record = habit_records(:one)
   end
 
@@ -19,12 +18,6 @@ class HabitRecordsControllerTest < ActionDispatch::IntegrationTest
     get habit_records_path
     assert_response :success
     assert_select "h1", "みんなの習慣"
-  end
-
-  test "should get show for public record" do
-    sign_in @user
-    get habit_record_path(@habit_record)
-    assert_response :success
   end
 
   test "should get new when authenticated" do
@@ -46,7 +39,7 @@ class HabitRecordsControllerTest < ActionDispatch::IntegrationTest
         }
       }
     end
-    assert_redirected_to HabitRecord.last
+    assert_redirected_to habit_records_path
   end
 
   test "should not create habit_record with invalid data" do
@@ -60,53 +53,5 @@ class HabitRecordsControllerTest < ActionDispatch::IntegrationTest
       }
     end
     assert_response :unprocessable_entity
-  end
-
-  test "should get edit for own record" do
-    sign_in @user
-    get edit_habit_record_path(@habit_record)
-    assert_response :success
-  end
-
-  test "should update own habit_record" do
-    sign_in @user
-    patch habit_record_path(@habit_record), params: {
-      habit_record: { title: "Updated Title" }
-    }
-    assert_redirected_to @habit_record
-    @habit_record.reload
-    assert_equal "Updated Title", @habit_record.title
-  end
-
-  test "should destroy own habit_record" do
-    sign_in @user
-    assert_difference("HabitRecord.count", -1) do
-      delete habit_record_path(@habit_record)
-    end
-    assert_redirected_to habit_records_path
-  end
-
-  test "should not edit other user's record" do
-    sign_in @other_user
-    get edit_habit_record_path(@habit_record)
-    assert_redirected_to habit_records_path
-  end
-
-  test "should not update other user's record" do
-    sign_in @other_user
-    patch habit_record_path(@habit_record), params: {
-      habit_record: { title: "Hacked Title" }
-    }
-    assert_redirected_to habit_records_path
-    @habit_record.reload
-    assert_not_equal "Hacked Title", @habit_record.title
-  end
-
-  test "should not destroy other user's record" do
-    sign_in @other_user
-    assert_no_difference("HabitRecord.count") do
-      delete habit_record_path(@habit_record)
-    end
-    assert_redirected_to habit_records_path
   end
 end
