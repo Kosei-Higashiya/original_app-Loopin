@@ -1,0 +1,35 @@
+<%= form_with(model: habit, local: true) do |form| %>
+  <% if habit.errors.any? %>
+    <div class="alert alert-danger">
+      <h6><%= pluralize(habit.errors.count, "つのエラー") %>があります:</h6>
+      <ul class="mb-0">
+        <% habit.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :title, "習慣名", class: "form-label" %>
+    <%= form.text_field :title, class: "form-control", placeholder: "例: 毎日運動する" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :description, "詳細説明（任意）", class: "form-label" %>
+    <%= form.text_area :description, class: "form-control", rows: 4, 
+        placeholder: "この習慣についての詳細や目標を書いてください..." %>
+  </div>
+
+  <div class="mb-3">
+    <div class="form-check">
+      <%= form.check_box :active, class: "form-check-input" %>
+      <%= form.label :active, "アクティブにする", class: "form-check-label" %>
+    </div>
+    <small class="text-muted">非アクティブにすると、この習慣は一時的に表示されなくなります。</small>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

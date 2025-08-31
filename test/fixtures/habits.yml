@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: Daily exercise
+  description: 30 minutes of exercise every day
+  user: one
+  active: true
+
+two:
+  title: Read books
+  description: Read for at least 30 minutes daily
+  user: two
+  active: true
