@@ -11,6 +11,12 @@
 
   </head>
 
+  <div class="flash-messages container">
+  <% flash.each do |key, message| %>
+    <div class="flash <%= key %>"><%= message %></div>
+  <% end %>
+  </div>
+
   <body>
     <header class="header">
       <nav class="navbar">
