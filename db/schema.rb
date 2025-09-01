@@ -10,9 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_31_164933) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_01_151215) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "habit_records", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "habit_id", null: false
+    t.date "recorded_at"
+    t.text "note"
+    t.string "image"
+    t.boolean "completed", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["completed"], name: "index_habit_records_on_completed"
+    t.index ["habit_id"], name: "index_habit_records_on_habit_id"
+    t.index ["recorded_at"], name: "index_habit_records_on_recorded_at"
+    t.index ["user_id", "habit_id", "recorded_at"], name: "index_habit_records_on_user_habit_date", unique: true
+    t.index ["user_id"], name: "index_habit_records_on_user_id"
+  end
 
   create_table "habits", force: :cascade do |t|
     t.string "title", null: false
@@ -37,5 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_31_164933) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "habit_records", "habits"
+  add_foreign_key "habit_records", "users"
   add_foreign_key "habits", "users"
 end
