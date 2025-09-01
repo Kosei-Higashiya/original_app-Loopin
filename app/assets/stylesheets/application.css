@@ -334,3 +334,17 @@ body {
     width: 100%;
   }
 }
+
+.flash {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+.flash.notice {
+  background-color: #e6ffed;
+  color: #065f46;
+}
+.flash.alert {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
