@@ -27,4 +27,3 @@ class HabitRecord < ApplicationRecord
     end
   end
 end
-end

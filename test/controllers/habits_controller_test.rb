@@ -35,4 +35,9 @@ class HabitsControllerTest < ActionDispatch::IntegrationTest
     get habits_destroy_url
     assert_response :success
   end
+
+  test "should get calendar" do
+    get calendar_habits_url
+    assert_response :success
+  end
 end
