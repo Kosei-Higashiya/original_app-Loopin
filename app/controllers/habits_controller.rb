@@ -9,6 +9,11 @@ class HabitsController < ApplicationController
   def show
   end
 
+  def calendar
+    @habits = current_user.habits
+    @habit_records = current_user.habit_records.includes(:habit)
+  end
+
   def new
     @habit = current_user.habits.build
   end
