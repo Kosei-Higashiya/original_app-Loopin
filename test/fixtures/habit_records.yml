@@ -1,0 +1,22 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  habit: one
+  recorded_at: <%= Date.current %>
+  completed: true
+  notes: "Completed morning workout"
+
+two:
+  user: two
+  habit: two
+  recorded_at: <%= Date.current %>
+  completed: true
+  notes: "Read for 1 hour"
+
+three:
+  user: one
+  habit: one
+  recorded_at: <%= Date.current - 1.day %>
+  completed: false
+  notes: "Missed due to schedule"

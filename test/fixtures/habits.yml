@@ -2,10 +2,12 @@
 
 one:
   user: one
-  title: MyString
-  description: MyText
+  title: Daily Exercise
+  description: Exercise for 30 minutes daily
+  active: true
 
 two:
   user: two
-  title: MyString
-  description: MyText
+  title: Read Books
+  description: Read for 1 hour daily
+  active: true
