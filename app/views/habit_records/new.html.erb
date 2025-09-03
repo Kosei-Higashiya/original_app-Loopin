@@ -1,0 +1,47 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3>「<%= @habit.title %>」の記録</h3>
+        </div>
+        <div class="card-body">
+          <%= form_with model: [@habit, @habit_record], local: true do |form| %>
+            <% if @habit_record.errors.any? %>
+              <div class="alert alert-danger">
+                <h4><%= pluralize(@habit_record.errors.count, "error") %> prohibited this record from being saved:</h4>
+                <ul>
+                  <% @habit_record.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :recorded_at, "記録日", class: "form-label" %>
+              <%= form.date_field :recorded_at, class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <%= form.check_box :completed, class: "form-check-input", checked: true %>
+                <%= form.label :completed, "この習慣を実行しました", class: "form-check-label" %>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :note, "メモ (任意)", class: "form-label" %>
+              <%= form.text_area :note, class: "form-control", rows: 3, placeholder: "今日の振り返りや感想を書いてみましょう..." %>
+            </div>
+
+            <div class="d-flex gap-2">
+              <%= form.submit "記録を保存", class: "btn btn-primary" %>
+              <%= link_to "キャンセル", @habit, class: "btn btn-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

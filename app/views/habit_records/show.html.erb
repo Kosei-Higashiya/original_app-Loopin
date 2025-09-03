@@ -1,0 +1,46 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3>「<%= @habit.title %>」の記録詳細</h3>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <h6 class="text-muted">記録日</h6>
+            <p><%= @habit_record.recorded_at.strftime("%Y年%m月%d日") %></p>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="text-muted">実行状況</h6>
+            <span class="badge <%= @habit_record.completed? ? 'bg-success' : 'bg-danger' %>">
+              <%= @habit_record.completed? ? '実行済み' : '未実行' %>
+            </span>
+          </div>
+
+          <% if @habit_record.note.present? %>
+            <div class="mb-3">
+              <h6 class="text-muted">メモ</h6>
+              <p><%= simple_format(@habit_record.note) %></p>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <small class="text-muted">
+              記録作成: <%= @habit_record.created_at.strftime("%Y年%m月%d日 %H:%M") %>
+            </small>
+          </div>
+
+          <div class="d-flex gap-2">
+            <%= link_to "編集", edit_habit_habit_record_path(@habit, @habit_record), class: "btn btn-primary" %>
+            <%= link_to "削除", [@habit, @habit_record], method: :delete,
+                data: { confirm: "本当に削除しますか？" },
+                class: "btn btn-danger" %>
+            <%= link_to "習慣に戻る", @habit, class: "btn btn-secondary" %>
+            <%= link_to "カレンダー", calendar_habits_path, class: "btn btn-success" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

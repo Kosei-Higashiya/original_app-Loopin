@@ -1,0 +1,45 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>「<%= @habit.title %>」の記録一覧</h1>
+    <%= link_to "新しい記録", new_habit_habit_record_path(@habit), class: "btn btn-primary" %>
+  </div>
+
+  <% if @habit_records.any? %>
+    <div class="row">
+      <% @habit_records.each do |record| %>
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="card-title"><%= record.recorded_at.strftime("%Y年%m月%d日") %></h6>
+                <span class="badge <%= record.completed? ? 'bg-success' : 'bg-danger' %>">
+                  <%= record.completed? ? '実行済み' : '未実行' %>
+                </span>
+              </div>
+              
+              <% if record.note.present? %>
+                <p class="card-text"><%= truncate(record.note, length: 100) %></p>
+              <% end %>
+              
+              <div class="d-flex gap-2">
+                <%= link_to "詳細", [@habit, record], class: "btn btn-sm btn-outline-primary" %>
+                <%= link_to "編集", edit_habit_habit_record_path(@habit, record), class: "btn btn-sm btn-outline-secondary" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <h4 class="text-muted">まだ記録がありません</h4>
+      <p class="text-muted">最初の記録を作成して習慣の継続を始めましょう！</p>
+      <%= link_to "最初の記録を作成", new_habit_habit_record_path(@habit), class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <div class="mt-4">
+    <%= link_to "習慣に戻る", @habit, class: "btn btn-secondary" %>
+    <%= link_to "カレンダー", calendar_habits_path, class: "btn btn-success" %>
+  </div>
+</div>

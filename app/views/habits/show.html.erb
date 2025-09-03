@@ -28,7 +28,37 @@
             </small>
           </div>
 
+          <!-- Recent Records Section -->
+          <div class="mb-4">
+            <h6 class="text-muted">最近の記録</h6>
+            <% recent_records = @habit.habit_records.recent.limit(5) %>
+            <% if recent_records.any? %>
+              <div class="recent-records">
+                <% recent_records.each do |record| %>
+                  <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                    <div>
+                      <span class="badge <%= record.completed? ? 'bg-success' : 'bg-danger' %> me-2">
+                        <%= record.completed? ? '✓' : '✗' %>
+                      </span>
+                      <%= record.recorded_at.strftime("%m/%d") %>
+                      <% if record.note.present? %>
+                        <small class="text-muted">- <%= truncate(record.note, length: 30) %></small>
+                      <% end %>
+                    </div>
+                    <%= link_to "詳細", [@habit, record], class: "btn btn-sm btn-outline-primary" %>
+                  </div>
+                <% end %>
+              </div>
+              <div class="mt-2">
+                <%= link_to "すべての記録を見る", habit_habit_records_path(@habit), class: "btn btn-sm btn-outline-secondary" %>
+              </div>
+            <% else %>
+              <p class="text-muted">まだ記録がありません。最初の記録を作成しましょう！</p>
+            <% end %>
+          </div>
+
           <div class="d-flex gap-2">
+            <%= link_to "記録する", new_habit_habit_record_path(@habit), class: "btn btn-success" %>
             <%= link_to "編集", edit_habit_path(@habit), class: "btn btn-primary" %>
             <%= link_to "カレンダー", calendar_habits_path, class: "btn btn-success" %>
             <%= link_to "削除", @habit, method: :delete,

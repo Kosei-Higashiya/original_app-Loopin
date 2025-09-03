@@ -18,5 +18,6 @@ Rails.application.routes.draw do
     collection do
       get :calendar
     end
+    resources :habit_records
   end
 end
