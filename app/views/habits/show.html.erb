@@ -61,8 +61,8 @@
             <%= link_to "記録する", new_habit_habit_record_path(@habit), class: "btn btn-success" %>
             <%= link_to "編集", edit_habit_path(@habit), class: "btn btn-primary" %>
             <%= link_to "カレンダー", calendar_habits_path, class: "btn btn-success" %>
-            <%= link_to "削除", @habit, method: :delete,
-                data: { confirm: "本当に削除しますか？" },
+            <%= link_to "削除", @habit, 
+                data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
                 class: "btn btn-danger" %>
             <%= link_to "習慣一覧に戻る", habits_path, class: "btn btn-secondary" %>
           </div>
