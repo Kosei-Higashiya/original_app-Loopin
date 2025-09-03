@@ -18,5 +18,8 @@ Rails.application.routes.draw do
     collection do
       get :calendar
     end
+    member do
+      get :calendar, to: 'habits#individual_calendar'
+    end
   end
 end

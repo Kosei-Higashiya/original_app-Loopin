@@ -62,7 +62,10 @@
           <div class="card-body">
             <% @habits.each do |habit| %>
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span><%= habit.title %></span>
+                <span>
+                  <%= link_to habit.title, calendar_habit_path(habit), 
+                      class: "text-decoration-none" %>
+                </span>
                 <span class="badge <%= habit.active? ? 'bg-success' : 'bg-secondary' %>">
                   <%= habit.active? ? 'アクティブ' : '非アクティブ' %>
                 </span>
