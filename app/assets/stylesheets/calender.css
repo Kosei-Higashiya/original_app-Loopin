@@ -44,8 +44,34 @@
   font-weight: 500;
 }
 
+.simple-calendar .day .calendar-date {
+  cursor: pointer;
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.no-record-indicator {
+  color: #6c757d;
+  font-style: italic;
+}
+
 .simple-calendar .day:hover {
   background-color: #f8f9fa;
+}
+
+/* Calendar date interaction */
+.calendar-date:hover {
+  background-color: #e3f2fd !important;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-date:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
 }
 
 .simple-calendar .today {

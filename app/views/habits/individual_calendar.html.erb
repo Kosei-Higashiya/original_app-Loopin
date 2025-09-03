@@ -9,25 +9,36 @@
 
   <div class="card">
     <div class="card-body">
+      <div class="alert alert-info mb-3">
+        <h6 class="alert-heading mb-2">💡 使い方</h6>
+        <p class="mb-0">カレンダーの日付をクリックして習慣の達成状況を記録できます。クリックするたびに「完了」と「未完了」が切り替わります。</p>
+      </div>
+
       <% begin %>
         <%= month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
-          <%= date.day %>
+          <div class="calendar-date" data-date="<%= date.to_s %>" style="cursor: pointer; height: 100%;">
+            <%= date.day %>
 
-          <% if records.any? %>
-            <div class="calendar-events mt-2">
-              <% records.each do |record| %>
-                <div class="calendar-event <%= record.completed? ? 'completed' : 'incomplete' %>"
-                     title="<%= @habit.title %> - <%= record.completed? ? '完了' : '未完了' %>">
-                  <small class="d-block">
-                    <%= habit_status_badge(record) %>
-                    <% if record.notes.present? %>
-                      <span class="text-muted" title="<%= record.notes %>">📝</span>
-                    <% end %>
-                  </small>
-                </div>
-              <% end %>
-            </div>
-          <% end %>
+            <% if records.any? %>
+              <div class="calendar-events mt-2">
+                <% records.each do |record| %>
+                  <div class="calendar-event <%= record.completed? ? 'completed' : 'incomplete' %>"
+                       title="<%= @habit.title %> - <%= record.completed? ? '完了' : '未完了' %>">
+                    <small class="d-block">
+                      <%= habit_status_badge(record) %>
+                      <% if record.note.present? %>
+                        <span class="text-muted" title="<%= record.note %>">📝</span>
+                      <% end %>
+                    </small>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="no-record-indicator" style="opacity: 0.5; font-size: 0.8em; margin-top: 4px;">
+                未記録
+              </div>
+            <% end %>
+          </div>
         <% end %>
       <% rescue NameError %>
         <div class="alert alert-warning">
@@ -44,8 +55,8 @@
             <div class="d-flex justify-content-between align-items-center border-bottom py-2">
               <div>
                 <strong><%= record.recorded_at.strftime("%Y年%m月%d日") %></strong>
-                <% if record.notes.present? %>
-                  <small class="text-muted d-block"><%= record.notes %></small>
+                <% if record.note.present? %>
+                  <small class="text-muted d-block"><%= record.note %></small>
                 <% end %>
               </div>
               <%= habit_status_badge(record) %>
@@ -103,3 +114,52 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarDates = document.querySelectorAll('.calendar-date');
+  const habitId = <%= @habit.id %>;
+  
+  calendarDates.forEach(function(dateElement) {
+    dateElement.addEventListener('click', function() {
+      const date = this.dataset.date;
+      const currentDate = new Date();
+      const selectedDate = new Date(date);
+      
+      // Only allow interaction with dates up to today
+      if (selectedDate <= currentDate) {
+        toggleRecord(habitId, date, this);
+      }
+    });
+  });
+  
+  function toggleRecord(habitId, date, dateElement) {
+    // Add loading state
+    dateElement.style.opacity = '0.5';
+    
+    fetch(`/habits/${habitId}/toggle_record_for_date`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+      },
+      body: JSON.stringify({ date: date })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Reload the page to show updated state
+        window.location.reload();
+      } else {
+        alert('記録の更新に失敗しました: ' + (data.error || '不明なエラー'));
+        dateElement.style.opacity = '1';
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('記録の更新中にエラーが発生しました');
+      dateElement.style.opacity = '1';
+    });
+  }
+});
+</script>
