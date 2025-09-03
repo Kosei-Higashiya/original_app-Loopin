@@ -1,12 +1,16 @@
 class HabitsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_habit, only: [:show, :edit, :update, :destroy]
+  before_action :set_habit, only: [:show, :edit, :update, :destroy, :individual_calendar]
 
   def index
     @habits = current_user.habits.recent
   end
 
   def show
+  end
+
+  def individual_calendar
+    @habit_records = @habit.habit_records.includes(:habit)
   end
 
   def new
