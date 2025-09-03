@@ -1,0 +1,105 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><%= @habit.title %> - カレンダー</h1>
+    <div class="btn-group" role="group">
+      <%= link_to "習慣詳細", @habit, class: "btn btn-outline-primary" %>
+      <%= link_to "習慣一覧", habits_path, class: "btn btn-outline-secondary" %>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <% begin %>
+        <%= month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
+          <%= date.day %>
+
+          <% if records.any? %>
+            <div class="calendar-events mt-2">
+              <% records.each do |record| %>
+                <div class="calendar-event <%= record.completed? ? 'completed' : 'incomplete' %>"
+                     title="<%= @habit.title %> - <%= record.completed? ? '完了' : '未完了' %>">
+                  <small class="d-block">
+                    <%= habit_status_badge(record) %>
+                    <% if record.notes.present? %>
+                      <span class="text-muted" title="<%= record.notes %>">📝</span>
+                    <% end %>
+                  </small>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% rescue NameError %>
+        <div class="alert alert-warning">
+          <h5>カレンダー機能の準備中</h5>
+          <p>カレンダー表示には <code>simple_calendar</code> gemのインストールが必要です。</p>
+          <p>以下のコマンドを実行してください:</p>
+          <pre><code>bundle install</code></pre>
+        </div>
+
+        <!-- Fallback: Simple list view -->
+        <div class="mt-4">
+          <h5>今月の「<%= @habit.title %>」の記録</h5>
+          <% @habit_records.where(recorded_at: Date.current.beginning_of_month..Date.current.end_of_month).order(:recorded_at).each do |record| %>
+            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+              <div>
+                <strong><%= record.recorded_at.strftime("%Y年%m月%d日") %></strong>
+                <% if record.notes.present? %>
+                  <small class="text-muted d-block"><%= record.notes %></small>
+                <% end %>
+              </div>
+              <%= habit_status_badge(record) %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">習慣情報</h5>
+        </div>
+        <div class="card-body">
+          <h6><%= @habit.title %></h6>
+          <% if @habit.description.present? %>
+            <p class="text-muted small"><%= simple_format(@habit.description) %></p>
+          <% end %>
+          <span class="badge <%= @habit.active? ? 'bg-success' : 'bg-secondary' %>">
+            <%= @habit.active? ? 'アクティブ' : '非アクティブ' %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">今月の統計</h5>
+        </div>
+        <div class="card-body">
+          <% completion_rate = habit_completion_rate(@habit) %>
+          <div class="mb-3">
+            <strong>完了率: <%= completion_rate %>%</strong>
+            <div class="progress mt-2">
+              <div class="progress-bar <%= completion_rate >= 70 ? 'bg-success' : completion_rate >= 30 ? 'bg-warning' : 'bg-danger' %>"
+                   style="width: <%= completion_rate %>%"></div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <span class="badge bg-success">✓</span> 完了した日
+          </div>
+          <div class="mb-2">
+            <span class="badge bg-warning">○</span> 未完了の日
+          </div>
+          <div class="mb-2">
+            <span class="text-muted">📝</span> メモ付きの記録
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
