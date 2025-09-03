@@ -6,6 +6,19 @@ class HabitsController < ApplicationController
     @habits = current_user.habits.recent
   end
 
+  def calendar
+    @date = params[:date] ? Date.parse(params[:date]) : Date.current
+    @habits = current_user.habits.where(active: true)
+    
+    # Get all habit records for the current month
+    start_date = @date.beginning_of_month.beginning_of_week
+    end_date = @date.end_of_month.end_of_week
+    @habit_records = current_user.habit_records
+                                 .includes(:habit)
+                                 .where(recorded_at: start_date..end_date)
+                                 .group_by(&:recorded_at)
+  end
+
   def show
   end
 

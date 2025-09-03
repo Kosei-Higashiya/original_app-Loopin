@@ -1,7 +1,10 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>あなたの習慣</h1>
-    <%= link_to "新しい習慣を作成", new_habit_path, class: "btn btn-primary" %>
+    <div class="d-flex gap-2">
+      <%= link_to "カレンダー", calendar_habits_path, class: "btn btn-success" %>
+      <%= link_to "新しい習慣を作成", new_habit_path, class: "btn btn-primary" %>
+    </div>
   </div>
 
   <% if @habits.any? %>

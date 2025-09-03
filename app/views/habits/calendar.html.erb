@@ -1,0 +1,80 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>習慣カレンダー</h1>
+    <div class="d-flex gap-2">
+      <%= link_to "習慣一覧", habits_path, class: "btn btn-secondary" %>
+      <%= link_to "新しい習慣を作成", new_habit_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <!-- Calendar Legend -->
+  <div class="calendar-legend mb-4">
+    <h6>記録の色分け:</h6>
+    <div class="d-flex flex-wrap gap-3">
+      <div class="legend-item">
+        <span class="legend-color completed"></span>
+        <span>実行済み</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color incomplete"></span>
+        <span>未実行</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color no-record"></span>
+        <span>記録なし</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar Navigation -->
+  <div class="calendar-navigation mb-3">
+    <%= link_to "← 前月", calendar_habits_path(date: (@date - 1.month).strftime("%Y-%m-%d")), class: "btn btn-outline-primary" %>
+    <span class="mx-3 fw-bold"><%= @date.strftime("%Y年%m月") %></span>
+    <%= link_to "次月 →", calendar_habits_path(date: (@date + 1.month).strftime("%Y-%m-%d")), class: "btn btn-outline-primary" %>
+  </div>
+
+  <!-- Active Habits List -->
+  <% if @habits.any? %>
+    <div class="active-habits mb-4">
+      <h6>アクティブな習慣 (<%= @habits.count %>個):</h6>
+      <div class="habits-list">
+        <% @habits.each do |habit| %>
+          <span class="badge bg-primary me-2 mb-2"><%= habit.title %></span>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="calendar-container">
+      <%= month_calendar(date: @date, events: @habit_records) do |date, records| %>
+        <div class="calendar-day" data-date="<%= date.strftime('%Y-%m-%d') %>">
+          <div class="day-number"><%= date.day %></div>
+          <div class="habits-status">
+            <% @habits.each do |habit| %>
+              <% day_records = records&.select { |r| r.habit_id == habit.id } %>
+              <% if day_records&.any? %>
+                <% completed_count = day_records.count(&:completed) %>
+                <% total_count = day_records.count %>
+                <% if completed_count == total_count && completed_count > 0 %>
+                  <div class="habit-dot completed" title="<%= habit.title %> - 完了"></div>
+                <% elsif completed_count > 0 %>
+                  <div class="habit-dot partial" title="<%= habit.title %> - 部分完了"></div>
+                <% else %>
+                  <div class="habit-dot incomplete" title="<%= habit.title %> - 未完了"></div>
+                <% end %>
+              <% else %>
+                <div class="habit-dot no-record" title="<%= habit.title %> - 記録なし"></div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <h4 class="text-muted">アクティブな習慣がありません</h4>
+      <p class="text-muted">習慣を作成してからカレンダーをご利用ください。</p>
+      <%= link_to "最初の習慣を作成", new_habit_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

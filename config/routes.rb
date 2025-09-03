@@ -14,5 +14,9 @@ Rails.application.routes.draw do
   get "dashboard" => "home#dashboard"
 
   # Habits resource routes
-  resources :habits
+  resources :habits do
+    collection do
+      get :calendar
+    end
+  end
 end

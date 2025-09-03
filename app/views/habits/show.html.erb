@@ -30,6 +30,7 @@
 
           <div class="d-flex gap-2">
             <%= link_to "編集", edit_habit_path(@habit), class: "btn btn-primary" %>
+            <%= link_to "カレンダー", calendar_habits_path, class: "btn btn-success" %>
             <%= link_to "削除", @habit, method: :delete,
                 data: { confirm: "本当に削除しますか？" },
                 class: "btn btn-danger" %>
