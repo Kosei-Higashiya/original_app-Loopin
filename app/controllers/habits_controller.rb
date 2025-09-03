@@ -9,11 +9,6 @@ class HabitsController < ApplicationController
   def show
   end
 
-  def calendar
-    @habits = current_user.habits
-    @habit_records = current_user.habit_records.includes(:habit)
-  end
-
   def individual_calendar
     @habit_records = @habit.habit_records.includes(:habit)
   end

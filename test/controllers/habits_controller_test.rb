@@ -36,11 +36,6 @@ class HabitsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get calendar" do
-    get calendar_habits_url
-    assert_response :success
-  end
-
   test "should get individual calendar" do
     # Note: This test assumes we have at least one habit with id 1
     # In a real test scenario, we would create test fixtures or use FactoryBot
