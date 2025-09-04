@@ -18,10 +18,10 @@ class HabitsController < ApplicationController
     record = @habit.habit_records.find_by(recorded_at: date, user: current_user)
     
     if record
-      # Toggle completion status
-      record.update!(completed: !record.completed)
+      # Delete existing record (toggle from completed to unrecorded)
+      record.destroy!
     else
-      # Create new record with completed status
+      # Create new completed record
       @habit.habit_records.create!(
         user: current_user,
         recorded_at: date,

@@ -11,25 +11,23 @@
     <div class="card-body">
       <div class="alert alert-info mb-3">
         <h6 class="alert-heading mb-2">💡 使い方</h6>
-        <p class="mb-0">カレンダーの日付をクリックして習慣の達成状況を記録できます。クリックするたびに「完了」と「未完了」が切り替わります。</p>
+        <p class="mb-0">カレンダーの日付をクリックして習慣の達成状況を記録できます。クリックするたびに「完了」と「未記録」が切り替わります。<br><small class="text-muted">※3日前までの日付のみクリック可能です</small></p>
       </div>
 
       <% begin %>
-        <%= month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
-          <div class="calendar-date" data-date="<%= date.to_s %>" style="cursor: pointer; height: 100%;">
+        <% month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
+          <div class="calendar-date <%= 'completed-day' if records.any? %>" data-date="<%= date.to_s %>" style="cursor: pointer; height: 100%;">
             <%= date.day %>
 
             <% if records.any? %>
               <div class="calendar-events mt-2">
                 <% records.each do |record| %>
-                  <div class="calendar-event <%= record.completed? ? 'completed' : 'incomplete' %>"
-                       title="<%= @habit.title %> - <%= record.completed? ? '完了' : '未完了' %>">
-                    <small class="d-block">
-                      <%= habit_status_badge(record) %>
-                      <% if record.note.present? %>
-                        <span class="text-muted" title="<%= record.note %>">📝</span>
-                      <% end %>
-                    </small>
+                  <div class="calendar-event completed"
+                       title="<%= @habit.title %> - 完了">
+                    <span class="completion-check">✓</span>
+                    <% if record.note.present? %>
+                      <span class="text-muted" title="<%= record.note %>">📝</span>
+                    <% end %>
                   </div>
                 <% end %>
               </div>
@@ -104,9 +102,6 @@
             <span class="badge bg-success">✓</span> 完了した日
           </div>
           <div class="mb-2">
-            <span class="badge bg-warning">○</span> 未完了の日
-          </div>
-          <div class="mb-2">
             <span class="text-muted">📝</span> メモ付きの記録
           </div>
         </div>
@@ -125,10 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
       const date = this.dataset.date;
       const currentDate = new Date();
       const selectedDate = new Date(date);
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(currentDate.getDate() - 3);
       
-      // Only allow interaction with dates up to today
-      if (selectedDate <= currentDate) {
+      // Only allow interaction with dates up to 3 days ago
+      if (selectedDate <= threeDaysAgo) {
         toggleRecord(habitId, date, this);
+      } else {
+        alert('3日前までの日付のみ記録可能です。');
       }
     });
   });
