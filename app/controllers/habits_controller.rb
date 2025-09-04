@@ -14,27 +14,48 @@ class HabitsController < ApplicationController
   end
 
   def toggle_record_for_date
-    date = Date.parse(params[:date])
+    begin
+      date = Date.parse(params[:date])
+    rescue ArgumentError => e
+      respond_to do |format|
+        format.json { render json: { success: false, error: "Invalid date format: #{params[:date]}" }, status: :bad_request }
+      end
+      return
+    end
+
     record = @habit.habit_records.find_by(recorded_at: date, user: current_user)
     
     if record
       # Delete existing record (toggle from completed to unrecorded)
       record.destroy!
+      Rails.logger.info "Deleted habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
     else
       # Create new completed record
-      @habit.habit_records.create!(
+      new_record = @habit.habit_records.build(
         user: current_user,
         recorded_at: date,
         completed: true
       )
+      
+      if new_record.save
+        Rails.logger.info "Created habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
+      else
+        Rails.logger.error "Failed to create habit record: #{new_record.errors.full_messages.join(', ')}"
+        respond_to do |format|
+          format.json { render json: { success: false, error: "Failed to create record: #{new_record.errors.full_messages.join(', ')}" }, status: :unprocessable_entity }
+        end
+        return
+      end
     end
 
     respond_to do |format|
       format.json { render json: { success: true } }
     end
-  rescue ActiveRecord::RecordInvalid => e
+  rescue => e
+    Rails.logger.error "Unexpected error in toggle_record_for_date: #{e.class.name}: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
     respond_to do |format|
-      format.json { render json: { success: false, error: e.message }, status: :unprocessable_entity }
+      format.json { render json: { success: false, error: "Unexpected error: #{e.message}" }, status: :internal_server_error }
     end
   end
 

@@ -16,7 +16,7 @@
 
       <% begin %>
         <%= month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
-          <div class="calendar-date <%= 'completed-day' if records.any? %>" data-date="<%= date.to_s %>" style="cursor: pointer; height: 100%;">
+          <div class="calendar-date <%= 'completed-day' if records.any? %>" data-date="<%= date.strftime('%Y-%m-%d') %>" style="cursor: pointer; height: 100%;">>
             <%= date.day %>
 
             <% if records.any? %>
@@ -111,41 +111,72 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// Use both DOMContentLoaded and Turbo events for better compatibility
+function initializeCalendar() {
   const calendarDates = document.querySelectorAll('.calendar-date');
   const habitId = <%= @habit.id %>;
   
+  console.log('Initializing calendar with', calendarDates.length, 'date elements');
+  
   calendarDates.forEach(function(dateElement) {
-    dateElement.addEventListener('click', function() {
-      const date = this.dataset.date;
-      const currentDate = new Date();
-      const selectedDate = new Date(date);
-      const threeDaysAgo = new Date();
-      threeDaysAgo.setDate(currentDate.getDate() - 3);
-      
-      // Only allow interaction with dates up to 3 days ago
-      if (selectedDate <= threeDaysAgo) {
-        toggleRecord(habitId, date, this);
-      } else {
-        alert('3日前までの日付のみ記録可能です。');
-      }
-    });
+    // Remove any existing listeners to avoid duplicates
+    dateElement.removeEventListener('click', handleDateClick);
+    dateElement.addEventListener('click', handleDateClick);
   });
   
+  function handleDateClick(event) {
+    const dateElement = event.currentTarget;
+    const date = dateElement.dataset.date;
+    
+    if (!date) {
+      console.error('No date found on element:', dateElement);
+      return;
+    }
+    
+    const currentDate = new Date();
+    const selectedDate = new Date(date);
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(currentDate.getDate() - 3);
+    
+    console.log('Date clicked:', date, 'Selected:', selectedDate, 'Three days ago:', threeDaysAgo);
+    
+    // Only allow interaction with dates up to 3 days ago
+    if (selectedDate <= threeDaysAgo) {
+      toggleRecord(habitId, date, dateElement);
+    } else {
+      alert('3日前までの日付のみ記録可能です。');
+    }
+  }
+  
   function toggleRecord(habitId, date, dateElement) {
+    console.log('Toggling record for habit', habitId, 'on date', date);
+    
     // Add loading state
     dateElement.style.opacity = '0.5';
+    
+    // Get CSRF token
+    const csrfToken = document.querySelector('[name="csrf-token"]')?.content;
+    if (!csrfToken) {
+      console.error('CSRF token not found');
+      alert('認証トークンが見つかりません。ページを再読み込みしてください。');
+      dateElement.style.opacity = '1';
+      return;
+    }
     
     fetch(`/habits/${habitId}/toggle_record_for_date`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+        'X-CSRF-Token': csrfToken
       },
       body: JSON.stringify({ date: date })
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log('Response status:', response.status);
+      return response.json();
+    })
     .then(data => {
+      console.log('Response data:', data);
       if (data.success) {
         // Reload the page to show updated state
         window.location.reload();
@@ -160,5 +191,10 @@ document.addEventListener('DOMContentLoaded', function() {
       dateElement.style.opacity = '1';
     });
   }
-});
+}
+
+// Initialize on both DOMContentLoaded and Turbo events
+document.addEventListener('DOMContentLoaded', initializeCalendar);
+document.addEventListener('turbo:load', initializeCalendar);
+document.addEventListener('turbo:frame-load', initializeCalendar);
 </script>
