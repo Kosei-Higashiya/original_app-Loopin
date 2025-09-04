@@ -3,7 +3,7 @@ class HabitRecord < ApplicationRecord
   belongs_to :habit
 
   validates :recorded_at, presence: true
-  validates :notes, length: { maximum: 1000 }
+  validates :note, length: { maximum: 1000 }
   validates :completed, inclusion: { in: [true, false] }
   validates :user_id, uniqueness: { scope: [:habit_id, :recorded_at],
                                    message: "can only have one record per habit per day" }
