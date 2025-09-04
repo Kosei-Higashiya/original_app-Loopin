@@ -15,7 +15,7 @@
       </div>
 
       <% begin %>
-        <% month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
+        <%= month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
           <div class="calendar-date <%= 'completed-day' if records.any? %>" data-date="<%= date.to_s %>" style="cursor: pointer; height: 100%;">
             <%= date.day %>
 
