@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4" data-habit-id="<%= @habit.id %>">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><%= @habit.title %> - カレンダー</h1>
     <div class="btn-group" role="group">
@@ -14,50 +14,25 @@
         <p class="mb-0">カレンダーの日付をクリックして習慣の達成状況を記録できます。クリックするたびに「完了」と「未記録」が切り替わります。<br><small class="text-muted">※3日前までの日付のみクリック可能です</small></p>
       </div>
 
-      <% begin %>
-        <%= month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
-          <div class="calendar-date <%= 'completed-day' if records.any? %>" data-date="<%= date.strftime('%Y-%m-%d') %>" style="cursor: pointer; height: 100%;">>
-            <%= date.day %>
+      <%= month_calendar(events: @habit_records, attribute: :recorded_at) do |date, records| %>
+        <div class="calendar-date <%= 'completed-day' if records.any? %>" data-date="<%= date.strftime('%Y-%m-%d') %>" style="cursor: pointer; height: 100%;">
+          <%= date.day %>
 
-            <% if records.any? %>
-              <div class="calendar-events mt-2">
-                <% records.each do |record| %>
-                  <div class="calendar-event completed"
-                       title="<%= @habit.title %> - 完了">
-                    <span class="completion-check">✓</span>
-                    <% if record.note.present? %>
-                      <span class="text-muted" title="<%= record.note %>">📝</span>
-                    <% end %>
-                  </div>
-                <% end %>
-              </div>
-            <% else %>
-              <div class="no-record-indicator" style="opacity: 0.5; font-size: 0.8em; margin-top: 4px;">
-                未記録
-              </div>
-            <% end %>
-          </div>
-        <% end %>
-      <% rescue NameError %>
-        <div class="alert alert-warning">
-          <h5>カレンダー機能の準備中</h5>
-          <p>カレンダー表示には <code>simple_calendar</code> gemのインストールが必要です。</p>
-          <p>以下のコマンドを実行してください:</p>
-          <pre><code>bundle install</code></pre>
-        </div>
-
-        <!-- Fallback: Simple list view -->
-        <div class="mt-4">
-          <h5>今月の「<%= @habit.title %>」の記録</h5>
-          <% @habit_records.where(recorded_at: Date.current.beginning_of_month..Date.current.end_of_month).order(:recorded_at).each do |record| %>
-            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-              <div>
-                <strong><%= record.recorded_at.strftime("%Y年%m月%d日") %></strong>
-                <% if record.note.present? %>
-                  <small class="text-muted d-block"><%= record.note %></small>
-                <% end %>
-              </div>
-              <%= habit_status_badge(record) %>
+          <% if records.any? %>
+            <div class="calendar-events mt-2">
+              <% records.each do |record| %>
+                <div class="calendar-event completed"
+                     title="<%= @habit.title %> - 完了">
+                  <span class="completion-check">✓</span>
+                  <% if record.note.present? %>
+                    <span class="text-muted" title="<%= record.note %>">📝</span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="no-record-indicator" style="opacity: 0.5; font-size: 0.8em; margin-top: 4px;">
+              未記録
             </div>
           <% end %>
         </div>
@@ -111,90 +86,113 @@
 </div>
 
 <script>
-// Use both DOMContentLoaded and Turbo events for better compatibility
+// Define the handler function globally to avoid multiple bindings
+let calendarInitialized = false;
+
+function handleDateClick(event) {
+  const dateElement = event.currentTarget;
+  const date = dateElement.dataset.date;
+  const habitId = parseInt(dateElement.closest('[data-habit-id]')?.dataset.habitId || '<%= @habit.id %>');
+  
+  if (!date) {
+    console.error('No date found on element:', dateElement);
+    return;
+  }
+  
+  const currentDate = new Date();
+  const selectedDate = new Date(date);
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(currentDate.getDate() - 3);
+  
+  console.log('Date clicked:', date, 'Selected:', selectedDate, 'Three days ago:', threeDaysAgo);
+  
+  // Only allow interaction with dates up to 3 days ago
+  if (selectedDate <= threeDaysAgo) {
+    toggleRecord(habitId, date, dateElement);
+  } else {
+    alert('3日前までの日付のみ記録可能です。');
+  }
+}
+
+function toggleRecord(habitId, date, dateElement) {
+  console.log('Toggling record for habit', habitId, 'on date', date);
+  
+  // Add loading state
+  dateElement.style.opacity = '0.5';
+  
+  // Get CSRF token
+  const csrfToken = document.querySelector('[name="csrf-token"]')?.content;
+  if (!csrfToken) {
+    console.error('CSRF token not found');
+    alert('認証トークンが見つかりません。ページを再読み込みしてください。');
+    dateElement.style.opacity = '1';
+    return;
+  }
+  
+  fetch(`/habits/${habitId}/toggle_record_for_date`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken
+    },
+    body: JSON.stringify({ date: date })
+  })
+  .then(response => {
+    console.log('Response status:', response.status);
+    return response.json();
+  })
+  .then(data => {
+    console.log('Response data:', data);
+    if (data.success) {
+      // Reload the page to show updated state
+      window.location.reload();
+    } else {
+      alert('記録の更新に失敗しました: ' + (data.error || '不明なエラー'));
+      dateElement.style.opacity = '1';
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('記録の更新中にエラーが発生しました');
+    dateElement.style.opacity = '1';
+  });
+}
+
 function initializeCalendar() {
+  // Prevent multiple initializations
+  if (calendarInitialized) {
+    console.log('Calendar already initialized, skipping...');
+    return;
+  }
+  
   const calendarDates = document.querySelectorAll('.calendar-date');
-  const habitId = <%= @habit.id %>;
   
   console.log('Initializing calendar with', calendarDates.length, 'date elements');
   
   calendarDates.forEach(function(dateElement) {
-    // Remove any existing listeners to avoid duplicates
+    // Remove any existing listeners first
     dateElement.removeEventListener('click', handleDateClick);
+    // Add the listener
     dateElement.addEventListener('click', handleDateClick);
   });
   
-  function handleDateClick(event) {
-    const dateElement = event.currentTarget;
-    const date = dateElement.dataset.date;
-    
-    if (!date) {
-      console.error('No date found on element:', dateElement);
-      return;
-    }
-    
-    const currentDate = new Date();
-    const selectedDate = new Date(date);
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(currentDate.getDate() - 3);
-    
-    console.log('Date clicked:', date, 'Selected:', selectedDate, 'Three days ago:', threeDaysAgo);
-    
-    // Only allow interaction with dates up to 3 days ago
-    if (selectedDate <= threeDaysAgo) {
-      toggleRecord(habitId, date, dateElement);
-    } else {
-      alert('3日前までの日付のみ記録可能です。');
-    }
-  }
-  
-  function toggleRecord(habitId, date, dateElement) {
-    console.log('Toggling record for habit', habitId, 'on date', date);
-    
-    // Add loading state
-    dateElement.style.opacity = '0.5';
-    
-    // Get CSRF token
-    const csrfToken = document.querySelector('[name="csrf-token"]')?.content;
-    if (!csrfToken) {
-      console.error('CSRF token not found');
-      alert('認証トークンが見つかりません。ページを再読み込みしてください。');
-      dateElement.style.opacity = '1';
-      return;
-    }
-    
-    fetch(`/habits/${habitId}/toggle_record_for_date`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
-      },
-      body: JSON.stringify({ date: date })
-    })
-    .then(response => {
-      console.log('Response status:', response.status);
-      return response.json();
-    })
-    .then(data => {
-      console.log('Response data:', data);
-      if (data.success) {
-        // Reload the page to show updated state
-        window.location.reload();
-      } else {
-        alert('記録の更新に失敗しました: ' + (data.error || '不明なエラー'));
-        dateElement.style.opacity = '1';
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('記録の更新中にエラーが発生しました');
-      dateElement.style.opacity = '1';
-    });
-  }
+  calendarInitialized = true;
+  console.log('Calendar initialization complete');
 }
 
-// Initialize on both DOMContentLoaded and Turbo events
+// Reset the flag when navigating away
+function resetCalendarFlag() {
+  calendarInitialized = false;
+}
+
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', initializeCalendar);
-document.addEventListener('turbo:load', initializeCalendar);
-document.addEventListener('turbo:frame-load', initializeCalendar);
+
+// Handle Turbo navigation
+document.addEventListener('turbo:load', function() {
+  resetCalendarFlag();
+  initializeCalendar();
+});
+
+document.addEventListener('turbo:before-visit', resetCalendarFlag);
 </script>
