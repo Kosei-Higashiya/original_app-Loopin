@@ -18,10 +18,6 @@ module HabitsHelper
   end
 
   def habit_status_badge(record)
-    if record.completed?
-      content_tag(:span, "✓", class: "badge bg-success", title: "完了")
-    else
-      content_tag(:span, "○", class: "badge bg-warning text-dark", title: "未完了")
-    end
+    content_tag(:span, "✓", class: "badge bg-success", title: "完了")
   end
 end
