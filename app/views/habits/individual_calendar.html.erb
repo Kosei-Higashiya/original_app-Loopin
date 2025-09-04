@@ -100,14 +100,16 @@ function handleDateClick(event) {
   }
   
   const currentDate = new Date();
-  const selectedDate = new Date(date);
+  currentDate.setHours(23, 59, 59, 999); // Set to end of day for comparison
+  const selectedDate = new Date(date + 'T00:00:00'); // Ensure date is parsed as local time
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(currentDate.getDate() - 3);
+  threeDaysAgo.setHours(0, 0, 0, 0); // Set to start of day for comparison
   
-  console.log('Date clicked:', date, 'Selected:', selectedDate, 'Three days ago:', threeDaysAgo);
+  console.log('Date clicked:', date, 'Selected:', selectedDate, 'Three days ago:', threeDaysAgo, 'Current:', currentDate);
   
-  // Only allow interaction with dates up to 3 days ago
-  if (selectedDate <= threeDaysAgo) {
+  // Allow interaction with dates from 3 days ago up to today
+  if (selectedDate >= threeDaysAgo && selectedDate <= currentDate) {
     toggleRecord(habitId, date, dateElement);
   } else {
     alert('3日前までの日付のみ記録可能です。');
@@ -129,22 +131,31 @@ function toggleRecord(habitId, date, dateElement) {
     return;
   }
   
+  console.log('Making request to:', `/habits/${habitId}/toggle_record_for_date`);
+  console.log('Request body:', { date: date });
+  
   fetch(`/habits/${habitId}/toggle_record_for_date`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken
+      'X-CSRF-Token': csrfToken,
+      'Accept': 'application/json'
     },
     body: JSON.stringify({ date: date })
   })
   .then(response => {
     console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     return response.json();
   })
   .then(data => {
     console.log('Response data:', data);
     if (data.success) {
       // Reload the page to show updated state
+      console.log('Success! Reloading page...');
       window.location.reload();
     } else {
       alert('記録の更新に失敗しました: ' + (data.error || '不明なエラー'));
@@ -153,7 +164,7 @@ function toggleRecord(habitId, date, dateElement) {
   })
   .catch(error => {
     console.error('Error:', error);
-    alert('記録の更新中にエラーが発生しました');
+    alert('記録の更新中にエラーが発生しました: ' + error.message);
     dateElement.style.opacity = '1';
   });
 }
