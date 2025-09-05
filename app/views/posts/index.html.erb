@@ -10,7 +10,7 @@
     <% if @posts.any? %>
       <div class="dashboard-grid">
         <% @posts.each do |post| %>
-          <div class="dashboard-card">
+          <div class="dashboard-card" id="post-<%= post.id %>">
             <div class="card-header">
               <h3 class="card-title">
                 🎯 <%= post.habit.title %>
@@ -31,6 +31,7 @@
                 <div class="card-actions">
                   <%= link_to "編集", edit_post_path(post), class: "btn btn-secondary" %>
                   <%= link_to "削除", post_path(post), 
+                      remote: true,
                       data: { 
                         method: :delete,
                         confirm: "本当に削除しますか？"

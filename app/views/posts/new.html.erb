@@ -32,18 +32,18 @@
             <div class="mb-5">
               <%= form.label :content, "投稿内容", class: "form-label fw-bold", style: "font-size: 1.3rem;" %>
               <div class="mt-2">
-                <%= form.text_area :content, class: "form-control form-control-lg", rows: 8,
+                <%= form.text_area :content, class: "form-control form-control-lg w-100", rows: 10,
                     placeholder: "今日の習慣の取り組みや感想を書いてください...", 
-                    style: "font-size: 1.1rem; padding: 1rem; line-height: 1.6;" %>
+                    style: "font-size: 1.1rem; padding: 1.5rem; line-height: 1.6; resize: vertical;" %>
               </div>
             </div>
 
             <div class="mb-5">
               <%= form.label :image, "画像URL（任意）", class: "form-label fw-bold", style: "font-size: 1.3rem;" %>
               <div class="mt-2">
-                <%= form.text_field :image, class: "form-control form-control-lg", 
+                <%= form.text_field :image, class: "form-control form-control-lg w-100", 
                     placeholder: "画像のURLを入力してください（任意）",
-                    style: "font-size: 1.1rem; padding: 1rem;" %>
+                    style: "font-size: 1.1rem; padding: 1.5rem;" %>
                 <small class="form-text text-muted mt-2" style="font-size: 1rem;">習慣に関連する画像のURLを入力できます</small>
               </div>
             </div>

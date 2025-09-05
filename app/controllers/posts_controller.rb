@@ -1,12 +1,9 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :set_post, only: [:edit, :update, :destroy]
 
   def index
     @posts = Post.with_associations.recent.limit(50)
-  end
-
-  def show
   end
 
   def new
@@ -28,9 +25,15 @@ class PostsController < ApplicationController
   def destroy
     if @post.user == current_user
       @post.destroy
-      redirect_to posts_path, notice: '投稿が削除されました。'
+      respond_to do |format|
+        format.html { redirect_to posts_path, notice: '投稿が削除されました。' }
+        format.js   # This will render destroy.js.erb
+      end
     else
-      redirect_to posts_path, alert: '権限がありません。'
+      respond_to do |format|
+        format.html { redirect_to posts_path, alert: '権限がありません。' }
+        format.js   { render js: "alert('権限がありません。');" }
+      end
     end
   end
 

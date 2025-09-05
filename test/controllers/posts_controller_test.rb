@@ -27,12 +27,6 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to posts_url
   end
 
-  test "should show post" do
-    post = Post.create!(user: @user, habit: @habit, content: "Test content")
-    get post_url(post)
-    assert_response :success
-  end
-
   test "should destroy own post" do
     post = Post.create!(user: @user, habit: @habit, content: "Test content")
     assert_difference("Post.count", -1) do
@@ -40,6 +34,15 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to posts_url
+  end
+
+  test "should destroy own post via ajax" do
+    post = Post.create!(user: @user, habit: @habit, content: "Test content")
+    assert_difference("Post.count", -1) do
+      delete post_url(post), xhr: true
+    end
+
+    assert_response :success
   end
 
   test "should get edit" do

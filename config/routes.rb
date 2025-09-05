@@ -23,5 +23,5 @@ Rails.application.routes.draw do
     end
 
   # Posts resource routes for community posts
-  resources :posts, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+  resources :posts, only: [:index, :new, :create, :edit, :update, :destroy]
 end
