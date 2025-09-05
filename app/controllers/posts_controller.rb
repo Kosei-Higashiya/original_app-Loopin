@@ -27,12 +27,12 @@ class PostsController < ApplicationController
       @post.destroy
       respond_to do |format|
         format.html { redirect_to posts_path, notice: '投稿が削除されました。' }
-        format.js   # This will render destroy.js.erb
+        format.turbo_stream
       end
     else
       respond_to do |format|
         format.html { redirect_to posts_path, alert: '権限がありません。' }
-        format.js   { render js: "alert('権限がありません。');" }
+        format.turbo_stream { render turbo_stream: turbo_stream.prepend("flash", partial: "shared/flash", locals: { alert: "権限がありません。" }) }
       end
     end
   end

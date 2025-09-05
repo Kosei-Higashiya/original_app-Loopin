@@ -1,0 +1,26 @@
+<%= turbo_stream.remove "post-#{@post.id}" %>
+
+<% if Post.count == 0 %>
+  <%= turbo_stream.update "posts-container" do %>
+    <div class="text-center py-5">
+      <div class="dashboard-card" style="max-width: 500px; margin: 0 auto;">
+        <div class="card-header">
+          <h3 class="card-title">📝 まだ投稿がありません</h3>
+        </div>
+        <div class="card-content">
+          <p>最初の投稿をして、コミュニティを盛り上げませんか？</p>
+          <div class="card-actions">
+            <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.prepend "flash-messages" do %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    投稿が削除されました。
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
