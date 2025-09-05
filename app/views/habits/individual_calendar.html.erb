@@ -51,9 +51,6 @@
           <% if @habit.description.present? %>
             <p class="text-muted small"><%= simple_format(@habit.description) %></p>
           <% end %>
-          <span class="badge <%= @habit.active? ? 'bg-success' : 'bg-secondary' %>">
-            <%= @habit.active? ? 'アクティブ' : '非アクティブ' %>
-          </span>
         </div>
       </div>
     </div>
