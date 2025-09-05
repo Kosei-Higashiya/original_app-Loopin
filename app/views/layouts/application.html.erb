@@ -11,9 +11,12 @@
 
   </head>
 
-  <div class="flash-messages container">
+  <div id="flash-messages" class="flash-messages container">
   <% flash.each do |key, message| %>
-    <div class="flash <%= key %>"><%= message %></div>
+    <div class="alert alert-<%= key == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+      <%= message %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   <% end %>
   </div>
 

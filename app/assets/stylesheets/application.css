@@ -35,6 +35,14 @@ body {
   padding: 0 20px;
 }
 
+/* Form width fix */
+.container-fluid {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
+
 /* Header and Navigation */
 .header {
   background-color: #fff;
@@ -163,6 +171,26 @@ body {
 .btn-secondary:hover {
   background-color: white;
   color: #4F46E5;
+}
+
+.btn-danger {
+  background-color: #DC2626;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #B91C1C;
+  transform: translateY(-2px);
+}
+
+.btn-warning {
+  background-color: #F59E0B;
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: #D97706;
+  transform: translateY(-2px);
 }
 
 /* Features section */
