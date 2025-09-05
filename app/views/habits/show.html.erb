@@ -12,13 +12,6 @@
             </div>
           <% end %>
 
-          <div class="mb-3">
-            <h6 class="text-muted">ステータス</h6>
-            <span class="badge <%= @habit.active? ? 'bg-success' : 'bg-secondary' %>">
-              <%= @habit.active? ? 'アクティブ' : '非アクティブ' %>
-            </span>
-          </div>
-
           <div class="mb-4">
             <small class="text-muted">
               作成日: <%= @habit.created_at.strftime("%Y年%m月%d日 %H:%M") %>
