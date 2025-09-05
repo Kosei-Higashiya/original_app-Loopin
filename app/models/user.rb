@@ -6,4 +6,5 @@ class User < ApplicationRecord
 
   has_many :habits, dependent: :destroy
   has_many :habit_records, dependent: :destroy
+  has_many :posts, dependent: :destroy
 end

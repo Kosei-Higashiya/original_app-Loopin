@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <% if @post.image.present? %>
+          <img src="<%= @post.image %>" class="card-img-top" alt="投稿画像">
+        <% end %>
+        <div class="card-body">
+          <h1 class="card-title">
+            <span class="badge bg-secondary mb-2"><%= @post.habit.title %></span>
+          </h1>
+          <p class="card-text"><%= simple_format(@post.content) %></p>
+          <small class="text-muted">
+            by <%= @post.user.email.split('@').first %> • 
+            <%= @post.created_at.strftime("%Y年%m月%d日 %H:%M") %>
+          </small>
+          
+          <% if @post.user == current_user %>
+            <div class="mt-3">
+              <%= link_to "削除", post_path(@post), method: :delete,
+                  confirm: "本当に削除しますか？",
+                  class: "btn btn-danger" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="mt-3">
+        <%= link_to "みんなの習慣一覧", posts_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>

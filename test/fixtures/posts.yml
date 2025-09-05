@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  habit: one
+  content: This is my first post about my habit
+  image: 
+
+two:
+  user: two
+  habit: two
+  content: Another post with some content
+  image: https://example.com/image.jpg

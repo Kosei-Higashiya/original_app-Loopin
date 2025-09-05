@@ -21,4 +21,7 @@ Rails.application.routes.draw do
     end
     resources :habit_records, except: [:index, :new, :edit]
     end
+
+  # Posts resource routes for community posts
+  resources :posts, only: [:index, :show, :new, :create, :destroy]
 end

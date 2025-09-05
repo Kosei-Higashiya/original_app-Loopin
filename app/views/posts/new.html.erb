@@ -1,0 +1,50 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title">みんなの習慣に投稿</h1>
+          <p class="text-muted">あなたの習慣を選んで、コミュニティにシェアしましょう</p>
+
+          <%= form_with(model: @post, local: true) do |form| %>
+            <% if @post.errors.any? %>
+              <div class="alert alert-danger">
+                <h6><%= pluralize(@post.errors.count, "つのエラー") %>があります:</h6>
+                <ul class="mb-0">
+                  <% @post.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :habit_id, "習慣を選択", class: "form-label" %>
+              <%= form.collection_select :habit_id, @user_habits, :id, :title, 
+                    { prompt: "習慣を選択してください" }, 
+                    { class: "form-select" } %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :content, "投稿内容", class: "form-label" %>
+              <%= form.text_area :content, class: "form-control", rows: 4,
+                  placeholder: "今日の習慣の取り組みや感想を書いてください..." %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :image, "画像URL（任意）", class: "form-label" %>
+              <%= form.text_field :image, class: "form-control", 
+                  placeholder: "画像のURLを入力してください（任意）" %>
+              <small class="form-text text-muted">習慣に関連する画像のURLを入力できます</small>
+            </div>
+
+            <div class="mb-3">
+              <%= form.submit "投稿する", class: "btn btn-primary" %>
+              <%= link_to "キャンセル", posts_path, class: "btn btn-secondary ms-2" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
