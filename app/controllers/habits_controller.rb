@@ -98,6 +98,6 @@ class HabitsController < ApplicationController
   end
 
   def habit_params
-    params.require(:habit).permit(:title, :description, :active)
+    params.require(:habit).permit(:title, :description)
   end
 end
