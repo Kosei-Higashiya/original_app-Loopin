@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_post, only: [:show, :destroy]
+  before_action :set_post, only: [:show, :edit, :update, :destroy]
 
   def index
     @posts = Post.with_associations.recent.limit(50)
@@ -31,6 +31,28 @@ class PostsController < ApplicationController
       redirect_to posts_path, notice: '投稿が削除されました。'
     else
       redirect_to posts_path, alert: '権限がありません。'
+    end
+  end
+
+  def edit
+    if @post.user != current_user
+      redirect_to posts_path, alert: '権限がありません。'
+      return
+    end
+    @user_habits = current_user.habits.order(:title)
+  end
+
+  def update
+    if @post.user != current_user
+      redirect_to posts_path, alert: '権限がありません。'
+      return
+    end
+
+    if @post.update(post_params)
+      redirect_to posts_path, notice: '投稿が更新されました。'
+    else
+      @user_habits = current_user.habits.order(:title)
+      render :edit, status: :unprocessable_entity
     end
   end
 
