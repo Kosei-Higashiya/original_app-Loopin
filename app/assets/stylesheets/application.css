@@ -35,6 +35,16 @@ body {
   padding: 0 20px;
 }
 
+/* Form width fix - centered 70% */
+.container-fluid {
+  width: 70% !important;         /* 幅を画面の70%に */
+  max-width: 70% !important;     /* 最大幅も70%に */
+  margin-left: auto !important;  /* 左右の余白自動で中央寄せ */
+  margin-right: auto !important;
+  padding-left: 15px !important; /* 内側の余白はそのまま */
+  padding-right: 15px !important;
+}
+
 /* Header and Navigation */
 .header {
   background-color: #fff;
@@ -163,6 +173,26 @@ body {
 .btn-secondary:hover {
   background-color: white;
   color: #4F46E5;
+}
+
+.btn-danger {
+  background-color: #DC2626;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #B91C1C;
+  transform: translateY(-2px);
+}
+
+.btn-warning {
+  background-color: #F59E0B;
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: #f08914;
+  transform: translateY(-2px);
 }
 
 /* Features section */

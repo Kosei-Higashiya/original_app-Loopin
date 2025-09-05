@@ -1,0 +1,66 @@
+<div class="dashboard-section">
+  <div class="container">
+    <div id="flash-messages"></div>
+
+    <h1 class="dashboard-title">📌 みんなの習慣一覧</h1>
+    <p class="dashboard-subtitle">コミュニティのメンバーが共有している習慣の取り組みをご覧ください</p>
+
+    <div class="text-center mb-4">
+      <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
+      <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
+    </div>
+
+    <div id="posts-container">
+      <% if @posts.any? %>
+        <div class="dashboard-grid">
+          <% @posts.each do |post| %>
+            <div class="dashboard-card" id="post-<%= post.id %>">
+              <div class="card-header">
+                <h3 class="card-title">
+                  🎯 <%= post.habit.title %>
+                </h3>
+                <small class="text-white-50">
+                  👤 <%= post.user.email.split('@').first %> •
+                  ⏰ <%= time_ago_in_words(post.created_at) %>前
+                </small>
+              </div>
+              <div class="card-content">
+                <% if post.image.present? %>
+                  <img src="<%= post.image %>" class="img-fluid mb-3 rounded" alt="投稿画像" style="max-height: 200px; width: 100%; object-fit: cover;">
+                <% end %>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                  <%= simple_format(post.content) %>
+                </p>
+                <% if post.user == current_user %>
+                  <div class="card-actions">
+                    <%= link_to "編集", edit_post_path(post), class: "btn btn-warning" %>
+                    <%= link_to "削除", post_path(post),
+                        data: {
+                          turbo_method: :delete,
+                          turbo_confirm: "本当に削除しますか？"
+                        },
+                        class: "btn btn-danger" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-5">
+          <div class="dashboard-card" style="max-width: 500px; margin: 0 auto;">
+            <div class="card-header">
+              <h3 class="card-title">📝 まだ投稿がありません</h3>
+            </div>
+            <div class="card-content">
+              <p>最初の投稿をして、コミュニティを盛り上げませんか？</p>
+              <div class="card-actions">
+                <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
