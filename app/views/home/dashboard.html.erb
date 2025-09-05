@@ -13,7 +13,7 @@
           <p>日々の習慣を記録し、カレンダーで確認できます</p>
           <div class="card-actions">
             <%= link_to "記録する", new_habit_path, class: "btn btn-primary" %>
-            <%= link_to "習慣一覧", habits_path, class: "btn btn-outline-secondary" %>
+            <%= link_to "習慣一覧", habits_path, class: "btn btn-primary" %>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <p>あなたの成長をグラフで可視化します</p>
           <div class="card-actions">
             <a href="#" class="btn btn-primary">進捗を見る</a>
-            <a href="#" class="btn btn-secondary">グラフ表示</a>
+            <a href="#" class="btn btn-primary">グラフ表示</a>
           </div>
         </div>
       </div>
@@ -40,8 +40,8 @@
         <div class="card-content">
           <p>コミュニティのメンバーと習慣を共有しましょう</p>
           <div class="card-actions">
-            <%= link_to "習慣を見る", habits_path, class: "btn btn-primary" %>
-            <%= link_to "投稿する", new_habit_path, class: "btn btn-secondary" %>
+            <%= link_to "習慣を見る", posts_path, class: "btn btn-primary" %>
+            <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
           </div>
         </div>
       </div>
@@ -55,7 +55,7 @@
           <p>達成した目標に応じてバッジを獲得できます</p>
           <div class="card-actions">
             <a href="#" class="btn btn-primary">バッジ一覧</a>
-            <a href="#" class="btn btn-secondary">獲得履歴</a>
+            <a href="#" class="btn btn-primary">獲得履歴</a>
           </div>
         </div>
       </div>
