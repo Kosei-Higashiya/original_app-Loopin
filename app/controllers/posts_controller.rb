@@ -15,7 +15,7 @@ class PostsController < ApplicationController
     @post = current_user.posts.build(post_params)
 
     if @post.save
-      redirect_to posts_path, notice: '投稿が作成されました。'
+      redirect_to posts_path, notice: '習慣投稿が作成されました。'
     else
       @user_habits = current_user.habits.order(:title)
       render :new, status: :unprocessable_entity
@@ -26,7 +26,7 @@ class PostsController < ApplicationController
     if @post.user == current_user
       @post.destroy
       respond_to do |format|
-        format.html { redirect_to posts_path, notice: '投稿が削除されました。' }
+        format.html { redirect_to posts_path, notice: '習慣投稿が削除されました。' }
         format.turbo_stream
       end
     else
@@ -52,7 +52,7 @@ class PostsController < ApplicationController
     end
 
     if @post.update(post_params)
-      redirect_to posts_path, notice: '投稿が更新されました。'
+      redirect_to posts_path, notice: '習慣投稿が更新されました。'
     else
       @user_habits = current_user.habits.order(:title)
       render :edit, status: :unprocessable_entity

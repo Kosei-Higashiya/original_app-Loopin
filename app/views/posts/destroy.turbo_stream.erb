@@ -1,5 +1,12 @@
 <%= turbo_stream.remove "post-#{@post.id}" %>
 
+<%= turbo_stream.prepend "flash-messages" do %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    習慣投稿が削除されました。
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
+
 <% if Post.count == 0 %>
   <%= turbo_stream.update "posts-container" do %>
     <div class="text-center py-5">
