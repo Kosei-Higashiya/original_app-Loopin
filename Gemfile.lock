@@ -113,6 +113,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise-i18n-views (0.3.7)
     drb (2.2.3)
     erb (5.0.2)
     erubi (1.13.1)
@@ -218,6 +219,9 @@ GEM
     rails-html-sanitizer (1.6.2)
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
+    rails-i18n (7.0.10)
+      i18n (>= 0.7, < 2)
+      railties (>= 6.0.0, < 8)
     railties (7.1.5.1)
       actionpack (= 7.1.5.1)
       activesupport (= 7.1.5.1)
@@ -317,12 +321,14 @@ DEPENDENCIES
   capybara
   debug
   devise
+  devise-i18n-views
   jbuilder
   jsbundling-rails
   letter_opener_web (~> 2.0)
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)
+  rails-i18n
   rubocop
   sassc-rails
   selenium-webdriver
@@ -334,7 +340,7 @@ DEPENDENCIES
   web-console
 
 RUBY VERSION
-   ruby 3.3.1p55
+   ruby 3.2.3p157
 
 BUNDLED WITH
    2.5.9

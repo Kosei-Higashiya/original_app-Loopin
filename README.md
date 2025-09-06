@@ -95,6 +95,8 @@
 - **RSpec**：テストフレームワーク
 - **letter_opener_web** : メールアドレス・パスワード変更
 - **Rubocop** :　静的コード解析ツール
+- **rails-i18n** : i18n対応
+- **devise-i18n-views** : i18n対応
 
 ---
 
@@ -103,7 +105,7 @@
 - **開発環境**：Docker
 - **フロントエンド**：Hotwire / Tailwind CSS
 - **バックエンド**：Ruby on Rails（7系）
-  - Ruby 3.3.8 / Rails 7.1.5.1
+  - Ruby 3.2.3 / Rails 7.1.5.1
 - **データベース**：PostgreSQL
 - **インフラ**：Render
 - **その他**：GitHub / GitHub Actions（CI/CD対応）
