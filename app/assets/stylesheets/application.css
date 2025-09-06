@@ -420,15 +420,22 @@ body {
   cursor: pointer;
   opacity: 0.6;
   line-height: 1;
+  padding: 4px 8px;
+  min-width: 20px;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
 .btn-close:hover {
   opacity: 1;
 }
 
-.btn-close:before {
-  content: "×";
-  font-weight: bold;
+.btn-close:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
 }
 
 .alert.fade {

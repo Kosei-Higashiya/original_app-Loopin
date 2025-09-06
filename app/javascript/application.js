@@ -9,17 +9,20 @@ function initializeFlashMessages() {
   alerts.forEach(alert => {
     alert.setAttribute('data-initialized', 'true');
     
-    // Add close button functionality
+    // Add close button functionality with event delegation to prevent conflicts
     const closeButton = alert.querySelector('.btn-close');
-    if (closeButton) {
-      closeButton.addEventListener('click', function() {
+    if (closeButton && !closeButton.hasAttribute('data-listener-added')) {
+      closeButton.setAttribute('data-listener-added', 'true');
+      closeButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         closeAlert(alert);
       });
     }
     
     // Auto-dismiss after 5 seconds
     setTimeout(() => {
-      if (alert && alert.parentNode) {
+      if (alert && alert.parentNode && alert.getAttribute('data-initialized') === 'true') {
         closeAlert(alert);
       }
     }, 5000);
@@ -28,6 +31,10 @@ function initializeFlashMessages() {
 
 function closeAlert(alert) {
   if (!alert || !alert.parentNode) return;
+  
+  // Mark as closing to prevent duplicate operations
+  if (alert.getAttribute('data-closing') === 'true') return;
+  alert.setAttribute('data-closing', 'true');
   
   // Add fade-out effect
   alert.classList.remove('show');
@@ -41,6 +48,25 @@ function closeAlert(alert) {
     }
   }, 150);
 }
+
+// Global function for manual flash message creation (used by destroy.js.erb)
+window.createFlashMessage = function(message, type = 'success') {
+  const flashContainer = document.getElementById('flash-messages');
+  if (!flashContainer) return;
+  
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+  alertDiv.setAttribute('role', 'alert');
+  alertDiv.innerHTML = `
+    ${message}
+    <button type="button" class="btn-close" aria-label="Close">×</button>
+  `;
+  
+  flashContainer.appendChild(alertDiv);
+  
+  // Use the standard initialization function to ensure consistency
+  initializeFlashMessages();
+};
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', initializeFlashMessages);
