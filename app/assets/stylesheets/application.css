@@ -379,3 +379,69 @@ body {
   background-color: #fee2e2;
   color: #991b1b;
 }
+
+/* Bootstrap Alert Styles for Flash Messages */
+.alert {
+  padding: 12px 20px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #d1f2eb;
+  border-color: #7dda9b;
+  color: #0f5132;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5a8b0;
+  color: #721c24;
+}
+
+.alert-dismissible {
+  padding-right: 50px;
+}
+
+.btn-close {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.6;
+  line-height: 1;
+  padding: 4px 8px;
+  min-width: 20px;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+.btn-close:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.alert.fade {
+  transition: opacity 0.15s linear;
+}
+
+.alert.fade:not(.show) {
+  opacity: 0;
+}
