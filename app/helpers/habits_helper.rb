@@ -1,6 +1,6 @@
 module HabitsHelper
   def calendar_title(date)
-    I18n.l(date, format: "%Y年%m月")
+    I18n.l(date, format: :simple_calendar)
   end
 
   def habit_completion_rate(habit, date = Date.current)
