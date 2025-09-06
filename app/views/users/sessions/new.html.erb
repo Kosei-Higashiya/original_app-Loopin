@@ -1,0 +1,87 @@
+<div class="container-fluid mt-4 px-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 col-xl-5">
+      <div class="card shadow-lg border-2" style="border-color: #007bff;">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h1 class="card-title mb-2" style="font-size: 2rem;">🔐 ログイン</h1>
+          <p class="mb-0" style="font-size: 1.1rem;">アカウントにサインインしてください</p>
+        </div>
+        <div class="card-body p-5">
+          <%= form_with(model: resource, as: resource_name, url: session_path(resource_name), local: true) do |form| %>
+            <% if resource.errors.any? %>
+              <div class="alert alert-danger">
+                <h6><%= pluralize(resource.errors.count, "つのエラー") %>があります:</h6>
+                <ul class="mb-0">
+                  <% resource.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-4">
+              <%= form.label :email, "メールアドレス", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.email_field :email, autofocus: true, autocomplete: "email", 
+                    class: "form-control form-control-lg", 
+                    placeholder: "メールアドレスを入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem;" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :password, "パスワード", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.password_field :password, autocomplete: "current-password", 
+                    class: "form-control form-control-lg", 
+                    placeholder: "パスワードを入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem;" %>
+              </div>
+            </div>
+
+            <% if devise_mapping.rememberable? %>
+              <div class="mb-4 form-check">
+                <%= form.check_box :remember_me, class: "form-check-input", id: "remember-me" %>
+                <%= form.label :remember_me, "ログイン状態を保持する", class: "form-check-label", for: "remember-me" %>
+              </div>
+            <% end %>
+
+            <div class="d-grid mb-4">
+              <%= form.submit "ログイン", class: "btn btn-primary btn-lg", 
+                  style: "font-size: 1.2rem; padding: 1rem; background-color: #007bff; border: none;" %>
+            </div>
+          <% end %>
+
+          <div class="text-center">
+            <div class="mb-3">
+              <%= link_to "新規登録はこちら", new_registration_path(resource_name), 
+                  class: "btn btn-outline-primary btn-lg", 
+                  style: "font-size: 1.1rem; padding: 0.75rem 2rem;" %>
+            </div>
+            
+            <% if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+              <div class="mb-2">
+                <%= link_to "パスワードを忘れた方はこちら", new_password_path(resource_name), 
+                    class: "text-decoration-none", style: "color: #6c757d;" %>
+              </div>
+            <% end %>
+
+            <% if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+              <div class="mb-2">
+                <%= link_to "確認メールが届かない方はこちら", new_confirmation_path(resource_name), 
+                    class: "text-decoration-none", style: "color: #6c757d;" %>
+              </div>
+            <% end %>
+
+            <% if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+              <div class="mb-2">
+                <%= link_to "ロック解除はこちら", new_unlock_path(resource_name), 
+                    class: "text-decoration-none", style: "color: #6c757d;" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
