@@ -1,0 +1,100 @@
+<div class="container-fluid mt-4 px-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 col-xl-5">
+      <div class="card shadow-lg border-2" style="border-color: #007bff;">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h1 class="card-title mb-2" style="font-size: 2rem;">⚙️ プロフィール編集</h1>
+          <p class="mb-0" style="font-size: 1.1rem;">アカウント情報を更新してください</p>
+        </div>
+        <div class="card-body p-5">
+          <%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }, local: true) do |form| %>
+            <% if resource.errors.any? %>
+              <div class="alert alert-danger">
+                <h6><%= pluralize(resource.errors.count, "つのエラー") %>があります:</h6>
+                <ul class="mb-0">
+                  <% resource.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-4">
+              <%= form.label :email, "メールアドレス", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.email_field :email, autofocus: true, autocomplete: "email", 
+                    class: "form-control form-control-lg", 
+                    placeholder: "メールアドレスを入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem;" %>
+              </div>
+            </div>
+
+            <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+              <div class="alert alert-info">
+                確認待ち: <%= resource.unconfirmed_email %>
+              </div>
+            <% end %>
+
+            <div class="mb-4">
+              <%= form.label :password, "新しいパスワード", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <% if @minimum_password_length %>
+                <small class="form-text text-muted">(<%= @minimum_password_length %> 文字以上。変更しない場合は空白のままにしてください)</small>
+              <% end %>
+              <div class="mt-2">
+                <%= form.password_field :password, autocomplete: "new-password", 
+                    class: "form-control form-control-lg", 
+                    placeholder: "新しいパスワード（変更しない場合は空白）",
+                    style: "font-size: 1.1rem; padding: 1rem;" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :password_confirmation, "新しいパスワード確認", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.password_field :password_confirmation, autocomplete: "new-password", 
+                    class: "form-control form-control-lg", 
+                    placeholder: "新しいパスワードを再度入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem;" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :current_password, "現在のパスワード", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <small class="form-text text-muted">(変更を確認するために現在のパスワードが必要です)</small>
+              <div class="mt-2">
+                <%= form.password_field :current_password, autocomplete: "current-password", 
+                    class: "form-control form-control-lg", 
+                    placeholder: "現在のパスワードを入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem;" %>
+              </div>
+            </div>
+
+            <div class="d-grid mb-4">
+              <%= form.submit "プロフィールを更新", class: "btn btn-primary btn-lg", 
+                  style: "font-size: 1.2rem; padding: 1rem; background-color: #007bff; border: none;" %>
+            </div>
+          <% end %>
+
+          <div class="text-center">
+            <div class="mb-3">
+              <%= link_to "戻る", :back, class: "btn btn-outline-secondary btn-lg", 
+                  style: "font-size: 1.1rem; padding: 0.75rem 2rem;" %>
+            </div>
+            
+            <hr class="my-4">
+            
+            <h5 class="text-danger mb-3">アカウントを削除する</h5>
+            <p class="text-muted mb-3">アカウントを削除すると、すべてのデータが失われます。この操作は取り消せません。</p>
+            <%= button_to "アカウントを削除", registration_path(resource_name), 
+                data: { 
+                  confirm: "本当にアカウントを削除しますか？この操作は取り消せません。", 
+                  turbo_method: :delete 
+                }, 
+                class: "btn btn-danger btn-lg", 
+                style: "font-size: 1.1rem; padding: 0.75rem 2rem;" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
