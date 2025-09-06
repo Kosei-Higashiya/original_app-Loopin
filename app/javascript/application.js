@@ -76,5 +76,8 @@ document.addEventListener('turbo:load', initializeFlashMessages);
 
 // Initialize after Turbo Stream updates (like delete operations)
 document.addEventListener('turbo:after-stream-render', function() {
-  setTimeout(initializeFlashMessages, 100);
+  // Multiple attempts to ensure flash messages are initialized
+  setTimeout(initializeFlashMessages, 50);
+  setTimeout(initializeFlashMessages, 200);
+  setTimeout(initializeFlashMessages, 500);
 });
