@@ -22,26 +22,49 @@ $("#post-<%= @post.id %>").fadeOut(300, function() {
   }
 });
 
-// Show success message
-if (typeof bootstrap !== 'undefined') {
-  // Create a temporary alert element
+// Show success message using the flash system
+const flashContainer = document.getElementById('flash-messages');
+if (flashContainer) {
   const alertDiv = document.createElement('div');
-  alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
-  alertDiv.style.top = '20px';
-  alertDiv.style.right = '20px';
-  alertDiv.style.zIndex = '9999';
+  alertDiv.className = 'alert alert-success alert-dismissible fade show';
+  alertDiv.setAttribute('role', 'alert');
   alertDiv.innerHTML = `
     習慣投稿が削除されました。
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <button type="button" class="btn-close" aria-label="Close"></button>
   `;
-  document.body.appendChild(alertDiv);
-
-  // Auto-dismiss after 3 seconds
+  
+  flashContainer.appendChild(alertDiv);
+  
+  // Add close button functionality directly
+  const closeButton = alertDiv.querySelector('.btn-close');
+  if (closeButton) {
+    closeButton.addEventListener('click', function() {
+      if (alertDiv && alertDiv.parentNode) {
+        alertDiv.classList.remove('show');
+        alertDiv.style.transition = 'opacity 0.15s linear';
+        alertDiv.style.opacity = '0';
+        setTimeout(() => {
+          if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+          }
+        }, 150);
+      }
+    });
+  }
+  
+  // Auto-dismiss after 5 seconds
   setTimeout(() => {
-    if (alertDiv.parentNode) {
-      alertDiv.remove();
+    if (alertDiv && alertDiv.parentNode) {
+      alertDiv.classList.remove('show');
+      alertDiv.style.transition = 'opacity 0.15s linear';
+      alertDiv.style.opacity = '0';
+      setTimeout(() => {
+        if (alertDiv.parentNode) {
+          alertDiv.parentNode.removeChild(alertDiv);
+        }
+      }, 150);
     }
-  }, 3000);
+  }, 5000);
 } else {
   alert('習慣投稿が削除されました。');
 }

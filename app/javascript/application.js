@@ -2,30 +2,53 @@
 import "@hotwired/turbo-rails"
 import "./controllers"
 
-// Auto-dismiss flash messages after 5 seconds
-function dismissFlashMessages() {
-  const alerts = document.querySelectorAll('.alert');
+// Flash message functionality
+function initializeFlashMessages() {
+  const alerts = document.querySelectorAll('.alert:not([data-initialized])');
+  
   alerts.forEach(alert => {
+    alert.setAttribute('data-initialized', 'true');
+    
+    // Add close button functionality
+    const closeButton = alert.querySelector('.btn-close');
+    if (closeButton) {
+      closeButton.addEventListener('click', function() {
+        closeAlert(alert);
+      });
+    }
+    
+    // Auto-dismiss after 5 seconds
     setTimeout(() => {
       if (alert && alert.parentNode) {
-        alert.classList.remove('show');
-        setTimeout(() => {
-          if (alert.parentNode) {
-            alert.parentNode.removeChild(alert);
-          }
-        }, 150);
+        closeAlert(alert);
       }
     }, 5000);
   });
 }
 
-// Initial page load
-document.addEventListener('DOMContentLoaded', dismissFlashMessages);
+function closeAlert(alert) {
+  if (!alert || !alert.parentNode) return;
+  
+  // Add fade-out effect
+  alert.classList.remove('show');
+  alert.style.transition = 'opacity 0.15s linear';
+  alert.style.opacity = '0';
+  
+  // Remove from DOM after animation
+  setTimeout(() => {
+    if (alert.parentNode) {
+      alert.parentNode.removeChild(alert);
+    }
+  }, 150);
+}
 
-// For Turbo navigation
-document.addEventListener('turbo:frame-load', dismissFlashMessages);
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initializeFlashMessages);
 
-// For Turbo Stream updates (like delete operations)
+// Initialize after Turbo navigation
+document.addEventListener('turbo:load', initializeFlashMessages);
+
+// Initialize after Turbo Stream updates (like delete operations)
 document.addEventListener('turbo:after-stream-render', function() {
-  setTimeout(dismissFlashMessages, 100);
+  setTimeout(initializeFlashMessages, 100);
 });
