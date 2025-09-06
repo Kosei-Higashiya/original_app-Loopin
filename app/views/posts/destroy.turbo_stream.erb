@@ -1,19 +1,38 @@
 <%= turbo_stream.remove "post-#{@post.id}" %>
 
-<% if Post.count == 0 %>
-  <%= turbo_stream.update "posts-container" do %>
-    <div class="text-center py-5">
-      <div class="dashboard-card" style="max-width: 500px; margin: 0 auto;">
-        <div class="card-header">
-          <h3 class="card-title">📝 まだ投稿がありません</h3>
-        </div>
-        <div class="card-content">
-          <p>最初の投稿をして、コミュニティを盛り上げませんか？</p>
-          <div class="card-actions">
-            <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
+<%= turbo_stream.action :append, "flash-messages" do %>
+  <script>
+    if (window.createFlashMessage) {
+      window.createFlashMessage('習慣投稿が削除されました。', 'success');
+    }
+  </script>
+<% end %>
+
+<%= turbo_stream.action :append, "posts-container" do %>
+  <script>
+    // Check if there are no more posts visible and show the "no posts" message
+    setTimeout(() => {
+      const postsContainer = document.getElementById('posts-container');
+      const dashboardGrid = postsContainer ? postsContainer.querySelector('.dashboard-grid') : null;
+      const postCards = dashboardGrid ? dashboardGrid.querySelectorAll('.dashboard-card') : [];
+
+      if (postCards.length === 0 && dashboardGrid) {
+        dashboardGrid.innerHTML = `
+          <div class="text-center py-5">
+            <div class="dashboard-card" style="max-width: 500px; margin: 0 auto;">
+              <div class="card-header">
+                <h3 class="card-title">📝 まだ投稿がありません</h3>
+              </div>
+              <div class="card-content">
+                <p>最初の投稿をして、コミュニティを盛り上げませんか？</p>
+                <div class="card-actions">
+                  <a href="<%= new_post_path %>" class="btn btn-primary">投稿する</a>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  <% end %>
+        `;
+        }
+    }, 300);
+  </script>
 <% end %>

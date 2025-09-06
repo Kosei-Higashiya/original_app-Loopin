@@ -22,26 +22,10 @@ $("#post-<%= @post.id %>").fadeOut(300, function() {
   }
 });
 
-// Show success message
-if (typeof bootstrap !== 'undefined') {
-  // Create a temporary alert element
-  const alertDiv = document.createElement('div');
-  alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
-  alertDiv.style.top = '20px';
-  alertDiv.style.right = '20px';
-  alertDiv.style.zIndex = '9999';
-  alertDiv.innerHTML = `
-    投稿が削除されました。
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  `;
-  document.body.appendChild(alertDiv);
-
-  // Auto-dismiss after 3 seconds
-  setTimeout(() => {
-    if (alertDiv.parentNode) {
-      alertDiv.remove();
-    }
-  }, 3000);
+// Show success message using the standardized flash system
+if (window.createFlashMessage) {
+  window.createFlashMessage('習慣投稿が削除されました。', 'success');
 } else {
+  // Fallback if the function is not available
   alert('投稿が削除されました。');
 }
