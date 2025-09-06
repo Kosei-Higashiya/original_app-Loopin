@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.1"
+ruby "3.2.3"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.5", ">= 7.1.5.1"
@@ -49,6 +49,8 @@ gem 'letter_opener_web', '~> 2.0'
 gem 'devise'
 gem 'simple_calendar', '~> 2.4'
 gem 'sassc-rails'
+gem 'rails-i18n'
+gem 'devise-i18n-views'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

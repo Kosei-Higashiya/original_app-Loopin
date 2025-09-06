@@ -3,6 +3,7 @@
     <h1>あなたの習慣</h1>
     <div class="btn-group" role="group">
       <%= link_to "新しい習慣を作成", new_habit_path, class: "btn btn-primary" %>
+      <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
     </div>
   </div>
 
@@ -25,7 +26,7 @@
                             turbo_method: :delete,
                             turbo_confirm: "本当に削除しますか？"
                         },
-                        class: "btn btn-outline-danger btn-sm" %>
+                        class: "btn btn-danger btn-sm" %>
               </div>
             </div>
           </div>
