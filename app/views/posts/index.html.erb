@@ -18,7 +18,7 @@
                   🎯 <%= post.habit.title %>
                 </h3>
                 <small class="text-white-50">
-                  👤 <%= post.user.email.split('@').first %> •
+                  👤 <%= post.user.display_name%> •
                   ⏰ <%= time_ago_in_words(post.created_at) %>前
                 </small>
               </div>
