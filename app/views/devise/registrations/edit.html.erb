@@ -29,6 +29,16 @@
               </div>
             </div>
 
+            <div class="mb-4">
+              <%= form.label :nickname, "ニックネーム", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.text_field :nickname, autocomplete: "nickname",
+                    class: "form-control form-control-lg",
+                    placeholder: "ニックネームを入力してください（任意）",
+                    style: "font-size: 1.1rem; padding: 1rem; width: 30%" %>
+              </div>
+            </div>
+
             <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
               <div class="alert alert-info">
                 確認待ち: <%= resource.unconfirmed_email %>
