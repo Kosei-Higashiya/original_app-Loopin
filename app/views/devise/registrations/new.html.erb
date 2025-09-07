@@ -1,0 +1,86 @@
+<div class="container-fluid mt-4 px-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 col-xl-5">
+      <div class="card shadow-lg border-2" style="border-color: #007bff;">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h1 class="card-title mb-2" style="font-size: 2rem;">📝 新規登録</h1>
+          <p class="mb-0" style="font-size: 1.1rem;">新しいアカウントを作成してください</p>
+        </div>
+        <div class="card-body p-5">
+          <%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), local: true) do |form| %>
+            <% if resource.errors.any? %>
+              <div class="alert alert-danger">
+                <h6><%= pluralize(resource.errors.count, "つのエラー") %>があります:</h6>
+                <ul class="mb-0">
+                  <% resource.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-4">
+              <%= form.label :email, "メールアドレス", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.email_field :email, autofocus: true, autocomplete: "email",
+                    class: "form-control form-control-lg",
+                    placeholder: "メールアドレスを入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem; width: 25%" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :password, "パスワード", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <% if @minimum_password_length %>
+                <small class="form-text text-muted">(<%= @minimum_password_length %> 文字以上)</small>
+              <% end %>
+              <div class="mt-2">
+                <%= form.password_field :password, autocomplete: "new-password",
+                    class: "form-control form-control-lg",
+                    placeholder: "パスワードを入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem; width: 25%" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :password_confirmation, "パスワード確認", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.password_field :password_confirmation, autocomplete: "new-password",
+                    class: "form-control form-control-lg",
+                    placeholder: "パスワードを再度入力してください",
+                    style: "font-size: 1.1rem; padding: 1rem; width: 25%" %>
+              </div>
+            </div>
+
+            <div class="d-grid mb-4">
+              <%= form.submit "アカウントを作成", class: "btn btn-primary btn-lg",
+                  style: "font-size: 1.2rem; padding: 1rem; background-color: #007bff; border: none;" %>
+            </div>
+          <% end %>
+
+          <div class="text-center">
+            <div class="mb-3">
+              <%= link_to "既にアカウントをお持ちの方はこちら", new_session_path(resource_name),
+                  class: "btn btn-outline-primary btn-lg",
+                  style: "font-size: 1.1rem; padding: 0.75rem 2rem;" %>
+            </div>
+
+            <% if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+              <div class="mb-2">
+                <%= link_to "確認メールが届かない方はこちら", new_confirmation_path(resource_name),
+                    class: "text-decoration-none", style: "color: #6c757d;" %>
+              </div>
+            <% end %>
+
+            <% if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+              <div class="mb-2">
+                <%= link_to "ロック解除はこちら", new_unlock_path(resource_name),
+                    class: "text-decoration-none", style: "color: #6c757d;" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
