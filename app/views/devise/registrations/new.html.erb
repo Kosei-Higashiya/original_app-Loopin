@@ -20,6 +20,16 @@
             <% end %>
 
             <div class="mb-4">
+              <%= form.label :name, "名前", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
+              <div class="mt-2">
+                <%= form.text_field :name, autocomplete: "name",
+                    class: "form-control form-control-lg",
+                    placeholder: "名前を入力してください（任意）",
+                    style: "font-size: 1.1rem; padding: 1rem; width: 25%" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
               <%= form.label :email, "メールアドレス", class: "form-label fw-bold", style: "font-size: 1.2rem;" %>
               <div class="mt-2">
                 <%= form.email_field :email, autofocus: true, autocomplete: "email",
