@@ -45,6 +45,46 @@ body {
   padding-right: 15px !important;
 }
 
+/* deviseフォームのcss */
+.card {
+  border-radius: 15px !important;
+  overflow: hidden;
+}
+
+.card-header {
+  border-radius: 15px 15px 0 0 !important;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Better responsive design for forms */
+@media (max-width: 768px) {
+  .container-fluid {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+
+  .card-body {
+    padding: 2rem !important;
+  }
+
+  .card-header {
+    padding: 2rem !important;
+  }
+
+  .card-title {
+    font-size: 1.5rem !important;
+  }
+}
+
 /* Header and Navigation */
 .header {
   background-color: #fff;
@@ -186,12 +226,12 @@ body {
 }
 
 .btn-warning {
-  background-color: #F59E0B;
+  background-color: #007bff;
   color: white;
 }
 
 .btn-warning:hover {
-  background-color: #f08914;
+  background-color: #007bff;
   transform: translateY(-2px);
 }
 
