@@ -1,7 +1,13 @@
 <div class="dashboard-section">
   <div class="container">
     <h1 class="dashboard-title">📌 みんなの習慣一覧</h1>
-    <p class="dashboard-subtitle">コミュニティのメンバーが共有している習慣の取り組みをご覧ください</p>
+    <% if @current_tag.present? %>
+      <p class="dashboard-subtitle">タグ「#<%= @current_tag %>」の投稿を表示中 
+        <%= link_to "すべて表示", posts_path, class: "btn btn-outline-secondary btn-sm ms-2" %>
+      </p>
+    <% else %>
+      <p class="dashboard-subtitle">コミュニティのメンバーが共有している習慣の取り組みをご覧ください</p>
+    <% end %>
 
     <div class="text-center mb-4">
       <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
@@ -29,6 +35,15 @@
                 <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
                   <%= simple_format(post.content) %>
                 </p>
+                <% if post.tags.any? %>
+                  <div class="mb-3">
+                    <% post.tags.each do |tag| %>
+                      <%= link_to "##{tag.name}", posts_path(tag: tag.name), 
+                          class: "badge bg-primary text-decoration-none me-2 mb-1",
+                          style: "font-size: 0.9rem; padding: 0.5rem 0.75rem;" %>
+                    <% end %>
+                  </div>
+                <% end %>
                 <% if post.user == current_user %>
                   <div class="card-actions">
                     <%= link_to "編集", edit_post_path(post), class: "btn btn-warning" %>
