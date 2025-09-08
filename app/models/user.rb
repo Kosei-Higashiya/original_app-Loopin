@@ -8,9 +8,8 @@ class User < ApplicationRecord
   has_many :habit_records, dependent: :destroy
   has_many :posts, dependent: :destroy
 
-  # Method to return name if present, otherwise email prefix
+  # 名前が空の場合、ゲストを表示名として返す
   def display_name
-    name.present? ? name : email.split('@').first
+    name.present? ? name : "ゲスト"
   end
 end
-
