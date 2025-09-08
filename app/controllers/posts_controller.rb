@@ -3,7 +3,12 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:edit, :update, :destroy]
 
   def index
-    @posts = Post.with_associations.recent.limit(50)
+    if params[:tag].present?
+      @posts = Post.tagged_with(params[:tag]).with_associations.recent.limit(50)
+      @current_tag = params[:tag]
+    else
+      @posts = Post.with_associations.recent.limit(50)
+    end
   end
 
   def new
@@ -66,6 +71,6 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    params.require(:post).permit(:habit_id, :content, :image)
+    params.require(:post).permit(:habit_id, :content, :image, :tag_list)
   end
 end
