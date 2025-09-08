@@ -3,9 +3,13 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:edit, :update, :destroy]
 
   def index
+    @q = Post.ransack(params[:q])
+    
     if params[:tag].present?
       @posts = Post.tagged_with(params[:tag]).with_associations.recent.limit(50)
       @current_tag = params[:tag]
+    elsif params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present?
+      @posts = @q.result(distinct: true).with_associations.recent.limit(50)
     else
       @posts = Post.with_associations.recent.limit(50)
     end

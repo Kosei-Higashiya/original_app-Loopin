@@ -9,6 +9,15 @@ class Tag < ApplicationRecord
 
   scope :popular, -> { joins(:posts).group('tags.id').order('COUNT(posts.id) DESC') }
 
+  # Ransack configuration for searchable attributes
+  def self.ransackable_attributes(auth_object = nil)
+    ["name", "created_at", "id", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["posts"]
+  end
+
   private
 
   # 空白を削除し、小文字に変換
