@@ -8,9 +8,9 @@ class User < ApplicationRecord
   has_many :habit_records, dependent: :destroy
   has_many :posts, dependent: :destroy
 
-  # Method to return name if present, otherwise email prefix
+  # Method to return name if present, otherwise "ゲスト" for privacy
   def display_name
-    name.present? ? name : email.split('@').first
+    name.present? ? name : "ゲスト"
   end
 end
 
