@@ -42,7 +42,7 @@
                   </div>
                 <% end %>
                 <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
-                  <%= simple_format(post.content) %>
+                  <%= simple_format(truncate(post.content, length: 150, separator: ' ')) %>
                 </p>
                 <% if post.user == current_user %>
                   <div class="card-actions">
