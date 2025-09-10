@@ -9,24 +9,26 @@
       <p class="dashboard-subtitle">コミュニティのメンバーが共有している習慣の取り組みをご覧ください</p>
     <% end %>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div class="text-start">
-        <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
-        <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary ms-3" %>
-      </div>
-      
-      <!-- 検索フォーム -->
-      <div class="flex-grow-1 ms-4" style="max-width: 400px;">
-        <%= search_form_for @q, url: posts_path, class: "d-flex gap-2" do |f| %>
-          <%= f.search_field :content_or_habit_title_or_tags_name_cont, 
-              placeholder: "投稿内容、習慣タイトル、タグで検索...", 
-              class: "form-control",
-              value: params.dig(:q, :content_or_habit_title_or_tags_name_cont) %>
-          <%= f.submit "検索", class: "btn btn-primary" %>
-          <% if params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present? %>
-            <%= link_to "クリア", posts_path, class: "btn btn-outline-secondary" %>
+    <div class="mb-4">
+      <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+        <div class="d-flex gap-2 flex-shrink-0">
+          <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
+          <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
+        </div>
+        
+        <!-- 検索フォーム -->
+        <div class="flex-grow-1 d-flex justify-content-lg-end">
+          <%= search_form_for @q, url: posts_path, class: "d-flex gap-2 w-100", style: "max-width: 500px;" do |f| %>
+            <%= f.search_field :content_or_habit_title_or_tags_name_cont, 
+                placeholder: "投稿内容、習慣タイトル、タグで検索...", 
+                class: "form-control",
+                value: params.dig(:q, :content_or_habit_title_or_tags_name_cont) %>
+            <%= f.submit "検索", class: "btn btn-primary flex-shrink-0" %>
+            <% if params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present? %>
+              <%= link_to "クリア", posts_path, class: "btn btn-outline-secondary flex-shrink-0" %>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>
       </div>
     </div>
 
