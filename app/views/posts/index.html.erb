@@ -9,10 +9,27 @@
       <p class="dashboard-subtitle">コミュニティのメンバーが共有している習慣の取り組みをご覧ください</p>
     <% end %>
 
-    <div class="text-center mb-4">
-      <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
-      <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
-    </div>
+    <div class="mb-4">
+      <div class="search-layout-container">
+        <div class="search-buttons-group">
+          <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
+          <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
+        </div>
+
+        <!-- 検索フォーム -->
+        <div class="search-form-wrapper">
+          <%= search_form_for @q, url: posts_path, class: "search-form-flex" do |f| %>
+            <%= f.search_field :content_or_habit_title_or_tags_name_cont,
+                placeholder: "投稿内容、習慣タイトル、タグで検索...",
+                class: "form-control search-input",
+                value: params.dig(:q, :content_or_habit_title_or_tags_name_cont) %>
+            <%= f.submit "検索", class: "btn btn-primary search-btn" %>
+            <% if params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present? %>
+              <%= link_to "クリア", posts_path, class: "btn btn-outline-secondary search-btn" %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
 
     <div id="posts-container">
       <% if @posts.any? %>
@@ -42,7 +59,7 @@
                   </div>
                 <% end %>
                 <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
-                  <%= simple_format(post.content) %>
+                  <%= simple_format(truncate(post.content, length: 39, separator: ' ')) %>
                 </p>
                 <% if post.user == current_user %>
                   <div class="card-actions">
@@ -63,12 +80,24 @@
         <div class="text-center py-5">
           <div class="dashboard-card" style="max-width: 500px; margin: 0 auto;">
             <div class="card-header">
-              <h3 class="card-title">📝 まだ投稿がありません</h3>
+              <% if params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present? %>
+                <h3 class="card-title">🔍 検索結果がありません</h3>
+              <% else %>
+                <h3 class="card-title">📝 まだ投稿がありません</h3>
+              <% end %>
             </div>
             <div class="card-content">
-              <p>最初の投稿をして、コミュニティを盛り上げませんか？</p>
+              <% if params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present? %>
+                <p>検索条件に該当する投稿がありません。<br>別のキーワードで検索してみてください。</p>
+              <% else %>
+                <p>最初の投稿をして、コミュニティを盛り上げませんか？</p>
+              <% end %>
               <div class="card-actions">
-                <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
+                <% if params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present? %>
+                  <%= link_to "すべての投稿を見る", posts_path, class: "btn btn-primary" %>
+                <% else %>
+                  <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
+                <% end %>
               </div>
             </div>
           </div>
