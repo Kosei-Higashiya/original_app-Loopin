@@ -10,22 +10,22 @@
     <% end %>
 
     <div class="mb-4">
-      <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
-        <div class="d-flex gap-2 flex-shrink-0">
+      <div class="search-layout-container">
+        <div class="search-buttons-group">
           <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
           <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
         </div>
         
         <!-- 検索フォーム -->
-        <div class="flex-grow-1 d-flex justify-content-lg-end">
-          <%= search_form_for @q, url: posts_path, class: "d-flex gap-2 w-100", style: "max-width: 500px;" do |f| %>
+        <div class="search-form-wrapper">
+          <%= search_form_for @q, url: posts_path, class: "search-form-flex" do |f| %>
             <%= f.search_field :content_or_habit_title_or_tags_name_cont, 
                 placeholder: "投稿内容、習慣タイトル、タグで検索...", 
-                class: "form-control",
+                class: "form-control search-input",
                 value: params.dig(:q, :content_or_habit_title_or_tags_name_cont) %>
-            <%= f.submit "検索", class: "btn btn-primary flex-shrink-0" %>
+            <%= f.submit "検索", class: "btn btn-primary search-btn" %>
             <% if params[:q].present? && params[:q][:content_or_habit_title_or_tags_name_cont].present? %>
-              <%= link_to "クリア", posts_path, class: "btn btn-outline-secondary flex-shrink-0" %>
+              <%= link_to "クリア", posts_path, class: "btn btn-outline-secondary search-btn" %>
             <% end %>
           <% end %>
         </div>
