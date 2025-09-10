@@ -51,6 +51,7 @@ gem 'simple_calendar', '~> 2.4'
 gem 'sassc-rails'
 gem 'rails-i18n'
 gem 'devise-i18n-views'
+gem 'ransack'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
