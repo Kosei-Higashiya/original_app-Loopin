@@ -9,9 +9,14 @@
       <p class="dashboard-subtitle">コミュニティのメンバーが共有している習慣の取り組みをご覧ください</p>
     <% end %>
 
-    <!-- 検索フォーム -->
-    <div class="row justify-content-center mb-4">
-      <div class="col-md-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="text-start">
+        <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
+        <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary ms-3" %>
+      </div>
+      
+      <!-- 検索フォーム -->
+      <div class="flex-grow-1 ms-4" style="max-width: 400px;">
         <%= search_form_for @q, url: posts_path, class: "d-flex gap-2" do |f| %>
           <%= f.search_field :content_or_habit_title_or_tags_name_cont, 
               placeholder: "投稿内容、習慣タイトル、タグで検索...", 
@@ -23,11 +28,6 @@
           <% end %>
         <% end %>
       </div>
-    </div>
-
-    <div class="text-center mb-4">
-      <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
-      <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
     </div>
 
     <div id="posts-container">
