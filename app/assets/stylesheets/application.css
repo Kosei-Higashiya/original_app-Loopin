@@ -535,3 +535,70 @@ body {
   flex-shrink: 0;
   white-space: nowrap;
 }
+
+/* Dashboard-style habit cards */
+.habit-dashboard {
+  max-width: 100%;
+}
+
+.dashboard-habit-card {
+  transition: all 0.3s ease;
+}
+
+.dashboard-habit-card:hover {
+  transform: translateY(-2px);
+}
+
+.dashboard-habit-card .card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%);
+  border: 1px solid #e9ecef;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-habit-card .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  z-index: 1;
+}
+
+.dashboard-habit-card .habit-icon {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 123, 255, 0.3));
+}
+
+.dashboard-habit-card .card-title {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dashboard-habit-card .btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.dashboard-habit-card .btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+@media (max-width: 768px) {
+  .dashboard-habit-card .row {
+    flex-direction: column;
+  }
+  
+  .dashboard-habit-card .col-md-4 {
+    margin-top: 1rem;
+  }
+}

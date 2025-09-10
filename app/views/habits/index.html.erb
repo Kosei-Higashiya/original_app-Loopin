@@ -18,34 +18,49 @@
           </div>
 
           <% if @habits.any? %>
-            <div class="row">
+            <div class="habit-dashboard">
               <% @habits.each do |habit| %>
-                <div class="col-md-6 col-lg-4 mb-4">
-                  <div class="card shadow border-0" style="border-radius: 1rem; transition: all 0.3s ease;">
+                <div class="dashboard-habit-card mb-4">
+                  <div class="card shadow-lg border-0" style="border-radius: 1rem; border-left: 5px solid #007bff; transition: all 0.3s ease; min-height: 140px;">
                     <div class="card-body p-4">
-                      <h5 class="card-title text-primary mb-3" style="font-size: 1.3rem; font-weight: 600;">
-                        <%= habit.title %>
-                      </h5>
-                      <p class="card-text mb-3" style="font-size: 1rem; line-height: 1.6; color: #6c757d;">
-                        <%= truncate(habit.description, length: 100) %>
-                      </p>
-                      <p class="text-muted small mb-4" style="font-size: 0.9rem;">
-                        📅 作成日: <%= habit.created_at.strftime("%Y年%m月%d日") %>
-                      </p>
-                      <div class="d-flex gap-2 flex-wrap">
-                        <%= link_to "📊 カレンダー", calendar_habit_path(habit), 
-                            class: "btn btn-success btn-sm flex-fill", 
-                            style: "font-size: 0.9rem; border-radius: 0.5rem;" %>
-                        <%= link_to "✏️ 編集", edit_habit_path(habit), 
-                            class: "btn btn-outline-secondary btn-sm flex-fill", 
-                            style: "font-size: 0.9rem; border-radius: 0.5rem;" %>
-                        <%= link_to "🗑️ 削除", habit,
-                                data: {
-                                    turbo_method: :delete,
-                                    turbo_confirm: "本当に削除しますか？"
-                                },
-                                class: "btn btn-outline-danger btn-sm flex-fill", 
-                                style: "font-size: 0.9rem; border-radius: 0.5rem;" %>
+                      <div class="row align-items-center">
+                        <div class="col-md-8">
+                          <div class="d-flex align-items-center mb-3">
+                            <div class="habit-icon me-3" style="font-size: 2rem;">📋</div>
+                            <div>
+                              <h5 class="card-title text-primary mb-1" style="font-size: 1.4rem; font-weight: 600;">
+                                <%= habit.title %>
+                              </h5>
+                              <p class="text-muted small mb-0" style="font-size: 0.9rem;">
+                                📅 作成日: <%= habit.created_at.strftime("%Y年%m月%d日") %>
+                              </p>
+                            </div>
+                          </div>
+                          <p class="card-text mb-0" style="font-size: 1rem; line-height: 1.6; color: #6c757d;">
+                            <%= truncate(habit.description, length: 150) %>
+                          </p>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="d-flex flex-column gap-2">
+                            <%= link_to calendar_habit_path(habit), 
+                                class: "btn btn-success btn-sm w-100", 
+                                style: "font-size: 0.9rem; border-radius: 0.5rem; padding: 0.6rem;" do %>
+                              📊 カレンダーを見る
+                            <% end %>
+                            <div class="d-flex gap-2">
+                              <%= link_to "✏️ 編集", edit_habit_path(habit), 
+                                  class: "btn btn-outline-secondary btn-sm flex-fill", 
+                                  style: "font-size: 0.85rem; border-radius: 0.5rem;" %>
+                              <%= link_to "🗑️ 削除", habit,
+                                      data: {
+                                          turbo_method: :delete,
+                                          turbo_confirm: "本当に削除しますか？"
+                                      },
+                                      class: "btn btn-outline-danger btn-sm flex-fill", 
+                                      style: "font-size: 0.85rem; border-radius: 0.5rem;" %>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
