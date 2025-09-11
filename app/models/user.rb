@@ -33,8 +33,8 @@ class User < ApplicationRecord
     max_streak = 1
     current_streak = 1
     
-    records.each_cons(2) do |prev, curr|
-      if (curr.recorded_at - prev.recorded_at).to_i == 1
+    records.pluck(:recorded_at).each_cons(2) do |prev_date, curr_date|
+      if (curr_date - prev_date).to_i == 1
         current_streak += 1
         max_streak = [max_streak, current_streak].max
       else
