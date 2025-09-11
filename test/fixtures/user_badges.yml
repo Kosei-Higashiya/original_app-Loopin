@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+user_one_first_habit:
+  user: one
+  badge: first_habit
+  earned_at: <%= 1.day.ago %>
+
+user_two_habit_master:
+  user: two
+  badge: habit_master
+  earned_at: <%= 2.days.ago %>
