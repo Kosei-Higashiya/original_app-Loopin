@@ -3,57 +3,66 @@
     <div class="col-md-12 col-xl-10">
       <div class="card shadow-lg border-2" style="border-color: #007bff;">
         <div class="card-header bg-primary text-white text-center py-4">
-          <h1 class="card-title mb-2" style="font-size: 2rem;">📋 <%= @habit.title %></h1>
-          <p class="mb-0" style="font-size: 1.1rem; margin-bottom: 1rem;">習慣の詳細情報</p>
+          <h1 class="card-title mb-2" style="font-size: 2rem;">📋 習慣詳細</h1>
+          <p class="mb-0" style="font-size: 1.1rem; margin-bottom: 1rem;">習慣の詳細情報と管理</p>
         </div>
         <div class="card-body p-5">
 
-          <% if @habit.description.present? %>
-            <div class="mb-4">
-              <div class="d-flex align-items-center mb-3">
-                <div class="habit-icon me-3" style="font-size: 1.5rem;">📝</div>
-                <h6 class="text-primary mb-0" style="font-size: 1.2rem; font-weight: 600;">詳細説明</h6>
+          <div class="habit-dashboard">
+            <div class="dashboard-habit-card mb-4">
+              <div class="card shadow-lg border-0" style="border-radius: 1rem; border-left: 5px solid #007bff; transition: all 0.3s ease; min-height: 140px;">
+                <div class="card-body p-4">
+                  <div class="row align-items-center">
+                    <div class="col-md-8">
+                      <div class="d-flex align-items-center mb-3">
+                        <div class="habit-icon me-3" style="font-size: 2rem;">📋</div>
+                        <div>
+                          <h5 class="card-title text-primary mb-1" style="font-size: 1.4rem; font-weight: 600; margin-left: 1rem;">
+                            <%= @habit.title %>
+                          </h5>
+                          <p class="text-muted small mb-0" style="font-size: 0.9rem; margin-left: 1rem;">
+                            📅 作成日: <%= @habit.created_at.strftime("%Y年%m月%d日") %>
+                            <% if @habit.updated_at != @habit.created_at %>
+                              | 更新日: <%= @habit.updated_at.strftime("%Y年%m月%d日") %>
+                            <% end %>
+                          </p>
+                        </div>
+                      </div>
+                      <% if @habit.description.present? %>
+                        <p class="card-text mb-0" style="font-size: 1rem; line-height: 1.6; color: #6c757d; margin-left: 1rem;">
+                          <%= simple_format(@habit.description) %>
+                        </p>
+                      <% end %>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="d-flex flex-column gap-2">
+                        <%= link_to calendar_habit_path(@habit),
+                            class: "btn btn-success btn-sm",
+                            style: "font-size: 0.9rem; border-radius: 0.5rem; padding: 0.6rem; margin-left: 1rem;" do %>
+                          📊 カレンダー表示
+                        <% end %>
+                        <%= link_to "✏️ 編集", edit_habit_path(@habit),
+                            class: "btn btn-outline-secondary btn-sm",
+                            style: "font-size: 0.85rem; border-radius: 0.5rem; margin-left: 1rem;" %>
+                        <%= link_to "🗑️ 削除", @habit,
+                                data: {
+                                    turbo_method: :delete,
+                                    turbo_confirm: "本当に削除しますか？"
+                                },
+                                class: "btn btn-outline-danger btn-sm",
+                                style: "font-size: 0.85rem; border-radius: 0.5rem; margin-left: 1rem;" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p class="card-text" style="font-size: 1rem; line-height: 1.6; color: #6c757d; margin-left: 3rem;"><%= simple_format(@habit.description) %></p>
-            </div>
-          <% end %>
-
-          <div class="mb-4">
-            <div class="d-flex align-items-center mb-3">
-              <div class="habit-icon me-3" style="font-size: 1.5rem;">📅</div>
-              <h6 class="text-primary mb-0" style="font-size: 1.2rem; font-weight: 600;">作成・更新情報</h6>
-            </div>
-            <div style="margin-left: 3rem;">
-              <p class="text-muted small mb-1" style="font-size: 0.95rem;">
-                作成日: <%= @habit.created_at.strftime("%Y年%m月%d日 %H:%M") %>
-              </p>
-              <% if @habit.updated_at != @habit.created_at %>
-                <p class="text-muted small mb-0" style="font-size: 0.95rem;">
-                  更新日: <%= @habit.updated_at.strftime("%Y年%m月%d日 %H:%M") %>
-                </p>
-              <% end %>
             </div>
           </div>
 
-          <div class="d-flex justify-content-center gap-3 mt-4">
-            <%= link_to calendar_habit_path(@habit),
-                class: "btn btn-success btn-lg px-4",
-                style: "font-size: 1.1rem; padding: 0.8rem 2rem; margin: 0.7rem 0rem;" do %>
-              📊 カレンダー表示
-            <% end %>
-            <%= link_to "✏️ 編集", edit_habit_path(@habit),
-                class: "btn btn-primary btn-lg px-4",
-                style: "font-size: 1.1rem; padding: 0.8rem 2rem; margin: 0.7rem 0rem;" %>
-            <%= link_to "🗑️ 削除", @habit,
-                data: {
-                    turbo_method: :delete,
-                    turbo_confirm: "本当に削除しますか？"
-                },
-                class: "btn btn-danger btn-lg px-4",
-                style: "font-size: 1.1rem; padding: 0.8rem 2rem; margin: 0.7rem 0rem;" %>
+          <div class="d-flex justify-content-center mt-4">
             <%= link_to "📋 習慣一覧に戻る", habits_path,
-                class: "btn btn-outline-secondary btn-lg px-4",
-                style: "font-size: 1.1rem; padding: 0.8rem 2rem; margin: 0.7rem 0rem;" %>
+                class: "btn btn-primary btn-lg px-4",
+                style: "font-size: 1.1rem; padding: 0.8rem 2rem;" %>
           </div>
         </div>
       </div>
