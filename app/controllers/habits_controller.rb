@@ -1,12 +1,9 @@
 class HabitsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_habit, only: [:show, :edit, :update, :destroy, :individual_calendar, :toggle_record_for_date]
+  before_action :set_habit, only: [:edit, :update, :destroy, :individual_calendar, :toggle_record_for_date]
 
   def index
     @habits = current_user.habits.recent
-  end
-
-  def show
   end
 
   def individual_calendar
@@ -69,7 +66,7 @@ class HabitsController < ApplicationController
     @habit = current_user.habits.build(habit_params)
 
     if @habit.save
-      redirect_to @habit, notice: '習慣が正常に作成されました。'
+      redirect_to habits_path, notice: '習慣が正常に作成されました。'
     else
       render :new, status: :unprocessable_entity
     end
@@ -80,7 +77,7 @@ class HabitsController < ApplicationController
 
   def update
     if @habit.update(habit_params)
-      redirect_to @habit, notice: '習慣が正常に更新されました。'
+      redirect_to habits_path, notice: '習慣が正常に更新されました。'
     else
       render :edit, status: :unprocessable_entity
     end
