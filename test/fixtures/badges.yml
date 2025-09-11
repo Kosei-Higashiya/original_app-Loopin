@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+first_habit:
+  name: "初回習慣"
+  description: "最初の習慣を作成しました"
+  condition_type: "total_habits"
+  condition_value: 1
+  icon: "🎯"
+  active: true
+
+habit_master:
+  name: "習慣マスター"
+  description: "5つの習慣を作成しました"
+  condition_type: "total_habits"
+  condition_value: 5
+  icon: "⭐"
+  active: true
+
+consecutive_week:
+  name: "1週間継続"
+  description: "7日間連続で記録しました"
+  condition_type: "consecutive_days"
+  condition_value: 7
+  icon: "🔥"
+  active: true
+
+record_keeper:
+  name: "記録王"
+  description: "100回記録しました"
+  condition_type: "total_records"
+  condition_value: 100
+  icon: "📊"
+  active: true

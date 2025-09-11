@@ -21,6 +21,13 @@ Rails.application.routes.draw do
     resources :habit_records, except: [:index, :new, :edit]
     end
 
-    # Posts resource routes for community posts
+  # Posts resource routes for community posts
   resources :posts, only: [:index, :new, :create, :edit, :update, :destroy]
+  
+  # Badges routes
+  resources :badges, only: [:index, :show] do
+    collection do
+      post :check_awards
+    end
+  end
 end
