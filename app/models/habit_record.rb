@@ -11,6 +11,9 @@ class HabitRecord < ApplicationRecord
   # Ensure the habit belongs to the user
   validate :habit_must_belong_to_user
 
+  # 完了状態が変更された場合にバッジ獲得条件をチェック
+  after_save :check_user_badges, if: :saved_change_to_completed?
+
   scope :completed, -> { where(completed: true) }
   scope :incomplete, -> { where(completed: false) }
   scope :recent, -> { order(recorded_at: :desc) }
@@ -25,5 +28,9 @@ class HabitRecord < ApplicationRecord
     unless habit.user_id == user.id
       errors.add(:habit, "must belong to the same user")
     end
+  end
+
+  def check_user_badges
+    user.check_and_award_badges
   end
 end
