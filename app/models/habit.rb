@@ -7,6 +7,9 @@ class Habit < ApplicationRecord
   validates :title, presence: true, length: { maximum: 255 }
   validates :description, length: { maximum: 1000 }
 
+  # 習慣作成後にユーザーのバッジ獲得条件をチェック
+  after_create :check_user_badges
+
   scope :recent, -> { order(created_at: :desc) }
 
    # Ransack設定
@@ -16,5 +19,11 @@ class Habit < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     ["posts", "user"]
+  end
+
+  private
+
+  def check_user_badges
+    user.check_and_award_badges
   end
 end

@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_08_135154) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_11_174051) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "badges", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "icon"
+    t.string "condition_type", null: false
+    t.integer "condition_value"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_badges_on_active"
+    t.index ["condition_type"], name: "index_badges_on_condition_type"
+    t.index ["name"], name: "index_badges_on_name", unique: true
+  end
 
   create_table "habit_records", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -69,6 +83,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_08_135154) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "user_badges", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "badge_id", null: false
+    t.datetime "earned_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_user_badges_on_badge_id"
+    t.index ["earned_at"], name: "index_user_badges_on_earned_at"
+    t.index ["user_id", "badge_id"], name: "index_user_badges_on_user_id_and_badge_id", unique: true
+    t.index ["user_id"], name: "index_user_badges_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -89,4 +115,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_08_135154) do
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "habits"
   add_foreign_key "posts", "users"
+  add_foreign_key "user_badges", "badges"
+  add_foreign_key "user_badges", "users"
 end
