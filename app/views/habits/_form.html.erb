@@ -1,7 +1,7 @@
 <%= form_with(model: habit, local: true) do |form| %>
   <% if habit.errors.any? %>
-    <div class="alert alert-danger">
-      <h6><%= pluralize(habit.errors.count, "つのエラー") %>があります:</h6>
+    <div class="alert alert-danger mb-4" style="border-radius: 0.7rem;">
+      <h6 class="mb-2" style="font-size: 1.1rem;"><%= pluralize(habit.errors.count, "つのエラー") %>があります:</h6>
       <ul class="mb-0">
         <% habit.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -10,15 +10,23 @@
     </div>
   <% end %>
 
-  <div class="mb-3">
-    <%= form.label :title, "習慣名", class: "form-label" %>
-    <%= form.text_field :title, class: "form-control", placeholder: "例: 毎日運動する" %>
+  <div class="mb-5" style="margin-top: 0.5rem;">
+    <%= form.label :title, "習慣名", class: "form-label fw-bold", style: "font-size: 1.3rem; color: #495057;" %>
+    <div class="mt-2">
+      <%= form.text_field :title, class: "form-control form-control-lg",
+          placeholder: "例: 毎日運動する、読書を30分など...",
+          style: "font-size: 1.1rem; padding: 1rem; border-radius: 0.7rem; border: 2px solid #e9ecef; width: 25%; margin-top: 0.5rem;" %>
+    </div>
   </div>
 
-  <div class="mb-3">
-    <%= form.label :description, "詳細説明（任意）", class: "form-label" %>
-    <%= form.text_area :description, class: "form-control", rows: 4,
-        placeholder: "この習慣についての詳細や目標を書いてください..." %>
+  <div class="mb-5" style="margin-top: 1rem;">
+    <%= form.label :description, "詳細説明（任意）", class: "form-label fw-bold", style: "font-size: 1.3rem; color: #495057;" %>
+    <div class="mt-2">
+      <%= form.text_area :description, class: "form-control form-control-lg", rows: 6,
+          placeholder: "この習慣についての詳細や目標を書いてください...\n例：毎朝30分のジョギングで健康維持を目指します。",
+          style: "font-size: 1.1rem; padding: 1rem; line-height: 1.6; resize: vertical; border-radius: 0.7rem; border: 2px solid #e9ecef; width: 50%; margin-top: 0.5rem; margin-bottom: 0.5rem;" %>
+      <small class="form-text text-muted mt-2" style="font-size: 1rem;">習慣の目的や具体的な内容を記載すると、継続のモチベーションになります</small>
+    </div>
   </div>
 
   <div class="mb-3">

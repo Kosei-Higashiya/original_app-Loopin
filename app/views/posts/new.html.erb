@@ -20,7 +20,7 @@
               </div>
             <% end %>
 
-             <div class="mb-5">
+            <div class="mb-5">
               <%= form.label :habit_id, "習慣を選択", class: "form-label fw-bold", style: "font-size: 1.3rem;" %>
               <div class="mt-2">
                 <%= form.collection_select :habit_id, @user_habits, :id, :title,
