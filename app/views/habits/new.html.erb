@@ -1,10 +1,12 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4 px-4">
   <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <h1 class="card-title">新しい習慣を作成</h1>
-
+    <div class="col-md-12 col-xl-10">
+      <div class="card shadow-lg border-2" style="border-color: #007bff;">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h1 class="card-title mb-2" style="font-size: 2rem;">🌱 新しい習慣を作成</h1>
+          <p class="mb-0" style="font-size: 1.1rem; margin-bottom: 1rem;">今日から始める新しい習慣。継続への第一歩をここから</p>
+        </div>
+        <div class="card-body p-5">
           <%= render 'form', habit: @habit %>
         </div>
       </div>

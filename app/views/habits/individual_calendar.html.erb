@@ -2,15 +2,15 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><%= @habit.title %> - カレンダー</h1>
     <div class="btn-group" role="group">
-      <%= link_to "習慣詳細", @habit, class: "btn btn-outline-primary" %>
-      <%= link_to "習慣一覧", habits_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "習慣詳細", @habit, class: "btn btn-primary" %>
+      <%= link_to "習慣一覧", habits_path, class: "btn btn-primary" %>
     </div>
   </div>
 
   <div class="card">
     <div class="card-body">
-      <div class="alert alert-info mb-3">
-        <h6 class="alert-heading mb-2">💡 使い方</h6>
+      <div>
+        <h6 class="mb-2">💡 使い方</h6>
         <p class="mb-0">カレンダーの日付をクリックして習慣の達成状況を記録できます。クリックするたびに「完了」と「未記録」が切り替わります。<br><small class="text-muted">※3日前までの日付のみクリック可能です</small></p>
       </div>
 
@@ -51,19 +51,9 @@
           <% if @habit.description.present? %>
             <p class="text-muted small"><%= simple_format(@habit.description) %></p>
           <% end %>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">今月の統計</h5>
-        </div>
-        <div class="card-body">
           <% completion_rate = habit_completion_rate(@habit) %>
           <div class="mb-3">
-            <strong>完了率: <%= completion_rate %>%</strong>
+            <strong>達成率: <%= completion_rate %>%</strong>
             <div class="progress mt-2">
               <div class="progress-bar <%= completion_rate >= 70 ? 'bg-success' : completion_rate >= 30 ? 'bg-warning' : 'bg-danger' %>"
                    style="width: <%= completion_rate %>%"></div>
@@ -72,9 +62,6 @@
 
           <div class="mb-2">
             <span class="badge bg-success">✓</span> 完了した日
-          </div>
-          <div class="mb-2">
-            <span class="text-muted">📝</span> メモ付きの記録
           </div>
         </div>
       </div>
