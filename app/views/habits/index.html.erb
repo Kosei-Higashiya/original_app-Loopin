@@ -41,24 +41,22 @@
                           </p>
                         </div>
                         <div class="col-md-4">
-                          <div class="d-flex flex-column gap-2">
+                          <div class="d-flex gap-2">
                             <%= link_to calendar_habit_path(habit), 
-                                class: "btn btn-success btn-sm w-100", 
+                                class: "btn btn-success btn-sm flex-fill", 
                                 style: "font-size: 0.9rem; border-radius: 0.5rem; padding: 0.6rem;" do %>
                               📊 カレンダーを見る
                             <% end %>
-                            <div class="d-flex gap-2">
-                              <%= link_to "✏️ 編集", edit_habit_path(habit), 
-                                  class: "btn btn-outline-secondary btn-sm flex-fill", 
-                                  style: "font-size: 0.85rem; border-radius: 0.5rem;" %>
-                              <%= link_to "🗑️ 削除", habit,
-                                      data: {
-                                          turbo_method: :delete,
-                                          turbo_confirm: "本当に削除しますか？"
-                                      },
-                                      class: "btn btn-outline-danger btn-sm flex-fill", 
-                                      style: "font-size: 0.85rem; border-radius: 0.5rem;" %>
-                            </div>
+                            <%= link_to "✏️ 編集", edit_habit_path(habit), 
+                                class: "btn btn-outline-secondary btn-sm flex-fill", 
+                                style: "font-size: 0.85rem; border-radius: 0.5rem;" %>
+                            <%= link_to "🗑️ 削除", habit,
+                                    data: {
+                                        turbo_method: :delete,
+                                        turbo_confirm: "本当に削除しますか？"
+                                    },
+                                    class: "btn btn-outline-danger btn-sm flex-fill", 
+                                    style: "font-size: 0.85rem; border-radius: 0.5rem;" %>
                           </div>
                         </div>
                       </div>
