@@ -543,6 +543,8 @@ body {
 
 .dashboard-habit-card {
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
 }
 
 .dashboard-habit-card:hover {
@@ -550,10 +552,26 @@ body {
 }
 
 .dashboard-habit-card .card {
+  width: 100%;
+  max-width: none !important;
+  min-width: 0 !important;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%);
   border: 1px solid #e9ecef;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
+}
+
+.dashboard-habit-card .card .row {
+  width: 100%;
+  margin: 0;
+}
+
+.dashboard-habit-card .card .col-md-8,
+.dashboard-habit-card .card .col-md-4 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  flex: 0 0 auto;
 }
 
 .dashboard-habit-card .card::before {
