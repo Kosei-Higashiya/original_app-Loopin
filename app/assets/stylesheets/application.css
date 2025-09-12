@@ -486,6 +486,58 @@ body {
   opacity: 0;
 }
 
+/* 確認メッセージのスタイル */
+.flash-messages {
+  position: relative;
+  z-index: 1050; /* High z-index to ensure visibility */
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.flash-messages .alert {
+  font-size: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid;
+  margin-bottom: 15px;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.flash-messages .alert-success {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+  border-left-color: #28a745;
+}
+
+.flash-messages .alert-danger {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+  border-left-color: #dc3545;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Badge Check Button Spinner */
+.spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /*　検索フォームのレスポンシブデザイン　*/
 .search-layout-container {
   display: flex;
@@ -603,5 +655,202 @@ body {
 
   .dashboard-habit-card .col-md-4 {
     margin-top: 1rem;
+  }
+}
+
+/* バッジデザイン */
+.trophy-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.trophy-count {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4A5568;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.trophy-count-icon {
+  font-size: 2rem;
+  color: #CBD5E0;
+}
+
+.trophy-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2D3748;
+  margin-bottom: 2rem;
+}
+
+.trophy-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #F7FAFC;
+  border-radius: 1rem;
+}
+
+.trophy-badge-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.trophy-badge-link:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: inherit;
+}
+
+
+.trophy-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.trophy-platform {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #E2E8F0, #CBD5E0);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trophy-platform.earned {
+  background: linear-gradient(145deg, #F6FFED, #D9F7BE);
+  box-shadow:
+    0 8px 16px rgba(82, 196, 26, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(82, 196, 26, 0.1);
+}
+
+.trophy-icon {
+  font-size: 2.5rem;
+  transition: transform 0.3s ease;
+}
+
+.trophy-badge.earned .trophy-icon {
+  filter: drop-shadow(0 4px 8px rgba(82, 196, 26, 0.3));
+}
+
+.trophy-badge:not(.earned) .trophy-icon {
+  opacity: 0.4;
+  filter: grayscale(100%);
+}
+
+.trophy-progress {
+  width: 60px;
+  height: 6px;
+  background-color: #E2E8F0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.trophy-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #52C41A, #73D13D);
+  border-radius: 3px;
+  transition: width 0.8s ease-in-out;
+}
+
+.trophy-progress-bar.empty {
+  width: 0%;
+}
+
+.trophy-progress-bar.partial {
+  width: 60%;
+}
+
+.trophy-progress-bar.full {
+  width: 100%;
+}
+
+.trophy-badge-link:hover .trophy-platform {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.trophy-badge-link:hover .trophy-platform.earned {
+  box-shadow:
+    0 12px 24px rgba(82, 196, 26, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(82, 196, 26, 0.1);
+}
+
+.trophy-badge-link:hover .trophy-icon {
+  transform: scale(1.1);
+}
+
+/* Responsive design for trophy grid */
+@media (max-width: 1024px) {
+  .trophy-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .trophy-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .trophy-count {
+    font-size: 2rem;
+  }
+
+  .trophy-platform {
+    width: 60px;
+    height: 60px;
+  }
+
+  .trophy-icon {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .trophy-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .trophy-platform {
+    width: 50px;
+    height: 50px;
+  }
+
+  .trophy-icon {
+    font-size: 1.5rem;
+  }
+
+  .trophy-progress {
+    width: 40px;
+    height: 4px;
   }
 }

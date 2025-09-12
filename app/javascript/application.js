@@ -20,12 +20,14 @@ function initializeFlashMessages() {
       });
     }
 
-    // Auto-dismiss after 5 seconds
+     // Auto-dismiss after different times based on message type
+    const isSuccessMessage = alert.classList.contains('alert-success');
+    const dismissTime = isSuccessMessage ? 8000 : 5000; // 8 seconds for success, 5 for others
     setTimeout(() => {
       if (alert && alert.parentNode && alert.getAttribute('data-initialized') === 'true') {
         closeAlert(alert);
       }
-    }, 5000);
+    }, dismissTime);
   });
 }
 

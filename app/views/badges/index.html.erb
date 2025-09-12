@@ -1,59 +1,174 @@
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8">バッジ一覧</h1>
+  <div class="trophy-header">
+    <div class="trophy-count">
+      <span class="trophy-count-icon">🏆</span>
+      <%= @user_badges.count %>
+    </div>
+    <h1 class="trophy-section-title">バッジ</h1>
+  </div>
 
-  <div class="mb-8">
-    <h2 class="text-xl font-semibold mb-4">獲得したバッジ</h2>
-    <% if @user_badges.any? %>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <% @user_badges.each do |user_badge| %>
-          <div class="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-            <div class="text-center">
-              <div class="text-4xl mb-2"><%= user_badge.badge.icon %></div>
-              <h3 class="font-semibold text-green-800"><%= user_badge.badge.name %></h3>
-              <p class="text-sm text-green-600 mb-2"><%= user_badge.badge.description %></p>
-              <p class="text-xs text-green-500">
-                獲得日: <%= l(user_badge.earned_at.to_date, format: :short) %>
-              </p>
+  <!-- Trophy Grid Display -->
+  <div class="trophy-grid">
+    <% @badges.each do |badge| %>
+      <% user_has_badge = current_user.has_badge?(badge) %>
+      <%
+        # Determine progress based on badge condition
+        progress_class = if user_has_badge
+          'full'
+        else
+          # You can add logic here to calculate partial progress if needed
+          # For now, just show empty for unearned badges
+          'empty'
+        end
+      %>
+
+      <%= link_to badge_path(badge), class: "trophy-badge-link" do %>
+        <div class="trophy-badge <%= 'earned' if user_has_badge %>">
+          <div class="trophy-platform <%= 'earned' if user_has_badge %>">
+            <div class="trophy-icon">
+              <%= badge.icon %>
             </div>
           </div>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="text-gray-500 mb-8">まだバッジを獲得していません。習慣を継続してバッジを獲得しましょう！</p>
+          <div class="trophy-progress">
+            <div class="trophy-progress-bar <%= progress_class %>"></div>
+          </div>
+        </div>
+       <% end %>
     <% end %>
   </div>
 
-  <div class="mb-8">
-    <h2 class="text-xl font-semibold mb-4">利用可能なバッジ</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <% @badges.each do |badge| %>
-        <% user_has_badge = current_user.has_badge?(badge) %>
-        <div class="<%= user_has_badge ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200' %> border-2 rounded-lg p-4">
-          <div class="text-center">
-            <div class="text-4xl mb-2 <%= 'opacity-50' unless user_has_badge %>">
-              <%= badge.icon %>
-            </div>
-            <h3 class="font-semibold <%= user_has_badge ? 'text-green-800' : 'text-gray-700' %>">
-              <%= badge.name %>
-            </h3>
-            <p class="text-sm <%= user_has_badge ? 'text-green-600' : 'text-gray-600' %> mb-2">
-              <%= badge.description %>
-            </p>
-            <p class="text-xs <%= user_has_badge ? 'text-green-500' : 'text-gray-500' %>">
-              条件: <%= badge.condition_type_name %> <%= badge.condition_value %>
-            </p>
-          </div>
-        </div>
-      <% end %>
-    </div>
+  <!-- Action Buttons -->
+  <div class="text-center mt-8">
+    <%= form_with url: check_awards_badges_path, method: :post, local: true,
+        data: { turbo: false },
+        class: "d-inline-block",
+        id: "badge-check-form" do |f| %>
+      <%= f.submit "バッジをチェック",
+          id: "badge-check-button",
+          class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:translateY(-1px)",
+          data: {
+            disable_with: '<span style="display: inline-block; animation: spin 1s linear infinite;">🔄</span> チェック中...'.html_safe,
+            turbo: false
+          } %>
+    <% end %>
   </div>
 
-  <div class="text-center">
-    <%= button_to "バッジをチェック", check_awards_badges_path, method: :post,
-        class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
-  </div>
-
-  <div class="mt-8 text-center">
-    <%= link_to "ダッシュボードに戻る", dashboard_path, class: "text-blue-500 hover:text-blue-700" %>
+  <div class="mt-6 text-center">
+    <%= link_to "ダッシュボードに戻る", dashboard_path,
+        class: "text-blue-500 hover:text-blue-700 font-medium transition-colors duration-300" %>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const checkForm = document.getElementById('badge-check-form');
+  const checkButton = document.getElementById('badge-check-button');
+
+  if (!checkForm || !checkButton) return;
+
+  let timeoutId;
+  let originalText = checkButton.value;
+  let isSubmitted = false;
+
+  // Handle form submission
+  checkForm.addEventListener('submit', function(e) {
+    if (isSubmitted) {
+      e.preventDefault();
+      return false;
+    }
+
+    isSubmitted = true;
+    console.log('[Badge Check] Form submitted at:', new Date().toISOString());
+
+    // Show loading state immediately
+    checkButton.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">🔄</span> チェック中...';
+    checkButton.disabled = true;
+    checkButton.style.opacity = '0.7';
+
+    // Create progress indicator
+    const progressDiv = document.createElement('div');
+    progressDiv.id = 'badge-check-progress';
+    progressDiv.className = 'mt-3 text-center';
+    progressDiv.innerHTML = `
+      <div class="progress" style="height: 6px; max-width: 300px; margin: 0 auto;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+             style="width: 0%; transition: width 0.5s ease;"></div>
+      </div>
+      <small class="text-muted mt-2 d-block">バッジをチェック中...</small>
+    `;
+    checkForm.appendChild(progressDiv);
+
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress > 85) progress = 85; // Don't complete until real response
+
+      const progressBar = progressDiv.querySelector('.progress-bar');
+      if (progressBar) {
+        progressBar.style.width = progress + '%';
+      }
+    }, 500);
+
+    // Set timeout to handle long-running requests (45 seconds)
+
+    console.log('[Badge Check] Timeout triggered at:', new Date().toISOString());
+
+      clearInterval(progressInterval);
+
+      // Reset button state
+      checkButton.innerHTML = originalText;
+      checkButton.disabled = false;
+      checkButton.style.opacity = '1';
+      isSubmitted = false;
+
+      // Remove progress indicator
+      if (progressDiv && progressDiv.parentNode) {
+        progressDiv.remove();
+      }
+
+      // Show timeout alert
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'alert alert-warning alert-dismissible fade show mt-3';
+      alertDiv.innerHTML = `
+        <div class="d-flex align-items-center">
+          <div class="me-3">⚠️</div>
+          <div>
+            <strong>処理がタイムアウトしました</strong><br>
+            <small>サーバーの応答に時間がかかっています。ページを更新してもう一度お試しください。</small>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="this.parentElement.remove()"></button>
+      `;
+      checkForm.appendChild(alertDiv);
+
+      // Auto remove alert after 15 seconds
+      setTimeout(() => {
+        if (alertDiv && alertDiv.parentNode) {
+          alertDiv.remove();
+        }
+      }, 15000);
+
+    }, 45000); // 45 seconds timeout
+
+    // Clean up if page unloads
+    window.addEventListener('beforeunload', function() {
+      clearTimeout(timeoutId);
+      clearInterval(progressInterval);
+    });
+  });
+
+  // Handle successful page load (form submission completed)
+  window.addEventListener('load', function() {
+    clearTimeout(timeoutId);
+    console.log('[Badge Check] Page loaded successfully');
+  });
+});
+</script>
+
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
