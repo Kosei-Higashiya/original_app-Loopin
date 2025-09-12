@@ -42,8 +42,7 @@
   <div class="text-center mt-8">
     <%= button_to "バッジをチェック", check_awards_badges_path, method: :post,
         id: "badge-check-button",
-        class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:translateY(-1px)",
-        onclick: "this.innerHTML='<span class=\"spinner\">🔄</span> チェック中...'; this.disabled=true;" %>
+        class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:translateY(-1px)" %>
   </div>
 
   <div class="mt-6 text-center">
@@ -51,3 +50,42 @@
         class: "text-blue-500 hover:text-blue-700 font-medium transition-colors duration-300" %>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const checkButton = document.getElementById('badge-check-button');
+  if (!checkButton) return;
+
+  let originalText = checkButton.innerText;
+  let timeoutId;
+  
+  checkButton.addEventListener('click', function(e) {
+    // Show loading state
+    this.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">🔄</span> チェック中...';
+    this.disabled = true;
+    this.style.opacity = '0.7';
+    
+    // Set timeout to re-enable button if request takes too long (10 seconds)
+    timeoutId = setTimeout(() => {
+      this.innerHTML = originalText;
+      this.disabled = false;
+      this.style.opacity = '1';
+      alert('処理に時間がかかっています。もう一度お試しください。');
+    }, 10000);
+  });
+  
+  // Clean up timeout if page unloads
+  window.addEventListener('beforeunload', function() {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  });
+});
+</script>
+
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
