@@ -41,6 +41,10 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # 開発環境ではletter_opener_webを使用してメールをブラウザで確認
+  config.action_mailer.delivery_method = :letter_opener_web
+  config.action_mailer.perform_deliveries = true
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
