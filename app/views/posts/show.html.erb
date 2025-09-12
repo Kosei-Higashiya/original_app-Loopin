@@ -2,9 +2,6 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card">
-        <% if @post.image.present? %>
-          <img src="<%= @post.image %>" class="card-img-top" alt="投稿画像">
-        <% end %>
         <div class="card-body">
           <h1 class="card-title">
             <span class="badge bg-secondary mb-2"><%= @post.habit.title %></span>
