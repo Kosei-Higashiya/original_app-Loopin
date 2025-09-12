@@ -23,16 +23,18 @@
         end
       %>
       
-      <div class="trophy-badge <%= 'earned' if user_has_badge %>">
-        <div class="trophy-platform <%= 'earned' if user_has_badge %>">
-          <div class="trophy-icon">
-            <%= badge.icon %>
+      <%= link_to badge_path(badge), class: "trophy-badge-link" do %>
+        <div class="trophy-badge <%= 'earned' if user_has_badge %>">
+          <div class="trophy-platform <%= 'earned' if user_has_badge %>">
+            <div class="trophy-icon">
+              <%= badge.icon %>
+            </div>
+          </div>
+          <div class="trophy-progress">
+            <div class="trophy-progress-bar <%= progress_class %>"></div>
           </div>
         </div>
-        <div class="trophy-progress">
-          <div class="trophy-progress-bar <%= progress_class %>"></div>
-        </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 
