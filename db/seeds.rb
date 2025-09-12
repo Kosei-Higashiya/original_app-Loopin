@@ -11,6 +11,13 @@
 # バッジの作成
 badges_data = [
   {
+    name: "テスト用バッジ",
+    description: "バッジ機能をテストするためのバッジです。誰でも獲得できます。",
+    condition_type: "total_habits",
+    condition_value: 0,
+    icon: "🎉"
+  },
+  {
     name: "初回習慣",
     description: "最初の習慣を作成しました",
     condition_type: "total_habits",

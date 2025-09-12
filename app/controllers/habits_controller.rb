@@ -38,6 +38,10 @@ class HabitsController < ApplicationController
       )
 
       if new_record.save
+        # バッジ獲得チェックと通知設定
+        newly_earned_badges = current_user.check_and_award_badges
+        set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
+
         Rails.logger.info "Created habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
       else
         Rails.logger.error "Failed to create habit record: #{new_record.errors.full_messages.join(', ')}"
@@ -69,6 +73,10 @@ class HabitsController < ApplicationController
     @habit = current_user.habits.build(habit_params)
 
     if @habit.save
+      # バッジ獲得チェックと通知設定
+      newly_earned_badges = current_user.check_and_award_badges
+      set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
+      
       redirect_to @habit, notice: '習慣が正常に作成されました。'
     else
       render :new, status: :unprocessable_entity
