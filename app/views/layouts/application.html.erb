@@ -16,7 +16,7 @@
   <body>
     <div id="flash-messages" class="flash-messages container">
     <% flash.each do |key, message| %>
-      <div class="alert alert-<%= key == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+      <div class="alert alert-<%= ['notice', 'success'].include?(key.to_s) ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
         <%= message %>
         <button type="button" class="btn-close" aria-label="Close">×</button>
       </div>

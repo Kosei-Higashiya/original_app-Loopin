@@ -14,7 +14,8 @@ class BadgesController < ApplicationController
 
   # 手動でバッジチェックを実行（開発用）
   def check_awards
-    current_user.check_and_award_badges
+    newly_earned_badges = current_user.check_and_award_badges
+    set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
     redirect_to badges_path, notice: 'バッジの確認が完了しました。'
   end
 end

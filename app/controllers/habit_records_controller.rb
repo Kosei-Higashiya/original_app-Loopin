@@ -18,6 +18,10 @@ class HabitRecordsController < ApplicationController
 
     respond_to do |format|
       if @habit_record.save
+        # バッジ獲得チェックと通知設定
+        newly_earned_badges = current_user.check_and_award_badges
+        set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
+        
         format.html { redirect_to calendar_habit_path(@habit), notice: '記録が作成されました。' }
         format.json { render json: @habit_record, status: :created }
       else
@@ -31,6 +35,10 @@ class HabitRecordsController < ApplicationController
   def update
     respond_to do |format|
       if @habit_record.update(habit_record_params)
+        # バッジ獲得チェックと通知設定
+        newly_earned_badges = current_user.check_and_award_badges
+        set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
+        
         format.html { redirect_to calendar_habit_path(@habit), notice: '記録が更新されました。' }
         format.json { render json: @habit_record }
       else

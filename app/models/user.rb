@@ -57,10 +57,15 @@ class User < ApplicationRecord
 
   # 新しいバッジを自動的にチェックして付与
   def check_and_award_badges
+    newly_earned_badges = []
+    
     Badge.active.each do |badge|
       next if has_badge?(badge)
 
-      UserBadge.award_badge(self, badge) if badge.earned_by?(self)
+      user_badge = UserBadge.award_badge(self, badge)
+      newly_earned_badges << badge if user_badge
     end
+    
+    newly_earned_badges
   end
 end

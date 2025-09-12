@@ -10,13 +10,14 @@ class UserBadge < ApplicationRecord
 
   # バッジをユーザーに付与するメソッド
   def self.award_badge(user, badge)
-    return false if user.has_badge?(badge)
-    return false unless badge.earned_by?(user)
+    return nil if user.has_badge?(badge)
+    return nil unless badge.earned_by?(user)
 
-    create!(
+    user_badge = create!(
       user: user,
       badge: badge,
       earned_at: Time.current
     )
+    user_badge
   end
 end
