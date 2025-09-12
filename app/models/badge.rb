@@ -5,7 +5,7 @@ class Badge < ApplicationRecord
   validates :name, presence: true, uniqueness: true, length: { maximum: 255 }
   validates :description, length: { maximum: 1000 }
   validates :condition_type, presence: true
-  validates :condition_value, presence: true, numericality: { greater_than: 0 }
+  validates :condition_value, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :icon, length: { maximum: 255 }
 
   scope :active, -> { where(active: true) }
@@ -25,16 +25,23 @@ class Badge < ApplicationRecord
 
   # ユーザーがこのバッジの条件を満たしているかチェック
   def earned_by?(user)
-    case condition_type
-    when 'consecutive_days'
-      user.max_consecutive_days >= condition_value
-    when 'total_habits'
-      user.habits.count >= condition_value
-    when 'total_records'
-      user.habit_records.count >= condition_value
-    when 'completion_rate'
-      user.overall_completion_rate >= condition_value
-    else
+    return false unless user
+
+    begin
+      case condition_type
+      when 'consecutive_days'
+        user.max_consecutive_days >= condition_value
+      when 'total_habits'
+        user.habits.count >= condition_value
+      when 'total_records'
+        user.habit_records.count >= condition_value
+      when 'completion_rate'
+        user.overall_completion_rate >= condition_value
+      else
+        false
+      end
+    rescue => e
+      Rails.logger.error "Error checking badge '#{name}' for user #{user.id}: #{e.message}"
       false
     end
   end
