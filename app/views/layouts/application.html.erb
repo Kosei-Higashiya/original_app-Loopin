@@ -16,9 +16,9 @@
   <body>
     <div id="flash-messages" class="flash-messages container">
     <% flash.each do |key, message| %>
-      <div class="alert alert-<%= ['notice', 'success'].include?(key.to_s) ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+      <div class="alert alert-<%= key == 'success' ? 'success' : key == 'info' ? 'info' : key == 'alert' ? 'danger' : 'primary' %> alert-dismissible fade show" role="alert" style="position: relative; z-index: 1050; margin: 10px 0;">
         <%= message %>
-        <button type="button" class="btn-close" aria-label="Close">×</button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     <% end %>
     </div>
@@ -51,5 +51,31 @@
         <p>&copy; 2025 Loopin. All rights reserved.</p>
       </div>
     </footer>
+    
+    <script>
+    // Auto-dismiss flash messages and ensure they're visible
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        // Make sure alert is visible
+        alert.style.display = 'block';
+        
+        // Auto-dismiss after delay (longer for success messages)
+        const isSuccess = alert.classList.contains('alert-success');
+        const delay = isSuccess ? 8000 : 5000; // 8 seconds for success, 5 for others
+        
+        setTimeout(function() {
+          if (alert && alert.parentNode) {
+            alert.classList.remove('show');
+            setTimeout(() => {
+              if (alert && alert.parentNode) {
+                alert.remove();
+              }
+            }, 300);
+          }
+        }, delay);
+      });
+    });
+    </script>
   </body>
 </html>

@@ -59,13 +59,39 @@ class User < ApplicationRecord
   def check_and_award_badges
     newly_earned_badges = []
     
-    Badge.active.each do |badge|
-      next if has_badge?(badge)
-
-      user_badge = UserBadge.award_badge(self, badge)
-      newly_earned_badges << badge if user_badge
+    begin
+      Rails.logger.debug "Starting badge check for user #{id}"
+      
+      # 効率的にバッジを取得（すでに獲得済みのバッジIDを除外）
+      earned_badge_ids = user_badges.pluck(:badge_id)
+      available_badges = Badge.active.where.not(id: earned_badge_ids)
+      
+      Rails.logger.debug "Found #{available_badges.count} available badges to check"
+      
+      available_badges.find_each do |badge|
+        begin
+          if badge.earned_by?(self)
+            user_badge = UserBadge.create!(
+              user: self,
+              badge: badge,
+              earned_at: Time.current
+            )
+            newly_earned_badges << badge
+            Rails.logger.info "Badge '#{badge.name}' awarded to user #{id}"
+          end
+        rescue => e
+          Rails.logger.error "Failed to award badge '#{badge.name}' to user #{id}: #{e.message}"
+          # 個別のバッジエラーは全体の処理を停止しない
+        end
+      end
+      
+    rescue => e
+      Rails.logger.error "Error during badge check for user #{id}: #{e.message}"
+      Rails.logger.error "Backtrace: #{e.backtrace.first(3).join("\n")}"
+      # エラーが発生してもすでに付与されたバッジは返す
     end
     
+    Rails.logger.debug "Badge check completed for user #{id}. Awarded #{newly_earned_badges.count} badges"
     newly_earned_badges
   end
 end

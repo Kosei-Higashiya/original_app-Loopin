@@ -1,4 +1,6 @@
 class BadgesController < ApplicationController
+  include BadgeChecker
+  
   before_action :authenticate_user!
 
   def index
@@ -12,60 +14,40 @@ class BadgesController < ApplicationController
     @user_badge = current_user.user_badges.find_by(badge: @badge) if current_user.has_badge?(@badge)
   end
 
-  # 手動でバッジチェックを実行（開発用）
+  # 手動でバッジチェックを実行（最適化版）
   def check_awards
+    Rails.logger.info "[BadgesController] Badge check started for user #{current_user.id} at #{Time.current}"
+    
     begin
-      Rails.logger.info "Badge check started for user #{current_user.id}"
+      # Use optimized badge checker
+      results = perform_badge_check_for_user(current_user)
       
-      # まずテスト用バッジが存在するか確認し、なければ作成
-      test_badge = Badge.find_by(name: "テスト用バッジ")
-      if test_badge.nil?
-        test_badge = Badge.create!(
-          name: "テスト用バッジ",
-          description: "バッジ機能をテストするためのバッジです",
-          condition_type: "total_habits",
-          condition_value: 0,  # 誰でも獲得できる条件
-          icon: "🎉",
-          active: true
-        )
-        Rails.logger.info "Test badge created: #{test_badge.id}"
-      end
-
-      # バッジチェックを実行（シンプルなバージョン）
-      newly_earned_badges = []
-      
-      Badge.active.each do |badge|
-        next if current_user.has_badge?(badge)
-        
-        if badge.earned_by?(current_user)
-          user_badge = UserBadge.create!(
-            user: current_user,
-            badge: badge,
-            earned_at: Time.current
-          )
-          newly_earned_badges << badge
-          Rails.logger.info "Badge awarded: #{badge.name} to user #{current_user.id}"
-        end
-      end
-      
-      if newly_earned_badges.any?
-        if newly_earned_badges.size == 1
-          flash[:success] = "🎉 おめでとうございます！バッジ「#{newly_earned_badges.first.name}」を獲得しました！"
+      # Set appropriate flash messages
+      if results[:newly_earned].any?
+        if results[:newly_earned].size == 1
+          flash[:success] = "🎉 おめでとうございます！バッジ「#{results[:newly_earned].first.name}」を獲得しました！"
         else
-          flash[:success] = "🎉 おめでとうございます！#{newly_earned_badges.size}個のバッジを獲得しました！"
+          flash[:success] = "🎉 おめでとうございます！#{results[:newly_earned].size}個のバッジを獲得しました！"
         end
       else
-        # 統計情報をシンプルに表示
-        total_habits = current_user.habits.count
-        total_badges = current_user.badges.count
-        flash[:info] = "バッジチェック完了！現在の統計: 習慣#{total_habits}個、獲得バッジ#{total_badges}個"
+        stats = results[:stats]
+        flash[:info] = "バッジチェック完了！現在の統計: 習慣#{stats[:total_habits]}個、獲得バッジ#{current_user.user_badges.count}個、記録#{stats[:total_records]}個（完了率#{stats[:completion_rate]}%）"
       end
       
-      redirect_to badges_path
+      # Log any errors but don't fail the request
+      if results[:errors].any?
+        Rails.logger.warn "[BadgesController] Badge check had #{results[:errors].count} errors: #{results[:errors].join(', ')}"
+        flash[:warning] = "一部のバッジのチェックでエラーが発生しましたが、処理は完了しました。"
+      end
       
     rescue => e
-      Rails.logger.error "Badge check error: #{e.message}\n#{e.backtrace.join("\n")}"
-      redirect_to badges_path, alert: "バッジチェック中にエラーが発生しました。しばらくしてからもう一度お試しください。"
+      Rails.logger.error "[BadgesController] Badge check failed for user #{current_user.id}: #{e.message}"
+      Rails.logger.error "[BadgesController] Backtrace: #{e.backtrace.first(5).join("\n")}"
+      flash[:alert] = "バッジチェック中にエラーが発生しました。もう一度お試しください。"
+    ensure
+      # Always redirect to prevent hanging
+      Rails.logger.info "[BadgesController] Redirecting to badges_path for user #{current_user.id}"
+      redirect_to badges_path and return
     end
   end
 end
