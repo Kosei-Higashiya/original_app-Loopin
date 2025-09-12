@@ -5,7 +5,6 @@ class Post < ApplicationRecord
   has_many :tags, through: :post_tags
 
   validates :content, presence: true, length: { maximum: 1000 }
-  validates :image, length: { maximum: 255 }
 
   scope :recent, -> { order(created_at: :desc) }
   scope :with_associations, -> { includes(:user, :habit, :tags) }
@@ -13,7 +12,7 @@ class Post < ApplicationRecord
 
   # Ransack設定
   def self.ransackable_attributes(auth_object = nil)
-    ["content", "created_at", "id", "image", "updated_at"]
+    ["content", "created_at", "id", "updated_at"]
   end
 
   def self.ransackable_associations(auth_object = nil)
