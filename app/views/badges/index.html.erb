@@ -1,59 +1,49 @@
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8">バッジ一覧</h1>
+  <!-- Trophy Header Section -->
+  <div class="trophy-header">
+    <div class="trophy-count">
+      <span class="trophy-count-icon">🏆</span>
+      <%= @user_badges.count %>
+    </div>
+    <h1 class="trophy-section-title">トロフィー</h1>
+  </div>
 
-  <div class="mb-8">
-    <h2 class="text-xl font-semibold mb-4">獲得したバッジ</h2>
-    <% if @user_badges.any? %>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <% @user_badges.each do |user_badge| %>
-          <div class="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-            <div class="text-center">
-              <div class="text-4xl mb-2"><%= user_badge.badge.icon %></div>
-              <h3 class="font-semibold text-green-800"><%= user_badge.badge.name %></h3>
-              <p class="text-sm text-green-600 mb-2"><%= user_badge.badge.description %></p>
-              <p class="text-xs text-green-500">
-                獲得日: <%= l(user_badge.earned_at.to_date, format: :short) %>
-              </p>
-            </div>
+  <!-- Trophy Grid Display -->
+  <div class="trophy-grid">
+    <% @badges.each do |badge| %>
+      <% user_has_badge = current_user.has_badge?(badge) %>
+      <% 
+        # Determine progress based on badge condition
+        progress_class = if user_has_badge
+          'full'
+        else
+          # You can add logic here to calculate partial progress if needed
+          # For now, just show empty for unearned badges
+          'empty'
+        end
+      %>
+      
+      <div class="trophy-badge <%= 'earned' if user_has_badge %>">
+        <div class="trophy-platform <%= 'earned' if user_has_badge %>">
+          <div class="trophy-icon">
+            <%= badge.icon %>
           </div>
-        <% end %>
+        </div>
+        <div class="trophy-progress">
+          <div class="trophy-progress-bar <%= progress_class %>"></div>
+        </div>
       </div>
-    <% else %>
-      <p class="text-gray-500 mb-8">まだバッジを獲得していません。習慣を継続してバッジを獲得しましょう！</p>
     <% end %>
   </div>
 
-  <div class="mb-8">
-    <h2 class="text-xl font-semibold mb-4">利用可能なバッジ</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <% @badges.each do |badge| %>
-        <% user_has_badge = current_user.has_badge?(badge) %>
-        <div class="<%= user_has_badge ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200' %> border-2 rounded-lg p-4">
-          <div class="text-center">
-            <div class="text-4xl mb-2 <%= 'opacity-50' unless user_has_badge %>">
-              <%= badge.icon %>
-            </div>
-            <h3 class="font-semibold <%= user_has_badge ? 'text-green-800' : 'text-gray-700' %>">
-              <%= badge.name %>
-            </h3>
-            <p class="text-sm <%= user_has_badge ? 'text-green-600' : 'text-gray-600' %> mb-2">
-              <%= badge.description %>
-            </p>
-            <p class="text-xs <%= user_has_badge ? 'text-green-500' : 'text-gray-500' %>">
-              条件: <%= badge.condition_type_name %> <%= badge.condition_value %>
-            </p>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="text-center">
+  <!-- Action Buttons -->
+  <div class="text-center mt-8">
     <%= button_to "バッジをチェック", check_awards_badges_path, method: :post,
-        class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+        class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:transform hover:translateY(-1px)" %>
   </div>
 
-  <div class="mt-8 text-center">
-    <%= link_to "ダッシュボードに戻る", dashboard_path, class: "text-blue-500 hover:text-blue-700" %>
+  <div class="mt-6 text-center">
+    <%= link_to "ダッシュボードに戻る", dashboard_path, 
+        class: "text-blue-500 hover:text-blue-700 font-medium transition-colors duration-300" %>
   </div>
 </div>
