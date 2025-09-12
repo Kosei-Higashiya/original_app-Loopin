@@ -46,9 +46,6 @@
                 </small>
               </div>
               <div class="card-content">
-                <% if post.image.present? %>
-                  <img src="<%= post.image %>" class="img-fluid mb-3 rounded" alt="投稿画像" style="max-height: 200px; width: 100%; object-fit: cover;">
-                <% end %>
                 <% if post.tags.any? %>
                   <div class="mb-3">
                     <% post.tags.each do |tag| %>

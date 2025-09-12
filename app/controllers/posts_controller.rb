@@ -75,6 +75,6 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    params.require(:post).permit(:habit_id, :content, :image, :tag_list)
+    params.require(:post).permit(:habit_id, :content, :tag_list)
   end
 end
