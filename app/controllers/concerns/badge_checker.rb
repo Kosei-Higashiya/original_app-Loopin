@@ -104,12 +104,11 @@ module BadgeChecker
 
   # Optimized consecutive days calculation
   def calculate_max_consecutive_days(user)
-    # Use raw SQL for better performance on large datasets
+    # Since recorded_at is already a date field, we can use DISTINCT directly
     records = user.habit_records.where(completed: true)
-                  .select('DATE(recorded_at) as record_date')
-                  .group('DATE(recorded_at)')
-                  .order('record_date')
-                  .pluck('record_date')
+                  .select('DISTINCT recorded_at')
+                  .order('recorded_at')
+                  .pluck('recorded_at')
 
     return 0 if records.empty?
 
@@ -117,7 +116,8 @@ module BadgeChecker
     current_streak = 1
 
     records.each_cons(2) do |prev_date, curr_date|
-      if (Date.parse(curr_date.to_s) - Date.parse(prev_date.to_s)).to_i == 1
+      # Date型同士の減算は日数を返すため、1日差かをチェック
+      if (curr_date - prev_date).to_i == 1
         current_streak += 1
         max_streak = [max_streak, current_streak].max
       else
