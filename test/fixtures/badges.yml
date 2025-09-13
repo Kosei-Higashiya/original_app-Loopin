@@ -1,17 +1,25 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  description: MyText
-  icon: MyString
-  condition_type: MyString
-  condition_value: 1
-  active: false
+three_day_streak:
+  name: "3日連続"
+  description: "3日連続で習慣を達成"
+  icon: "🔥"
+  condition_type: "consecutive_days"
+  condition_value: 3
+  active: true
 
-two:
-  name: MyString
-  description: MyText
-  icon: MyString
-  condition_type: MyString
-  condition_value: 1
-  active: false
+seven_day_streak:
+  name: "7日連続"
+  description: "7日連続で習慣を達成"
+  icon: "⭐"
+  condition_type: "consecutive_days"
+  condition_value: 7
+  active: true
+
+ten_habits:
+  name: "10個の習慣"
+  description: "10個の習慣を登録"
+  icon: "📚"
+  condition_type: "total_habits"
+  condition_value: 10
+  active: true

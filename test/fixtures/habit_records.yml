@@ -4,12 +4,14 @@ one:
   user: one
   habit: one
   recorded_at: 2025-09-02
-  comment: MyText
+  note: MyText
   image: MyString
+  completed: true
 
 two:
   user: two
   habit: two
   recorded_at: 2025-09-02
-  comment: MyText
+  note: MyText
   image: MyString
+  completed: true

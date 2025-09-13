@@ -1,7 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
+tag_one:
+  name: "習慣"
 
-two:
-  name: MyString
+tag_two:
+  name: "健康"

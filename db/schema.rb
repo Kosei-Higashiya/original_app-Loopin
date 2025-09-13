@@ -11,9 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2025_09_11_174051) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "badges", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -29,8 +26,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_11_174051) do
   end
 
   create_table "habit_records", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "habit_id", null: false
+    t.integer "user_id", null: false
+    t.integer "habit_id", null: false
     t.date "recorded_at"
     t.text "note"
     t.string "image"
@@ -47,15 +44,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_11_174051) do
   create_table "habits", force: :cascade do |t|
     t.string "title", null: false
     t.text "description"
-    t.bigint "user_id", null: false
+    t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_habits_on_user_id"
   end
 
   create_table "post_tags", force: :cascade do |t|
-    t.bigint "post_id", null: false
-    t.bigint "tag_id", null: false
+    t.integer "post_id", null: false
+    t.integer "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id", "tag_id"], name: "index_post_tags_on_post_id_and_tag_id", unique: true
@@ -64,8 +61,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_11_174051) do
   end
 
   create_table "posts", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "habit_id", null: false
+    t.integer "user_id", null: false
+    t.integer "habit_id", null: false
     t.text "content"
     t.string "image"
     t.datetime "created_at", null: false
@@ -84,8 +81,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_11_174051) do
   end
 
   create_table "user_badges", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "badge_id", null: false
+    t.integer "user_id", null: false
+    t.integer "badge_id", null: false
     t.datetime "earned_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
