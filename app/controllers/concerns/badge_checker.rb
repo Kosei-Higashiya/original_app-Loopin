@@ -138,7 +138,10 @@ module BadgeChecker
   def calculate_max_consecutive_days(user)
     # 各習慣ごとに最大連続日数を計算し、その中の最大値を返す
 
-    Rails.logger.debug "[BadgeCheck] Starting per-habit consecutive days calculation for user #{user.id}"
+    Rails.logger.info "[BadgeCheck] Starting per-habit consecutive days calculation for user #{user.id}"
+    
+    # Ensure we have fresh data by reloading habits association
+    user.habits.reload
     return 0 if user.habits.empty?
 
     max_consecutive_across_habits = 0
@@ -149,20 +152,26 @@ module BadgeChecker
                          .order(:recorded_at)
                          .pluck(:recorded_at)
 
-      Rails.logger.debug "[BadgeCheck] Habit '#{habit.title}' (ID: #{habit.id}) has #{habit_dates.count} completed dates: #{habit_dates.join(', ')}"
+      Rails.logger.info "[BadgeCheck] Habit '#{habit.title}' (ID: #{habit.id}) has #{habit_dates.count} completed dates: #{habit_dates.join(', ')}"
+
+      # Also log all records for debugging consistency with User model
+      all_records = habit.habit_records.order(:recorded_at).pluck(:recorded_at, :completed)
+      Rails.logger.info "[BadgeCheck] All records for habit '#{habit.title}': #{all_records.map { |date, completed| "#{date}(#{completed ? 'T' : 'F'})" }.join(', ')}"
 
       next if habit_dates.empty?
 
       # この習慣の最大連続日数を計算
       habit_max_streak = calculate_consecutive_days_for_dates(habit_dates, habit.title)
 
-      Rails.logger.debug "[BadgeCheck] Habit '#{habit.title}' max streak: #{habit_max_streak}"
+      Rails.logger.info "[BadgeCheck] Habit '#{habit.title}' max streak: #{habit_max_streak}, previous max: #{max_consecutive_across_habits}"
 
       # 全体の最大値を更新
+      old_max = max_consecutive_across_habits
       max_consecutive_across_habits = [max_consecutive_across_habits, habit_max_streak].max
+      Rails.logger.info "[BadgeCheck] Updated max from #{old_max} to #{max_consecutive_across_habits}"
     end
 
-    Rails.logger.info "[BadgeCheck] Final max consecutive days for user #{user.id}: #{max_consecutive_across_habits} (max across all habits)"
+    Rails.logger.warn "[BadgeCheck] Final max consecutive days for user #{user.id}: #{max_consecutive_across_habits} (max across all habits)"
     max_consecutive_across_habits
   rescue => e
     Rails.logger.error "[BadgeCheck] Error calculating consecutive days: #{e.message}"

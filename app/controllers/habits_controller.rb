@@ -45,11 +45,15 @@ class HabitsController < ApplicationController
       )
 
       if new_record.save
+        Rails.logger.info "Created habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
+        
+        # Ensure associations are reloaded to include the new record for accurate badge checking
+        current_user.habits.reload
+        @habit.habit_records.reload
+        
         # バッジ獲得チェックと通知設定
         newly_earned_badges = current_user.check_and_award_badges
         set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
-
-        Rails.logger.info "Created habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
       else
         Rails.logger.error "Failed to create habit record: #{new_record.errors.full_messages.join(', ')}"
         respond_to do |format|

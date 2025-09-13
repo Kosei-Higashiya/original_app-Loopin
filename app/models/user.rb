@@ -30,28 +30,37 @@ class User < ApplicationRecord
   def max_consecutive_days
     # 各習慣ごとに最大連続日数を計算し、その中の最大値を返す
     Rails.logger.debug "[User#max_consecutive_days] Starting calculation for user #{id}"
+    
+    # Ensure we have fresh data by reloading habits association
+    habits.reload
     return 0 if habits.empty?
 
     max_consecutive_across_habits = 0
 
     habits.each do |habit|
-      # この習慣の完了記録を日付順で取得
+      # この習慣の完了記録を日付順で取得 - ensure fresh data
       habit_dates = habit.habit_records.where(completed: true)
                          .order(:recorded_at)
                          .pluck(:recorded_at)
-      Rails.logger.debug "[User#max_consecutive_days] Habit '#{habit.title}' (ID: #{habit.id}) has #{habit_dates.count} completed dates: #{habit_dates.join(', ')}"
+      Rails.logger.info "[User#max_consecutive_days] Habit '#{habit.title}' (ID: #{habit.id}) has #{habit_dates.count} completed dates: #{habit_dates.join(', ')}"
+
+      # Also log all records for debugging
+      all_records = habit.habit_records.order(:recorded_at).pluck(:recorded_at, :completed)
+      Rails.logger.info "[User#max_consecutive_days] All records for habit '#{habit.title}': #{all_records.map { |date, completed| "#{date}(#{completed ? 'T' : 'F'})" }.join(', ')}"
 
       next if habit_dates.empty?
 
       # この習慣の最大連続日数を計算
       habit_max_streak = calculate_consecutive_days_for_dates(habit_dates, habit.title)
 
-      Rails.logger.debug "[User#max_consecutive_days] Habit '#{habit.title}' max streak: #{habit_max_streak}"
+      Rails.logger.info "[User#max_consecutive_days] Habit '#{habit.title}' max streak: #{habit_max_streak}, previous max: #{max_consecutive_across_habits}"
 
       # 全体の最大値を更新
+      old_max = max_consecutive_across_habits
       max_consecutive_across_habits = [max_consecutive_across_habits, habit_max_streak].max
+      Rails.logger.info "[User#max_consecutive_days] Updated max from #{old_max} to #{max_consecutive_across_habits}"
     end
-     Rails.logger.info "[User#max_consecutive_days] Final result for user #{id}: #{max_consecutive_across_habits} (max across all habits)"
+     Rails.logger.warn "[User#max_consecutive_days] Final result for user #{id}: #{max_consecutive_across_habits} (max across all habits)"
      max_consecutive_across_habits
 
   rescue => e
