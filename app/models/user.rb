@@ -95,4 +95,58 @@ class User < ApplicationRecord
       []
     end
   end
+
+  # Debug method for troubleshooting badge issues
+  def debug_badge_status
+    Rails.logger.info "[UserBadgeDebug] Badge status for user #{id} (#{email})"
+    
+    # Show current badges
+    current_badges = user_badges.joins(:badge).select('badges.name, user_badges.earned_at')
+    Rails.logger.info "[UserBadgeDebug] Current badges (#{current_badges.count}): #{current_badges.map(&:name).join(', ')}"
+    
+    # Calculate stats
+    stats = {
+      total_habits: habits.count,
+      total_records: habit_records.count,
+      completed_records: habit_records.where(completed: true).count,
+      consecutive_days: max_consecutive_days,
+      completion_rate: overall_completion_rate
+    }
+    Rails.logger.info "[UserBadgeDebug] User stats: #{stats.inspect}"
+    
+    # Check which badges should be earned
+    Badge.active.each do |badge|
+      has_badge = user_badges.exists?(badge: badge)
+      should_have = case badge.condition_type
+      when 'consecutive_days'
+        stats[:consecutive_days] >= badge.condition_value
+      when 'total_habits'
+        stats[:total_habits] >= badge.condition_value
+      when 'total_records'
+        stats[:total_records] >= badge.condition_value
+      when 'completion_rate'
+        stats[:completion_rate] >= badge.condition_value
+      else
+        false
+      end
+      
+      status = case
+      when has_badge && should_have then "✅ CORRECT"
+      when has_badge && !should_have then "⚠️  EXTRA (shouldn't have)"
+      when !has_badge && should_have then "❌ MISSING (should have)"
+      else "⚪ CORRECT (doesn't have)"
+      end
+      
+      Rails.logger.info "[UserBadgeDebug] Badge '#{badge.name}' (#{badge.condition_type}>=#{badge.condition_value}): #{status}"
+    end
+    
+    stats
+  end
+
+  # Force badge check with debug info
+  def force_badge_check_with_debug
+    Rails.logger.info "[UserDebug] Starting force badge check for user #{id}"
+    debug_badge_status
+    force_badge_check_for_user(self)
+  end
 end
