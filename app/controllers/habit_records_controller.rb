@@ -1,4 +1,6 @@
 class HabitRecordsController < ApplicationController
+  include BadgeNotifications
+  
   before_action :authenticate_user!
   before_action :set_habit
   before_action :set_habit_record, only: [:show, :update, :destroy]
