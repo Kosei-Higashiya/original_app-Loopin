@@ -1,4 +1,6 @@
 class HabitsController < ApplicationController
+  include BadgeNotifications
+  
   before_action :authenticate_user!
   before_action :set_habit, only: [:show, :edit, :update, :destroy, :individual_calendar, :toggle_record_for_date]
 
@@ -76,7 +78,7 @@ class HabitsController < ApplicationController
       # バッジ獲得チェックと通知設定
       newly_earned_badges = current_user.check_and_award_badges
       set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
-      
+
       redirect_to @habit, notice: '習慣が正常に作成されました。'
     else
       render :new, status: :unprocessable_entity

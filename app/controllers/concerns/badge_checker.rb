@@ -70,20 +70,38 @@ module BadgeChecker
 
   # Pre-calculate all user stats to avoid multiple DB queries
   def calculate_user_stats(user)
-    {
-      total_habits: user.habits.count,
-      total_records: user.habit_records.count,
-      completed_records: user.habit_records.where(completed: true).count,
-      consecutive_days: calculate_max_consecutive_days(user),
-      completion_rate: 0 # Will be calculated below
-    }.tap do |stats|
-      # Calculate completion rate
-      stats[:completion_rate] = if stats[:total_records] > 0
-        (stats[:completed_records].to_f / stats[:total_records] * 100).round(1)
-      else
-        0.0
-      end
+    # Get basic stats
+    total_habits = user.habits.count
+
+    # Calculate completion rate using the correct logic
+    # The app deletes records for incomplete habits, so we need to calculate
+    # based on possible vs actual records
+    thirty_days_ago = 30.days.ago.to_date
+    today = Date.current
+    total_possible_records = if total_habits > 0
+      (today - thirty_days_ago + 1).to_i * total_habits
+    else
+      0
     end
+
+    completed_records = user.habit_records.where(
+      recorded_at: thirty_days_ago..today,
+      completed: true
+    ).count
+
+    completion_rate = if total_possible_records > 0
+      (completed_records.to_f / total_possible_records * 100).round(1)
+    else
+      0.0
+    end
+
+    {
+      total_habits: total_habits,
+      total_records: user.habit_records.count,
+      completed_records: completed_records,
+      consecutive_days: calculate_max_consecutive_days(user),
+      completion_rate: completion_rate
+    }
   end
 
   # Fast badge condition checking using pre-calculated stats
@@ -104,12 +122,11 @@ module BadgeChecker
 
   # Optimized consecutive days calculation
   def calculate_max_consecutive_days(user)
-    # Use raw SQL for better performance on large datasets
+    # Since recorded_at is already a date field, we can use DISTINCT directly
     records = user.habit_records.where(completed: true)
-                  .select('DATE(recorded_at) as record_date')
-                  .group('DATE(recorded_at)')
-                  .order('record_date')
-                  .pluck('record_date')
+                  .select('DISTINCT recorded_at')
+                  .order('recorded_at')
+                  .pluck('recorded_at')
 
     return 0 if records.empty?
 
@@ -117,7 +134,8 @@ module BadgeChecker
     current_streak = 1
 
     records.each_cons(2) do |prev_date, curr_date|
-      if (Date.parse(curr_date.to_s) - Date.parse(prev_date.to_s)).to_i == 1
+      # Date型同士の減算は日数を返すため、1日差かをチェック
+      if (curr_date - prev_date).to_i == 1
         current_streak += 1
         max_streak = [max_streak, current_streak].max
       else

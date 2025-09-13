@@ -14,7 +14,7 @@ badges_data = [
     name: "テスト用バッジ",
     description: "バッジ機能をテストするためのバッジです。誰でも獲得できます。",
     condition_type: "total_habits",
-    condition_value: 0,
+    condition_value: 1,
     icon: "🎉"
   },
   {

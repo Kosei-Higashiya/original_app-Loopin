@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include BadgeChecker
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -28,13 +29,19 @@ class User < ApplicationRecord
   # 統計メソッド（バッジ条件チェック用）
   def max_consecutive_days
     # 最大連続日数を計算
-    records = habit_records.where(completed: true).order(:recorded_at)
-    return 0 if records.empty?
 
-    max_streak = 1
-    current_streak = 1
+    # 達成済みの記録だけを取得して、重複日を除去し、日付昇順に並べる
+    unique_dates = habit_records.where(completed: true)
+                                .select('DISTINCT recorded_at')
+                                .order(:recorded_at)
+                                .pluck(:recorded_at)
 
-    records.pluck(:recorded_at).each_cons(2) do |prev_date, curr_date|
+    return 0 if unique_dates.empty?
+    max_streak = 1 # 最大連続日数
+    current_streak = 1 # 現在の連続日数
+
+    unique_dates.each_cons(2) do |prev_date, curr_date|
+      # 隣り合う日付を比較して「1日差」なら連続、それ以外はリセット
       if (curr_date - prev_date).to_i == 1
         current_streak += 1
         max_streak = [max_streak, current_streak].max
@@ -42,56 +49,49 @@ class User < ApplicationRecord
         current_streak = 1
       end
     end
-
+    # 最大値を返す
     max_streak
   end
 
   # 全習慣の完了率を計算
   def overall_completion_rate
-    total_records = habit_records.count
-    return 0 if total_records.zero?
+    return 0 if habits.empty?
 
-    completed_records = habit_records.where(completed: true).count
-    (completed_records.to_f / total_records * 100).round(1)
+    # 全習慣の全日付での総記録可能数を計算
+    # ユーザーが過去30日間で記録できた総日数 × 習慣数
+    thirty_days_ago = 30.days.ago.to_date
+    today = Date.current
+    total_possible_records = (today - thirty_days_ago + 1).to_i * habits.count
+
+    # 実際に記録された習慣数（すべて completed: true）
+    completed_records = habit_records.where(
+      recorded_at: thirty_days_ago..today,
+      completed: true
+    ).count
+
+    return 0 if total_possible_records.zero?
+
+    (completed_records.to_f / total_possible_records * 100).round(1)
   end
 
   # 新しいバッジを自動的にチェックして付与
+   # This method is kept for backward compatibility but delegates to the optimized BadgeChecker
   def check_and_award_badges
-    newly_earned_badges = []
-
     begin
-      Rails.logger.debug "Starting badge check for user #{id}"
+      # Use the optimized badge checker
+      results = perform_badge_check_for_user(self)
 
-      # 効率的にバッジを取得（すでに獲得済みのバッジIDを除外）
-      earned_badge_ids = user_badges.pluck(:badge_id)
-      available_badges = Badge.active.where.not(id: earned_badge_ids)
+      Rails.logger.debug "Badge check completed for user #{id}. Awarded #{results[:newly_earned].count} badges via optimized checker"
 
-      Rails.logger.debug "Found #{available_badges.count} available badges to check"
-
-      available_badges.find_each do |badge|
-        begin
-          if badge.earned_by?(self)
-            user_badge = UserBadge.create!(
-              user: self,
-              badge: badge,
-              earned_at: Time.current
-            )
-            newly_earned_badges << badge
-            Rails.logger.info "Badge '#{badge.name}' awarded to user #{id}"
-          end
-        rescue => e
-          Rails.logger.error "Failed to award badge '#{badge.name}' to user #{id}: #{e.message}"
-          # 個別のバッジエラーは全体の処理を停止しない
-        end
-      end
+      # Return newly earned badges for backward compatibility
+      results[:newly_earned] || []
 
     rescue => e
-      Rails.logger.error "Error during badge check for user #{id}: #{e.message}"
+      Rails.logger.error "Error during optimized badge check for user #{id}: #{e.message}"
       Rails.logger.error "Backtrace: #{e.backtrace.first(3).join("\n")}"
-      # エラーが発生してもすでに付与されたバッジは返す
-    end
 
-    Rails.logger.debug "Badge check completed for user #{id}. Awarded #{newly_earned_badges.count} badges"
-    newly_earned_badges
+      # Return empty array on error
+      []
+    end
   end
 end
