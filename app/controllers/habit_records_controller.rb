@@ -1,4 +1,6 @@
 class HabitRecordsController < ApplicationController
+include BadgeNotifications
+
   before_action :authenticate_user!
   before_action :set_habit
   before_action :set_habit_record, only: [:show, :update, :destroy]
@@ -38,7 +40,7 @@ class HabitRecordsController < ApplicationController
          # バッジ獲得チェックと通知設定
         newly_earned_badges = current_user.check_and_award_badges
         set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
-        
+
         format.html { redirect_to calendar_habit_path(@habit), notice: '記録が更新されました。' }
         format.json { render json: @habit_record }
       else
