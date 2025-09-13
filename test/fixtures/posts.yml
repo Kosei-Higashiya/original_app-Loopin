@@ -4,10 +4,8 @@ one:
   user: one
   habit: one
   content: MyText
-  image: MyString
 
 two:
   user: two
   habit: two
   content: MyText
-  image: MyString
