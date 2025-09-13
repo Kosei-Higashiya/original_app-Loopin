@@ -42,6 +42,9 @@ module BadgeNotifications
     # Turboリクエストやajaxリクエストではフラッシュしない
     return if request.format.turbo_stream? || request.xhr?
     
+    # セッションに通知がない場合は何もしない
+    return unless session[:newly_earned_badges].present?
+    
     # フラッシュが既に設定されている場合はスキップ（重複防止）
     return if flash[:success].present? && flash[:success].include?('バッジ')
     
