@@ -60,25 +60,8 @@ class HabitsController < ApplicationController
 
     respond_to do |format|
       format.json { 
-        # Include badge information in the JSON response
-        badge_message = nil
-        if session[:newly_earned_badges].present? && session[:newly_earned_badges].any?
-          badges = session[:newly_earned_badges]
-          badge_message = if badges.size == 1
-                           "🎉おめでとうございます! バッジ「#{badges.first['name']}」を獲得しました！"
-                         else
-                           "🎉おめでとうございます! #{badges.size}個のバッジを獲得しました！"
-                         end
-          
-          # Clear badge notifications from session after including in response
-          session.delete(:newly_earned_badges)
-          session[:newly_earned_badges] = nil
-          session[:badge_notification_processed] = true
-        end
-        
         render json: { 
-          success: true,
-          badge_notification: badge_message
+          success: true
         }
       }
     end

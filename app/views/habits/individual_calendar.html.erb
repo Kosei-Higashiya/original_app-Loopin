@@ -140,23 +140,9 @@ function toggleRecord(habitId, date, dateElement) {
   .then(data => {
     console.log('Response data:', data);
     if (data.success) {
-      // Show badge notification if present
-      if (data.badge_notification) {
-        console.log('Badge notification:', data.badge_notification);
-        // Create and show flash message immediately
-        if (typeof window.createFlashMessage === 'function') {
-          window.createFlashMessage(data.badge_notification, 'success');
-        } else {
-          // Fallback: show as alert if flash function not available
-          alert(data.badge_notification);
-        }
-      }
-      
-      // Reload the page to show updated state
+      // Reload the page to show updated state and any badge notifications
       console.log('Success! Reloading page...');
-      setTimeout(() => {
-        window.location.reload();
-      }, data.badge_notification ? 2000 : 100); // Delay reload if there's a badge notification
+      window.location.reload();
     } else {
       alert('記録の更新に失敗しました: ' + (data.error || '不明なエラー'));
       dateElement.style.opacity = '1';
