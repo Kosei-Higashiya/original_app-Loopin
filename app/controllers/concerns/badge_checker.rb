@@ -70,20 +70,38 @@ module BadgeChecker
 
   # Pre-calculate all user stats to avoid multiple DB queries
   def calculate_user_stats(user)
-    {
-      total_habits: user.habits.count,
-      total_records: user.habit_records.count,
-      completed_records: user.habit_records.where(completed: true).count,
-      consecutive_days: calculate_max_consecutive_days(user),
-      completion_rate: 0 # Will be calculated below
-    }.tap do |stats|
-      # Calculate completion rate
-      stats[:completion_rate] = if stats[:total_records] > 0
-        (stats[:completed_records].to_f / stats[:total_records] * 100).round(1)
-      else
-        0.0
-      end
+    # Get basic stats
+    total_habits = user.habits.count
+    
+    # Calculate completion rate using the correct logic
+    # The app deletes records for incomplete habits, so we need to calculate 
+    # based on possible vs actual records
+    thirty_days_ago = 30.days.ago.to_date
+    today = Date.current
+    total_possible_records = if total_habits > 0
+      (today - thirty_days_ago + 1).to_i * total_habits
+    else
+      0
     end
+    
+    completed_records = user.habit_records.where(
+      recorded_at: thirty_days_ago..today,
+      completed: true
+    ).count
+    
+    completion_rate = if total_possible_records > 0
+      (completed_records.to_f / total_possible_records * 100).round(1)
+    else
+      0.0
+    end
+    
+    {
+      total_habits: total_habits,
+      total_records: user.habit_records.count,
+      completed_records: completed_records,
+      consecutive_days: calculate_max_consecutive_days(user),
+      completion_rate: completion_rate
+    }
   end
 
   # Fast badge condition checking using pre-calculated stats

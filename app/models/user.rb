@@ -54,11 +54,23 @@ class User < ApplicationRecord
 
   # 全習慣の完了率を計算
   def overall_completion_rate
-    total_records = habit_records.count
-    return 0 if total_records.zero?
-
-    completed_records = habit_records.where(completed: true).count
-    (completed_records.to_f / total_records * 100).round(1)
+    return 0 if habits.empty?
+    
+    # 全習慣の全日付での総記録可能数を計算
+    # ユーザーが過去30日間で記録できた総日数 × 習慣数
+    thirty_days_ago = 30.days.ago.to_date
+    today = Date.current
+    total_possible_records = (today - thirty_days_ago + 1).to_i * habits.count
+    
+    # 実際に記録された習慣数（すべて completed: true）
+    completed_records = habit_records.where(
+      recorded_at: thirty_days_ago..today,
+      completed: true
+    ).count
+    
+    return 0 if total_possible_records.zero?
+    
+    (completed_records.to_f / total_possible_records * 100).round(1)
   end
 
   # 新しいバッジを自動的にチェックして付与
