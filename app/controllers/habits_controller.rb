@@ -1,4 +1,6 @@
 class HabitsController < ApplicationController
+  include BadgeNotifications
+  
   before_action :authenticate_user!
   before_action :set_habit, only: [:show, :edit, :update, :destroy, :individual_calendar, :toggle_record_for_date]
 

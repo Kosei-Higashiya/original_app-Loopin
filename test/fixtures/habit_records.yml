@@ -1,15 +1,2 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  user: one
-  habit: one
-  recorded_at: 2025-09-02
-  comment: MyText
-  image: MyString
-
-two:
-  user: two
-  habit: two
-  recorded_at: 2025-09-02
-  comment: MyText
-  image: MyString
+# Empty - tests will create their own habit records dynamically
