@@ -14,15 +14,18 @@ module BadgeChecker
       earned_badge_ids = user.user_badges.pluck(:badge_id)
       Rails.logger.debug "[BadgeCheck] User has #{earned_badge_ids.count} existing badges"
 
-      # Step 2: Get all active badges not yet earned (single query)
+      # Step 2: Ensure essential badges exist (create if missing)
+      ensure_essential_badges_exist
+      
+      # Step 3: Get all active badges not yet earned (single query)
       available_badges = Badge.active.where.not(id: earned_badge_ids).limit(20) # Limit to prevent timeout
       Rails.logger.debug "[BadgeCheck] Checking #{available_badges.count} available badges"
 
-      # Step 3: Pre-calculate user stats to avoid repeated queries
+      # Step 4: Pre-calculate user stats to avoid repeated queries
       user_stats = calculate_user_stats(user)
       results[:stats] = user_stats
 
-      # Step 4: Check each badge quickly
+      # Step 5: Check each badge quickly
       available_badges.each do |badge|
         check_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
@@ -68,6 +71,33 @@ module BadgeChecker
 
   private
 
+  # Ensure critical badges exist in the database
+  def ensure_essential_badges_exist
+    essential_badges = [
+      {
+        name: "1週間継続",
+        description: "7日間連続で記録しました",
+        condition_type: "consecutive_days",
+        condition_value: 7,
+        icon: "💪"
+      },
+      {
+        name: "3日間継続",
+        description: "3日間連続で記録しました",
+        condition_type: "consecutive_days",
+        condition_value: 3,
+        icon: "🔥"
+      }
+    ]
+    
+    essential_badges.each do |badge_data|
+      unless Badge.exists?(name: badge_data[:name])
+        Badge.create!(badge_data.merge(active: true))
+        Rails.logger.info "[BadgeCheck] Created missing essential badge: #{badge_data[:name]}"
+      end
+    end
+  end
+
   # Pre-calculate all user stats to avoid multiple DB queries
   def calculate_user_stats(user)
     # Get basic stats
@@ -106,9 +136,16 @@ module BadgeChecker
 
   # Fast badge condition checking using pre-calculated stats
   def badge_earned_by_stats?(badge, user_stats)
-    case badge.condition_type
+    result = case badge.condition_type
     when 'consecutive_days'
-      user_stats[:consecutive_days] >= badge.condition_value
+      earned = user_stats[:consecutive_days] >= badge.condition_value
+      
+      # Special logging for consecutive days badges to help debug
+      if badge.condition_value == 7 && badge.name.include?("週間")
+        Rails.logger.info "[BadgeDebug] Checking 7-day badge '#{badge.name}': user has #{user_stats[:consecutive_days]} consecutive days, needs #{badge.condition_value}, earned: #{earned}"
+      end
+      
+      earned
     when 'total_habits'
       user_stats[:total_habits] >= badge.condition_value
     when 'total_records'
@@ -118,6 +155,9 @@ module BadgeChecker
     else
       false
     end
+    
+    Rails.logger.debug "[BadgeCheck] Badge '#{badge.name}' (#{badge.condition_type}>=#{badge.condition_value}): #{result ? 'EARNED' : 'not earned'}"
+    result
   end
 
   # Optimized consecutive days calculation
@@ -147,5 +187,72 @@ module BadgeChecker
   rescue => e
     Rails.logger.error "[BadgeCheck] Error calculating consecutive days: #{e.message}"
     0
+  end
+
+  # Debug method to help troubleshoot consecutive days badge issues
+  def debug_consecutive_days_calculation(user)
+    Rails.logger.info "[BadgeDebug] Starting consecutive days debug for user #{user.id}"
+    
+    # Get raw habit records
+    records = user.habit_records.where(completed: true)
+                  .select('DISTINCT recorded_at')
+                  .order('recorded_at')
+    
+    dates_array = records.pluck('recorded_at')
+    Rails.logger.info "[BadgeDebug] Found #{dates_array.count} unique completed dates: #{dates_array.map(&:to_s).join(', ')}"
+    
+    if dates_array.empty?
+      Rails.logger.info "[BadgeDebug] No completed records found"
+      return { consecutive_days: 0, debug_info: "No completed records" }
+    end
+
+    # Manual calculation with debug info
+    max_streak = 1
+    current_streak = 1
+    streaks = []
+
+    dates_array.each_cons(2) do |prev_date, curr_date|
+      days_diff = (curr_date - prev_date).to_i
+      Rails.logger.debug "[BadgeDebug] #{prev_date} -> #{curr_date}: #{days_diff} days apart"
+      
+      if days_diff == 1
+        current_streak += 1
+        max_streak = [max_streak, current_streak].max
+      else
+        streaks << current_streak
+        current_streak = 1
+      end
+    end
+    streaks << current_streak
+    
+    Rails.logger.info "[BadgeDebug] All streaks: #{streaks.join(', ')}, Max: #{max_streak}"
+    
+    # Compare with User model calculation
+    user_result = user.max_consecutive_days
+    Rails.logger.info "[BadgeDebug] User#max_consecutive_days: #{user_result}"
+    Rails.logger.info "[BadgeDebug] BadgeChecker calculation: #{max_streak}"
+    
+    if user_result != max_streak
+      Rails.logger.error "[BadgeDebug] MISMATCH! User model and BadgeChecker return different values"
+    end
+    
+    # Check 7-day badge specifically
+    seven_day_badge = Badge.find_by(name: "1週間継続")
+    if seven_day_badge
+      Rails.logger.info "[BadgeDebug] 7-day badge exists (ID: #{seven_day_badge.id}, active: #{seven_day_badge.active?})"
+      Rails.logger.info "[BadgeDebug] User should earn 7-day badge: #{max_streak >= 7}"
+      Rails.logger.info "[BadgeDebug] User already has 7-day badge: #{user.user_badges.exists?(badge: seven_day_badge)}"
+    else
+      Rails.logger.error "[BadgeDebug] 7-day badge '1週間継続' does not exist in database!"
+    end
+    
+    {
+      consecutive_days: max_streak,
+      user_method_result: user_result,
+      all_streaks: streaks,
+      debug_info: "Found #{dates_array.count} unique dates, longest streak #{max_streak}",
+      seven_day_badge_exists: !seven_day_badge.nil?,
+      seven_day_badge_active: seven_day_badge&.active?
+    }
   end
 end
