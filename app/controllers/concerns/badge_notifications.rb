@@ -46,9 +46,6 @@ module BadgeNotifications
     # Turboリクエストやajaxリクエストではフラッシュしない
     return if request.format.turbo_stream? || request.xhr?
     
-    # 既に処理済みの場合はスキップ（重複防止）
-    return if badge_notification_already_processed?
-    
     # セッションに通知がない場合は何もしない
     unless session[:newly_earned_badges].present? && session[:newly_earned_badges].is_a?(Array) && session[:newly_earned_badges].any?
       return
@@ -60,6 +57,14 @@ module BadgeNotifications
     # セッションから通知を取得
     notifications = session[:newly_earned_badges].dup
     return if notifications.blank?
+
+    # 既に処理済みかチェック（ただし、通知がある場合は一度だけ表示を許可）
+    if badge_notification_already_processed?
+      # セッションをクリアして今後の重複を防ぐ
+      session.delete(:newly_earned_badges)
+      session[:newly_earned_badges] = nil
+      return
+    end
 
     # フラッシュメッセージを設定
     flash[:success] = if notifications.size == 1
