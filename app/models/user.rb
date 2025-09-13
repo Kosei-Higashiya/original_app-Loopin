@@ -28,13 +28,19 @@ class User < ApplicationRecord
   # 統計メソッド（バッジ条件チェック用）
   def max_consecutive_days
     # 最大連続日数を計算
-    records = habit_records.where(completed: true).order(:recorded_at)
-    return 0 if records.empty?
-
+    # recorded_atはdate型なので、重複日を除去してソート
+    unique_dates = habit_records.where(completed: true)
+                                .select('DISTINCT recorded_at')
+                                .order(:recorded_at)
+                                .pluck(:recorded_at)
+    
+    return 0 if unique_dates.empty?
+    
     max_streak = 1
     current_streak = 1
 
-    records.pluck(:recorded_at).each_cons(2) do |prev_date, curr_date|
+    unique_dates.each_cons(2) do |prev_date, curr_date|
+      # Date型同士の減算は日数を返すため、1日差かをチェック
       if (curr_date - prev_date).to_i == 1
         current_streak += 1
         max_streak = [max_streak, current_streak].max

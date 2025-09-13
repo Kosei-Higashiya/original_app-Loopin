@@ -1,17 +1,33 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  description: MyText
-  icon: MyString
-  condition_type: MyString
-  condition_value: 1
-  active: false
+consecutive_days_badge:
+  name: "3日間継続"
+  description: "3日間連続で記録しました"
+  icon: "🔥"
+  condition_type: "consecutive_days"
+  condition_value: 3
+  active: true
 
-two:
-  name: MyString
-  description: MyText
-  icon: MyString
-  condition_type: MyString
-  condition_value: 1
-  active: false
+total_habits_badge:
+  name: "習慣コレクター" 
+  description: "3つの習慣を作成しました"
+  icon: "📝"
+  condition_type: "total_habits"
+  condition_value: 3
+  active: true
+
+total_records_badge:
+  name: "記録王"
+  description: "10回記録しました"
+  icon: "👑"
+  condition_type: "total_records"
+  condition_value: 10
+  active: true
+
+completion_rate_badge:
+  name: "完璧主義者"
+  description: "完了率90%以上を達成しました"
+  icon: "✨"
+  condition_type: "completion_rate"
+  condition_value: 90
+  active: true
