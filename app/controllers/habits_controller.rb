@@ -1,6 +1,6 @@
 class HabitsController < ApplicationController
   include BadgeNotifications
-  
+
   before_action :authenticate_user!
   before_action :set_habit, only: [:show, :edit, :update, :destroy, :individual_calendar, :toggle_record_for_date]
 
@@ -31,6 +31,10 @@ class HabitsController < ApplicationController
       # Delete existing record (toggle from completed to unrecorded)
       record.destroy!
       Rails.logger.info "Deleted habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
+
+       # Check for badges after deletion as well (stats might have changed)
+      # Note: Don't set notifications for deletions to avoid confusing users
+      current_user.check_and_award_badges
     else
       # Create new completed record
       new_record = @habit.habit_records.build(
