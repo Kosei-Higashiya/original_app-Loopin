@@ -36,21 +36,33 @@ class User < ApplicationRecord
                                 .order(:recorded_at)
                                 .pluck(:recorded_at)
 
+    Rails.logger.debug "[User#max_consecutive_days] Found #{unique_dates.count} unique dates for user #{id}: #{unique_dates.join(', ')}"
     return 0 if unique_dates.empty?
+    
     max_streak = 1 # 最大連続日数
     current_streak = 1 # 現在の連続日数
 
     unique_dates.each_cons(2) do |prev_date, curr_date|
       # 隣り合う日付を比較して「1日差」なら連続、それ以外はリセット
-      if (curr_date - prev_date).to_i == 1
+      days_diff = (curr_date - prev_date).to_i
+      Rails.logger.debug "[User#max_consecutive_days] Comparing #{prev_date} to #{curr_date}: diff = #{days_diff} days"
+      
+      if days_diff == 1
         current_streak += 1
         max_streak = [max_streak, current_streak].max
+        Rails.logger.debug "[User#max_consecutive_days] Consecutive! Current streak: #{current_streak}, max: #{max_streak}"
       else
         current_streak = 1
+        Rails.logger.debug "[User#max_consecutive_days] Streak broken, reset to 1"
       end
     end
     # 最大値を返す
+    Rails.logger.info "[User#max_consecutive_days] Final result for user #{id}: #{max_streak}"
     max_streak
+  rescue => e
+    Rails.logger.error "[User#max_consecutive_days] Error: #{e.message}"
+    Rails.logger.error "[User#max_consecutive_days] Backtrace: #{e.backtrace.first(3).join("\n")}"
+    0
   end
 
   # 全習慣の完了率を計算
