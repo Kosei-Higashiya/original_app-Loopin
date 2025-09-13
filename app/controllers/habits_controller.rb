@@ -26,6 +26,7 @@ class HabitsController < ApplicationController
     end
 
     record = @habit.habit_records.find_by(recorded_at: date, user: current_user)
+    newly_earned_badges = []
 
     if record
       # Delete existing record (toggle from completed to unrecorded)
@@ -58,8 +59,11 @@ class HabitsController < ApplicationController
       end
     end
 
+    # Include badge information in response for immediate notification
+    badge_info = newly_earned_badges.map { |badge| { id: badge.id, name: badge.name } }
+
     respond_to do |format|
-      format.json { render json: { success: true } }
+      format.json { render json: { success: true, badges: badge_info } }
     end
 
   rescue => e

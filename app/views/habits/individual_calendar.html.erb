@@ -140,6 +140,17 @@ function toggleRecord(habitId, date, dateElement) {
   .then(data => {
     console.log('Response data:', data);
     if (data.success) {
+      // Show badge notifications if any were earned
+      if (data.badges && data.badges.length > 0) {
+        let message;
+        if (data.badges.length === 1) {
+          message = `🎉おめでとうございます! バッジ「${data.badges[0].name}」を獲得しました！`;
+        } else {
+          message = `🎉おめでとうございます! ${data.badges.length}個のバッジを獲得しました！`;
+        }
+        alert(message);
+      }
+      
       // Reload the page to show updated state
       console.log('Success! Reloading page...');
       window.location.reload();
