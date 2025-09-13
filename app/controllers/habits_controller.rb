@@ -51,9 +51,8 @@ class HabitsController < ApplicationController
         current_user.habits.reload
         @habit.habit_records.reload
         
-        # バッジ獲得チェックと通知設定
+        # バッジ獲得チェック（カレンダーからの操作では即座にJavaScriptで通知するため、セッションには保存しない）
         newly_earned_badges = current_user.check_and_award_badges
-        set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
       else
         Rails.logger.error "Failed to create habit record: #{new_record.errors.full_messages.join(', ')}"
         respond_to do |format|
