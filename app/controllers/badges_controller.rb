@@ -22,7 +22,7 @@ class BadgesController < ApplicationController
        # Use optimized badge checker
       results = perform_badge_check_for_user(current_user)
 
-      # Set appropriate flash messages
+      # フラッシュメッセージ設定
       if results[:newly_earned].any?
         if results[:newly_earned].size == 1
           flash[:success] = "🎉 おめでとうございます！バッジ「#{results[:newly_earned].first.name}」を獲得しました！"

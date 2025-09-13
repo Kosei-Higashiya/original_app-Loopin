@@ -1,5 +1,5 @@
 class HabitRecordsController < ApplicationController
-include BadgeNotifications
+  include BadgeNotifications
 
   before_action :authenticate_user!
   before_action :set_habit
@@ -53,6 +53,11 @@ include BadgeNotifications
   # DELETE /habits/:habit_id/habit_records/:id
   def destroy
     @habit_record.destroy
+
+    # Check for badges after deletion as well (stats might have changed)
+    # Note: Don't set notifications for deletions to avoid confusing users
+    current_user.check_and_award_badges
+
     respond_to do |format|
       format.html { redirect_to calendar_habit_path(@habit), notice: '記録が削除されました。' }
       format.json { head :no_content }

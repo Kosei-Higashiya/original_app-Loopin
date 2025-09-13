@@ -95,57 +95,105 @@ module BadgeChecker
       0.0
     end
 
-    {
+    consecutive_days = calculate_max_consecutive_days(user)
+
+    stats = {
       total_habits: total_habits,
       total_records: user.habit_records.count,
       completed_records: completed_records,
-      consecutive_days: calculate_max_consecutive_days(user),
+      consecutive_days: consecutive_days,
       completion_rate: completion_rate
     }
+
+    Rails.logger.info "[BadgeCheck] Calculated stats for user #{user.id}: #{stats}"
+    stats
   end
 
   # Fast badge condition checking using pre-calculated stats
   def badge_earned_by_stats?(badge, user_stats)
     case badge.condition_type
     when 'consecutive_days'
-      user_stats[:consecutive_days] >= badge.condition_value
+      result = user_stats[:consecutive_days] >= badge.condition_value
+      Rails.logger.debug "[BadgeCheck] Badge '#{badge.name}' consecutive_days check: #{user_stats[:consecutive_days]} >= #{badge.condition_value} = #{result}"
+      result
     when 'total_habits'
-      user_stats[:total_habits] >= badge.condition_value
+      result = user_stats[:total_habits] >= badge.condition_value
+      Rails.logger.debug "[BadgeCheck] Badge '#{badge.name}' total_habits check: #{user_stats[:total_habits]} >= #{badge.condition_value} = #{result}"
+      result
     when 'total_records'
-      user_stats[:total_records] >= badge.condition_value
+      result = user_stats[:total_records] >= badge.condition_value
+      Rails.logger.debug "[BadgeCheck] Badge '#{badge.name}' total_records check: #{user_stats[:total_records]} >= #{badge.condition_value} = #{result}"
+      result
     when 'completion_rate'
-      user_stats[:completion_rate] >= badge.condition_value
+      result = user_stats[:completion_rate] >= badge.condition_value
+      Rails.logger.debug "[BadgeCheck] Badge '#{badge.name}' completion_rate check: #{user_stats[:completion_rate]} >= #{badge.condition_value} = #{result}"
+      result
     else
+       Rails.logger.warn "[BadgeCheck] Unknown badge condition type: #{badge.condition_type} for badge '#{badge.name}'"
       false
     end
   end
 
   # Optimized consecutive days calculation
   def calculate_max_consecutive_days(user)
-    # Since recorded_at is already a date field, we can use DISTINCT directly
-    records = user.habit_records.where(completed: true)
-                  .select('DISTINCT recorded_at')
-                  .order('recorded_at')
-                  .pluck('recorded_at')
+    # 各習慣ごとに最大連続日数を計算し、その中の最大値を返す
 
-    return 0 if records.empty?
+    Rails.logger.debug "[BadgeCheck] Starting per-habit consecutive days calculation for user #{user.id}"
+    return 0 if user.habits.empty?
+
+    max_consecutive_across_habits = 0
+
+    user.habits.each do |habit|
+      # この習慣の完了記録を日付順で取得
+      habit_dates = habit.habit_records.where(completed: true)
+                         .order(:recorded_at)
+                         .pluck(:recorded_at)
+
+      Rails.logger.debug "[BadgeCheck] Habit '#{habit.title}' (ID: #{habit.id}) has #{habit_dates.count} completed dates: #{habit_dates.join(', ')}"
+
+      next if habit_dates.empty?
+
+      # この習慣の最大連続日数を計算
+      habit_max_streak = calculate_consecutive_days_for_dates(habit_dates, habit.title)
+
+      Rails.logger.debug "[BadgeCheck] Habit '#{habit.title}' max streak: #{habit_max_streak}"
+
+      # 全体の最大値を更新
+      max_consecutive_across_habits = [max_consecutive_across_habits, habit_max_streak].max
+    end
+
+    Rails.logger.info "[BadgeCheck] Final max consecutive days for user #{user.id}: #{max_consecutive_across_habits} (max across all habits)"
+    max_consecutive_across_habits
+  rescue => e
+    Rails.logger.error "[BadgeCheck] Error calculating consecutive days: #{e.message}"
+    Rails.logger.error "[BadgeCheck] Backtrace: #{e.backtrace.first(3).join("\n")}"
+    0
+  end
+
+  # 日付配列から最大連続日数を計算するヘルパーメソッド
+  def calculate_consecutive_days_for_dates(dates, habit_name = "unknown")
+    return 0 if dates.empty?
+    return 1 if dates.length == 1
 
     max_streak = 1
     current_streak = 1
 
-    records.each_cons(2) do |prev_date, curr_date|
-      # Date型同士の減算は日数を返すため、1日差かをチェック
-      if (curr_date - prev_date).to_i == 1
+    dates.each_cons(2) do |prev_date, curr_date|
+      # 隣り合う日付を比較して「1日差」なら連続、それ以外はリセット
+      days_diff = (curr_date - prev_date).to_i
+      Rails.logger.debug "[BadgeCheck] Habit '#{habit_name}': Comparing #{prev_date} to #{curr_date}: diff = #{days_diff} days"
+
+      if days_diff == 1
         current_streak += 1
         max_streak = [max_streak, current_streak].max
+        Rails.logger.debug "[BadgeCheck] Habit '#{habit_name}': Consecutive! Current streak: #{current_streak}, max: #{max_streak}"
       else
         current_streak = 1
+        Rails.logger.debug "[BadgeCheck] Habit '#{habit_name}': Streak broken, reset to 1"
       end
     end
 
+    Rails.logger.debug "[BadgeCheck] Habit '#{habit_name}': Final max streak: #{max_streak}"
     max_streak
-  rescue => e
-    Rails.logger.error "[BadgeCheck] Error calculating consecutive days: #{e.message}"
-    0
   end
 end
