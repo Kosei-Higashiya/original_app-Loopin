@@ -85,9 +85,9 @@ end
 
     rescue => e
       Rails.logger.error "Error during optimized badge check for user #{id}: #{e.message}"
-      Rails.logger.error "Backtrace: #{e.backtrace.first(3).join("\n")}"
+      Rails.logger.error "Backtrace: #{e.backtrace.first(3).join("\n")}" if e.backtrace
 
-      # Return empty array on error
+      # Return empty array on error to prevent user registration/action failure
       []
     end
   end
