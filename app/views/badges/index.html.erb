@@ -26,7 +26,7 @@
         <div class="trophy-badge <%= 'earned' if user_has_badge %>">
           <div class="trophy-platform <%= 'earned' if user_has_badge %>">
             <div class="trophy-icon">
-              <%= badge.icon %>
+              <%= badge.icon.html_safe %>
             </div>
           </div>
           <div class="trophy-progress">
