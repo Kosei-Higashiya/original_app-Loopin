@@ -10,17 +10,8 @@
   <!-- Trophy Grid Display -->
   <div class="trophy-grid">
     <% @badges.each do |badge| %>
-      <% user_has_badge = current_user.has_badge?(badge) %>
-      <%
-        # Determine progress based on badge condition
-        progress_class = if user_has_badge
-          'full'
-        else
-          # You can add logic here to calculate partial progress if needed
-          # For now, just show empty for unearned badges
-          'empty'
-        end
-      %>
+      <% user_has_badge = @user_badges.include?(badge) %>
+      <% progress_class = user_has_badge ? 'full' : 'empty' %>
 
       <%= link_to badge_path(badge), class: "trophy-badge-link" do %>
         <div class="trophy-badge <%= 'earned' if user_has_badge %>">
@@ -33,7 +24,7 @@
             <div class="trophy-progress-bar <%= progress_class %>"></div>
           </div>
         </div>
-       <% end %>
+      <% end %>
     <% end %>
   </div>
 
