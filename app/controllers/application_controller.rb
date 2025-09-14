@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include BadgeNotifications
 
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :set_badge_notification_flash, if: :user_signed_in?
+  after_action :set_badge_notification_flash, if: :user_signed_in?
 
   private
 

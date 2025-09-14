@@ -28,37 +28,27 @@ class User < ApplicationRecord
 
   # 統計メソッド（バッジ条件チェック用）
   def max_consecutive_days
-    # 各習慣ごとに最大連続日数を計算し、その中の最大値を返す
-    Rails.logger.debug "[User#max_consecutive_days] Starting calculation for user #{id}"
-    return 0 if habits.empty?
+  unique_dates = habit_records.where(completed: true)
+                              .pluck(:recorded_at)
+                              .uniq
+                              .sort
 
-    max_consecutive_across_habits = 0
+  return 0 if unique_dates.empty?
 
-    habits.each do |habit|
-      # この習慣の完了記録を日付順で取得
-      habit_dates = habit.habit_records.where(completed: true)
-                         .order(:recorded_at)
-                         .pluck(:recorded_at)
-      Rails.logger.debug "[User#max_consecutive_days] Habit '#{habit.title}' (ID: #{habit.id}) has #{habit_dates.count} completed dates: #{habit_dates.join(', ')}"
+  max_streak = 1
+  current_streak = 1
 
-      next if habit_dates.empty?
-
-      # この習慣の最大連続日数を計算
-      habit_max_streak = calculate_consecutive_days_for_dates(habit_dates, habit.title)
-
-      Rails.logger.debug "[User#max_consecutive_days] Habit '#{habit.title}' max streak: #{habit_max_streak}"
-
-      # 全体の最大値を更新
-      max_consecutive_across_habits = [max_consecutive_across_habits, habit_max_streak].max
+  unique_dates.each_cons(2) do |prev_date, curr_date|
+    if (curr_date - prev_date).to_i == 1
+      current_streak += 1
+      max_streak = [max_streak, current_streak].max
+    else
+      current_streak = 1
     end
-     Rails.logger.info "[User#max_consecutive_days] Final result for user #{id}: #{max_consecutive_across_habits} (max across all habits)"
-     max_consecutive_across_habits
-
-  rescue => e
-    Rails.logger.error "[User#max_consecutive_days] Error: #{e.message}"
-    Rails.logger.error "[User#max_consecutive_days] Backtrace: #{e.backtrace.first(3).join("\n")}"
-    0
   end
+
+  max_streak
+end
 
   # 全習慣の完了率を計算
   def overall_completion_rate
@@ -100,34 +90,5 @@ class User < ApplicationRecord
       # Return empty array on error
       []
     end
-  end
-
-  private
-
-  # 日付配列から最大連続日数を計算するヘルパーメソッド
-  def calculate_consecutive_days_for_dates(dates, habit_name = "unknown")
-    return 0 if dates.empty?
-    return 1 if dates.length == 1
-
-    max_streak = 1
-    current_streak = 1
-
-    dates.each_cons(2) do |prev_date, curr_date|
-      # 隣り合う日付を比較して「1日差」なら連続、それ以外はリセット
-      days_diff = (curr_date - prev_date).to_i
-      Rails.logger.debug "[User#calculate_consecutive_days_for_dates] Habit '#{habit_name}': Comparing #{prev_date} to #{curr_date}: diff = #{days_diff} days"
-
-      if days_diff == 1
-        current_streak += 1
-        max_streak = [max_streak, current_streak].max
-        Rails.logger.debug "[User#calculate_consecutive_days_for_dates] Habit '#{habit_name}': Consecutive! Current streak: #{current_streak}, max: #{max_streak}"
-      else
-        current_streak = 1
-        Rails.logger.debug "[User#calculate_consecutive_days_for_dates] Habit '#{habit_name}': Streak broken, reset to 1"
-      end
-    end
-
-    Rails.logger.debug "[User#calculate_consecutive_days_for_dates] Habit '#{habit_name}': Final max streak: #{max_streak}"
-    max_streak
   end
 end

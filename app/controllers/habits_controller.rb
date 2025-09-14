@@ -15,6 +15,7 @@ class HabitsController < ApplicationController
     @habit_records = @habit.habit_records.includes(:habit)
   end
 
+  # 日付を指定して記録をトグル（完了⇔未記録）
   def toggle_record_for_date
     begin
       date = Date.parse(params[:date])
@@ -28,15 +29,11 @@ class HabitsController < ApplicationController
     record = @habit.habit_records.find_by(recorded_at: date, user: current_user)
 
     if record
-      # Delete existing record (toggle from completed to unrecorded)
+      # 既存の記録があれば削除（未記録に戻す）
       record.destroy!
       Rails.logger.info "Deleted habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
-
-       # Check for badges after deletion as well (stats might have changed)
-      # Note: Don't set notifications for deletions to avoid confusing users
-      current_user.check_and_award_badges
     else
-      # Create new completed record
+      # 新しい完了記録を作成
       new_record = @habit.habit_records.build(
         user: current_user,
         recorded_at: date,
@@ -76,14 +73,16 @@ class HabitsController < ApplicationController
   end
 
   def create
-    @habit = current_user.habits.build(habit_params)
+  @habit = current_user.habits.build(habit_params)
 
     if @habit.save
-      # バッジ獲得チェックと通知設定
-      newly_earned_badges = current_user.check_and_award_badges
-      set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
+      flash[:success] = "習慣が作成されました！"
 
-      redirect_to @habit, notice: '習慣が正常に作成されました。'
+      # バッジチェック実行（通知は session に積むだけ）
+      newly_earned = current_user.check_and_award_badges
+      set_badge_notification(newly_earned) if newly_earned.any?
+
+      redirect_to habits_path
     else
       render :new, status: :unprocessable_entity
     end
