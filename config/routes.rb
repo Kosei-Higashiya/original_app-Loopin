@@ -30,9 +30,5 @@ Rails.application.routes.draw do
   resources :posts, only: [:index, :new, :create, :edit, :update, :destroy]
 
   # バッジ関連のルーティング
-  resources :badges, only: [:index, :show] do
-    collection do
-      post :check_awards
-    end
-  end
+  resources :badges, only: [:index, :show]
 end
