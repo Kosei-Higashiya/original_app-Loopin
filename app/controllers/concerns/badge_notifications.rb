@@ -42,6 +42,13 @@ module BadgeNotifications
     # Turboリクエストやajaxリクエストではフラッシュしない
     return if request.format.turbo_stream? || request.xhr?
 
+    # Skip flash notifications if this is after a calendar interaction
+    if session[:skip_badge_flash]
+      session.delete(:skip_badge_flash)
+      Rails.logger.info "[BadgeNotifications] Skipping flash notification due to calendar interaction"
+      return
+    end
+
     # セッションに通知がない場合は何もしない
     return unless session[:newly_earned_badges].present?
 

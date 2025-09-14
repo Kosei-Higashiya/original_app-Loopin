@@ -25,6 +25,9 @@ class HabitsController < ApplicationController
       return
     end
 
+    # Set flag to prevent flash notifications for calendar interactions
+    session[:skip_badge_flash] = true
+
     record = @habit.habit_records.find_by(recorded_at: date, user: current_user)
     newly_earned_badges = []
 
