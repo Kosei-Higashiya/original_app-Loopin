@@ -43,9 +43,9 @@ module BadgeNotifications
     return if notifications.blank?
 
     flash[:success] = if notifications.size == 1
-                        "🎉ccccおめでとうございます! バッジ「#{notifications.first['name']}」を獲得しました！"
+                        "🎉おめでとうございます! バッジ「#{notifications.first['name']}」を獲得しました！"
                       else
-                        "🎉ccccおめでとうございます! #{notifications.size}個のバッジを獲得しました！"
+                        "🎉おめでとうございます! #{notifications.size}個のバッジを獲得しました！"
                       end
 
     Rails.logger.debug "[BadgeNotifications] Flash set for badges: #{notifications.map { |n| n['name'] }.join(', ')}"

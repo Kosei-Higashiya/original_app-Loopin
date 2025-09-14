@@ -1,4 +1,5 @@
-<div class="container">
+<p>ログインユーザー: <%= current_user&.email || "ログインしていません" %></p>
+<div class="container mx-auto px-4 py-8">
   <div class="trophy-header">
     <div class="trophy-count">
       <span class="trophy-count-icon">🏆</span>
@@ -10,8 +11,17 @@
   <!-- Trophy Grid Display -->
   <div class="trophy-grid">
     <% @badges.each do |badge| %>
-      <% user_has_badge = @user_badges.include?(badge) %>
-      <% progress_class = user_has_badge ? 'full' : 'empty' %>
+      <% user_has_badge = current_user.has_badge?(badge) %>
+      <%
+        # Determine progress based on badge condition
+        progress_class = if user_has_badge
+          'full'
+        else
+          # You can add logic here to calculate partial progress if needed
+          # For now, just show empty for unearned badges
+          'empty'
+        end
+      %>
 
       <%= link_to badge_path(badge), class: "trophy-badge-link" do %>
         <div class="trophy-badge <%= 'earned' if user_has_badge %>">
