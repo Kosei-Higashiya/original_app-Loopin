@@ -28,30 +28,27 @@ class User < ApplicationRecord
 
   # 統計メソッド（バッジ条件チェック用）
   def max_consecutive_days
-    # 最大連続日数を計算
+  unique_dates = habit_records.where(completed: true)
+                              .pluck(:recorded_at)
+                              .uniq
+                              .sort
 
-    # 達成済みの記録だけを取得して、重複日を除去し、日付昇順に並べる
-    unique_dates = habit_records.where(completed: true)
-                                .select('DISTINCT recorded_at')
-                                .order(:recorded_at)
-                                .pluck(:recorded_at)
+  return 0 if unique_dates.empty?
 
-    return 0 if unique_dates.empty?
-    max_streak = 1 # 最大連続日数
-    current_streak = 1 # 現在の連続日数
+  max_streak = 1
+  current_streak = 1
 
-    unique_dates.each_cons(2) do |prev_date, curr_date|
-      # 隣り合う日付を比較して「1日差」なら連続、それ以外はリセット
-      if (curr_date - prev_date).to_i == 1
-        current_streak += 1
-        max_streak = [max_streak, current_streak].max
-      else
-        current_streak = 1
-      end
+  unique_dates.each_cons(2) do |prev_date, curr_date|
+    if (curr_date - prev_date).to_i == 1
+      current_streak += 1
+      max_streak = [max_streak, current_streak].max
+    else
+      current_streak = 1
     end
-    # 最大値を返す
-    max_streak
   end
+
+  max_streak
+end
 
   # 全習慣の完了率を計算
   def overall_completion_rate

@@ -10,19 +10,19 @@ module BadgeChecker
     begin
       Rails.logger.info "[BadgeCheck] Starting for user #{user.id} at #{Time.current}"
 
-      # Step 1: Get user's current badge IDs (fast query)
+      # Step 1: Get user's current badge IDs
       earned_badge_ids = user.user_badges.pluck(:badge_id)
       Rails.logger.debug "[BadgeCheck] User has #{earned_badge_ids.count} existing badges"
 
-      # Step 2: Get all active badges not yet earned (single query)
-      available_badges = Badge.active.where.not(id: earned_badge_ids).limit(20) # Limit to prevent timeout
+      # Step 2: Get all active badges not yet earned
+      available_badges = Badge.active.where.not(id: earned_badge_ids).limit(20)
       Rails.logger.debug "[BadgeCheck] Checking #{available_badges.count} available badges"
 
-      # Step 3: Pre-calculate user stats to avoid repeated queries
+      # Step 3: Pre-calculate user stats
       user_stats = calculate_user_stats(user)
       results[:stats] = user_stats
 
-      # Step 4: Check each badge quickly
+      # Step 4: Check each badge
       available_badges.each do |badge|
         check_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
@@ -45,11 +45,7 @@ module BadgeChecker
 
         check_end = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         check_duration = ((check_end - check_start) * 1000).round(2)
-
-        # If a single badge check takes too long, log warning
-        if check_duration > 100 # 100ms
-          Rails.logger.warn "[BadgeCheck] Badge '#{badge.name}' check took #{check_duration}ms"
-        end
+        Rails.logger.warn "[BadgeCheck] Badge '#{badge.name}' check took #{check_duration}ms" if check_duration > 100
       end
 
     rescue => e
@@ -68,32 +64,15 @@ module BadgeChecker
 
   private
 
-  # Pre-calculate all user stats to avoid multiple DB queries
+  # Pre-calculate all user stats
   def calculate_user_stats(user)
-    # Get basic stats
     total_habits = user.habits.count
-
-    # Calculate completion rate using the correct logic
-    # The app deletes records for incomplete habits, so we need to calculate
-    # based on possible vs actual records
     thirty_days_ago = 30.days.ago.to_date
     today = Date.current
-    total_possible_records = if total_habits > 0
-      (today - thirty_days_ago + 1).to_i * total_habits
-    else
-      0
-    end
 
-    completed_records = user.habit_records.where(
-      recorded_at: thirty_days_ago..today,
-      completed: true
-    ).count
-
-    completion_rate = if total_possible_records > 0
-      (completed_records.to_f / total_possible_records * 100).round(1)
-    else
-      0.0
-    end
+    total_possible_records = total_habits > 0 ? (today - thirty_days_ago + 1).to_i * total_habits : 0
+    completed_records = user.habit_records.where(recorded_at: thirty_days_ago..today, completed: true).count
+    completion_rate = total_possible_records > 0 ? (completed_records.to_f / total_possible_records * 100).round(1) : 0.0
 
     {
       total_habits: total_habits,
@@ -104,7 +83,7 @@ module BadgeChecker
     }
   end
 
-  # Fast badge condition checking using pre-calculated stats
+  # Check if badge condition is met based on pre-calculated stats
   def badge_earned_by_stats?(badge, user_stats)
     case badge.condition_type
     when 'consecutive_days'
@@ -120,32 +99,13 @@ module BadgeChecker
     end
   end
 
-  # Optimized consecutive days calculation
   def calculate_max_consecutive_days(user)
-    # Since recorded_at is already a date field, we can use DISTINCT directly
-    records = user.habit_records.where(completed: true)
-                  .select('DISTINCT recorded_at')
-                  .order('recorded_at')
-                  .pluck('recorded_at')
-
-    return 0 if records.empty?
-
-    max_streak = 1
-    current_streak = 1
-
-    records.each_cons(2) do |prev_date, curr_date|
-      # Date型同士の減算は日数を返すため、1日差かをチェック
-      if (curr_date - prev_date).to_i == 1
-        current_streak += 1
-        max_streak = [max_streak, current_streak].max
-      else
-        current_streak = 1
-      end
-    end
-
-    max_streak
-  rescue => e
-    Rails.logger.error "[BadgeCheck] Error calculating consecutive days: #{e.message}"
+  # User インスタンスのメソッドを必ず呼ぶ
+  if user.respond_to?(:max_consecutive_days)
+    user.max_consecutive_days
+  else
+    Rails.logger.error "[BadgeCheck] User instance does not respond to max_consecutive_days"
     0
   end
+end
 end

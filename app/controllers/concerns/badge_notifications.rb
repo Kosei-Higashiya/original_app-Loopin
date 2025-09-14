@@ -9,6 +9,8 @@ module BadgeNotifications
     return if badges.blank?
     session[:newly_earned_badges] ||= []
 
+     Rails.logger.debug "[BadgeNotifications] Before adding, session contains: #{session[:newly_earned_badges].map { |b| b['name'] }.join(', ')}"
+
     badges.each do |badge|
       badge_data = { id: badge.id, name: badge.name }
       unless session[:newly_earned_badges].any? { |b| b['id'] == badge.id }
@@ -34,16 +36,18 @@ module BadgeNotifications
 
   # 通知フラッシュメッセージを設定（デバッグログ付き）
   def set_badge_notification_flash
-  # Turboリクエストではフラッシュしない
+  # Turboリクエストではフラッシュを使わない
     return if request.format.turbo_stream?
+
     notifications = get_and_clear_badge_notifications
     return if notifications.blank?
 
     flash[:success] = if notifications.size == 1
-                        "🎉おめでとうございます! バッジ「#{notifications.first['name']}」を獲得しました！"
+                        "🎉ccccおめでとうございます! バッジ「#{notifications.first['name']}」を獲得しました！"
                       else
-                        "🎉おめでとうございます! #{notifications.size}個のバッジを獲得しました！"
+                        "🎉ccccおめでとうございます! #{notifications.size}個のバッジを獲得しました！"
                       end
+
     Rails.logger.debug "[BadgeNotifications] Flash set for badges: #{notifications.map { |n| n['name'] }.join(', ')}"
   end
 end
