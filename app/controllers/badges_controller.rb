@@ -5,7 +5,7 @@ class BadgesController < ApplicationController
 
   def index
     @badges = Badge.active.includes(:users)
-    @user_badges = current_user.user_badges.includes(:badge).recent
+    @user_badges = current_user.user_badges.includes(:badge).recent.map(&:badge)
   end
 
   def show
