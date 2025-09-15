@@ -9,6 +9,9 @@ module BadgeNotifications
     return if badges.blank?
     
     begin
+      # Extra safety: check if session is available and working
+      return unless session_available?
+      
       session[:newly_earned_badges] ||= []
 
       Rails.logger.debug "[BadgeNotifications] Before adding, session contains: #{session[:newly_earned_badges].map { |b| b['name'] }.join(', ')}"
@@ -33,7 +36,10 @@ module BadgeNotifications
   # 保存された通知を取得してクリア（デバッグログ付き）
   def get_and_clear_badge_notifications
     begin
+      # Extra safety: check if session is available and working
+      return [] unless session_available?
       return [] unless session[:newly_earned_badges].present?
+      
       notifications = session[:newly_earned_badges].dup
       # セッションをクリア
       session.delete(:newly_earned_badges)
@@ -51,10 +57,13 @@ module BadgeNotifications
 
   # 通知フラッシュメッセージを設定（デバッグログ付き）
   def set_badge_notification_flash
-    # Turboリクエストではフラッシュを使わない
-    return if request.format.turbo_stream?
-
     begin
+      # Turboリクエストではフラッシュを使わない
+      return if request.format.turbo_stream?
+      
+      # Extra safety: check if session is available and working
+      return unless session_available?
+
       notifications = get_and_clear_badge_notifications
       return if notifications.blank?
 
@@ -71,5 +80,16 @@ module BadgeNotifications
       Rails.logger.error "[BadgeNotifications] Backtrace: #{e.backtrace.first(3).join("\n")}" if e.backtrace
       # エラーがあってもアプリケーションの動作を続行
     end
+  end
+  
+  private
+  
+  # Session availability check for production safety
+  def session_available?
+    # Test session access safely
+    session.respond_to?(:[])
+  rescue => e
+    Rails.logger.error "[BadgeNotifications] Session not available: #{e.message}"
+    false
   end
 end
