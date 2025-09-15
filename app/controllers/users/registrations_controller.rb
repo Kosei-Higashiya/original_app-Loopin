@@ -10,4 +10,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     Rails.logger.debug "=== after super, resource.persisted? #{resource.persisted?} ==="
   end
+
+  def destroy
+    Rails.logger.debug "=== RegistrationsController#destroy called ==="
+    Rails.logger.debug "=== current_user: #{current_user.inspect} ==="
+    
+    # Ensure user is authenticated before destroying account
+    if user_signed_in?
+      super
+    else
+      redirect_to root_path, alert: "アカウントを削除するにはログインが必要です。"
+    end
+  end
 end
