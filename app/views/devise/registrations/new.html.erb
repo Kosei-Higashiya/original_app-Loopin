@@ -7,7 +7,7 @@
           <p class="mb-0" style="font-size: 1.1rem;">新しいアカウントを作成してください</p>
         </div>
         <div class="card-body p-5">
-          <%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), local: true) do |form| %>
+           <%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), local: true, data: { turbo: false }) do |form| %>
             <% if resource.errors.any? %>
               <div class="alert alert-danger">
                 <h6><%= pluralize(resource.errors.count, "つのエラー") %>があります:</h6>
