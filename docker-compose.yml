@@ -40,12 +40,8 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      RAILS_ENV: development   # ← ローカルでは development
-      DB_HOST: db              # ← development 用のDBホスト
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app_development
+    env_file:                     # 環境変数を外部ファイルから読み込み
+      - .env.production                     # 同ディレクトリの .env ファイルを使用
 
 volumes:
   postgres_data:
