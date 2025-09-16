@@ -95,8 +95,7 @@
             <%= button_to "アカウントを削除", registration_path(resource_name),
                 method: :delete,
                 data: {
-                  confirm: "本当にアカウントを削除しますか？この操作は取り消せません。",
-                  turbo: false
+                  "turbo-confirm": "本当にアカウントを削除しますか？この操作は取り消せません。"
                 },
                 class: "btn btn-danger btn-lg",
                 style: "font-size: 1.1rem; padding: 0.75rem 2rem; margin-top: 0.5rem;" %>
