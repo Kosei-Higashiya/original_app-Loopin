@@ -15,6 +15,10 @@ class PostsController < ApplicationController
     end
   end
 
+  def liked
+    @posts = current_user.liked_posts.with_associations.recent.limit(50)
+  end
+
   def new
     @post = current_user.posts.build
     @user_habits = current_user.habits.order(:title)
