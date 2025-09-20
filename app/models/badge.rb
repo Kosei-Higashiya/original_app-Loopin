@@ -40,7 +40,7 @@ class Badge < ApplicationRecord
       else
         false
       end
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "Error checking badge '#{name}' for user #{user.id}: #{e.message}"
       false
     end

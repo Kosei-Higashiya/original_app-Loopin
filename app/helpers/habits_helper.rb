@@ -1,6 +1,6 @@
 module HabitsHelper
   def calendar_title(date)
-    I18n.l(date, format: "%Y年%m月")
+    I18n.l(date, format: '%Y年%m月')
   end
 
   def habit_completion_rate(habit, date = Date.current)
@@ -17,7 +17,7 @@ module HabitsHelper
     (completed_days.to_f / total_days * 100).round(1)
   end
 
-  def habit_status_badge(record)
-    content_tag(:span, "✓", class: "badge bg-success", title: "完了")
+  def habit_status_badge(_record)
+    content_tag(:span, '✓', class: 'badge bg-success', title: '完了')
   end
 end

@@ -3,7 +3,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   skip_before_action :verify_authenticity_token, only: [:create]
 
   def create
-    Rails.logger.debug "=== RegistrationsController#create called ==="
+    Rails.logger.debug '=== RegistrationsController#create called ==='
     Rails.logger.debug "=== sign_up_params: #{sign_up_params.inspect} ==="
 
     super
@@ -12,14 +12,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def destroy
-    Rails.logger.debug "=== RegistrationsController#destroy called ==="
+    Rails.logger.debug '=== RegistrationsController#destroy called ==='
     Rails.logger.debug "=== current_user: #{current_user.inspect} ==="
 
     # Ensure user is authenticated before destroying account
     if user_signed_in?
       super
     else
-      redirect_to root_path, alert: "アカウントを削除するにはログインが必要です。"
+      redirect_to root_path, alert: 'アカウントを削除するにはログインが必要です。'
     end
   end
 end

@@ -5,8 +5,8 @@ class HabitRecord < ApplicationRecord
   validates :recorded_at, presence: true
   validates :note, length: { maximum: 1000 }
   validates :completed, inclusion: { in: [true, false] }
-  validates :user_id, uniqueness: { scope: [:habit_id, :recorded_at],
-                                   message: "can only have one record per habit per day" }
+  validates :user_id, uniqueness: { scope: %i[habit_id recorded_at],
+                                    message: 'can only have one record per habit per day' }
 
   # Ensure the habit belongs to the user
   validate :habit_must_belong_to_user
@@ -22,8 +22,8 @@ class HabitRecord < ApplicationRecord
   def habit_must_belong_to_user
     return unless habit && user
 
-    unless habit.user_id == user.id
-      errors.add(:habit, "must belong to the same user")
-    end
+    return if habit.user_id == user.id
+
+    errors.add(:habit, 'must belong to the same user')
   end
 end

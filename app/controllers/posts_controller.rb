@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_post, only: [:edit, :update, :destroy]
+  before_action :set_post, only: %i[edit update destroy]
 
   def index
     @q = Post.ransack(params[:q])
@@ -41,12 +41,14 @@ class PostsController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to posts_path, alert: '権限がありません。' }
-        format.turbo_stream { render turbo_stream: turbo_stream.prepend("flash", partial: "shared/flash", locals: { alert: "権限がありません。" }) }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.prepend('flash', partial: 'shared/flash', locals: { alert: '権限がありません。' })
+        end
       end
     end
   end
 
- def edit
+  def edit
     if @post.user != current_user
       redirect_to posts_path, alert: '権限がありません。'
       return

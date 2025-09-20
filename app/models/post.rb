@@ -11,14 +11,13 @@ class Post < ApplicationRecord
   scope :tagged_with, ->(tag_name) { joins(:tags).where(tags: { name: tag_name }) }
 
   # Ransack設定
-  def self.ransackable_attributes(auth_object = nil)
-    ["content", "created_at", "id", "updated_at"]
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[content created_at id updated_at]
   end
 
-  def self.ransackable_associations(auth_object = nil)
-    ["habit", "tags", "user"]
+  def self.ransackable_associations(_auth_object = nil)
+    %w[habit tags user]
   end
-
 
   # 投稿に紐づいているタグをカンマ区切りの文字列で返す。
   def tag_list

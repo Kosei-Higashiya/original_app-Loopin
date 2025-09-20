@@ -3,7 +3,7 @@ class HabitRecordsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :set_habit
-  before_action :set_habit_record, only: [:show, :update, :destroy]
+  before_action :set_habit_record, only: %i[show update destroy]
 
   # GET /habits/:habit_id/habit_records/:id
   def show
@@ -37,7 +37,7 @@ class HabitRecordsController < ApplicationController
   def update
     respond_to do |format|
       if @habit_record.update(habit_record_params)
-         # バッジ獲得チェックと通知設定
+        # バッジ獲得チェックと通知設定
         newly_earned_badges = current_user.check_and_award_badges
         set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
 
