@@ -11,8 +11,9 @@ class CreateHabitRecords < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-      add_index :habit_records, [:user_id, :habit_id, :recorded_at], unique: true, name: 'index_habit_records_on_user_habit_date'
-      add_index :habit_records, :recorded_at
-      add_index :habit_records, :completed
+    add_index :habit_records, %i[user_id habit_id recorded_at], unique: true,
+                                                                name: 'index_habit_records_on_user_habit_date'
+    add_index :habit_records, :recorded_at
+    add_index :habit_records, :completed
   end
 end

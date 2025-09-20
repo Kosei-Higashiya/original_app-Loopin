@@ -11,74 +11,74 @@
 # バッジの作成
 badges_data = [
   {
-    name: "テスト用バッジ",
-    description: "バッジ機能をテストするためのバッジです。誰でも獲得できます。",
-    condition_type: "total_habits",
+    name: 'テスト用バッジ',
+    description: 'バッジ機能をテストするためのバッジです。誰でも獲得できます。',
+    condition_type: 'total_habits',
     condition_value: 1,
-    icon: "🎉"
+    icon: '🎉'
   },
   {
-    name: "初回習慣",
-    description: "最初の習慣を作成しました",
-    condition_type: "total_habits",
+    name: '初回習慣',
+    description: '最初の習慣を作成しました',
+    condition_type: 'total_habits',
     condition_value: 1,
-    icon: "🎯"
+    icon: '🎯'
   },
   {
-    name: "習慣コレクター",
-    description: "3つの習慣を作成しました",
-    condition_type: "total_habits",
+    name: '習慣コレクター',
+    description: '3つの習慣を作成しました',
+    condition_type: 'total_habits',
     condition_value: 3,
-    icon: "📝"
+    icon: '📝'
   },
   {
-    name: "習慣マスター",
-    description: "5つの習慣を作成しました",
-    condition_type: "total_habits",
+    name: '習慣マスター',
+    description: '5つの習慣を作成しました',
+    condition_type: 'total_habits',
     condition_value: 5,
-    icon: "⭐"
+    icon: '⭐'
   },
   {
-    name: "3日間継続",
-    description: "3日間連続で記録しました",
-    condition_type: "consecutive_days",
+    name: '3日間継続',
+    description: '3日間連続で記録しました',
+    condition_type: 'consecutive_days',
     condition_value: 3,
-    icon: "🔥"
+    icon: '🔥'
   },
   {
-    name: "1週間継続",
-    description: "7日間連続で記録しました",
-    condition_type: "consecutive_days",
+    name: '1週間継続',
+    description: '7日間連続で記録しました',
+    condition_type: 'consecutive_days',
     condition_value: 7,
-    icon: "💪"
+    icon: '💪'
   },
   {
-    name: "1ヶ月継続",
-    description: "30日間連続で記録しました",
-    condition_type: "consecutive_days",
+    name: '1ヶ月継続',
+    description: '30日間連続で記録しました',
+    condition_type: 'consecutive_days',
     condition_value: 30,
-    icon: "🏆"
+    icon: '🏆'
   },
   {
-    name: "記録スタート",
-    description: "10回記録しました",
-    condition_type: "total_records",
+    name: '記録スタート',
+    description: '10回記録しました',
+    condition_type: 'total_records',
     condition_value: 10,
-    icon: "📊"
+    icon: '📊'
   },
   {
-    name: "記録王",
-    description: "100回記録しました",
-    condition_type: "total_records",
+    name: '記録王',
+    description: '100回記録しました',
+    condition_type: 'total_records',
     condition_value: 100,
-    icon: "👑"
+    icon: '👑'
   },
   {
-    name: "完璧主義者",
-    description: "完了率90%以上を達成しました",
-    condition_type: "completion_rate",
+    name: '完璧主義者',
+    description: '完了率90%以上を達成しました',
+    condition_type: 'completion_rate',
     condition_value: 90,
-    icon: "✨"
+    icon: '✨'
   }
 ]
 

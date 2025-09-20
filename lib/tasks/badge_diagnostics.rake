@@ -1,7 +1,7 @@
 namespace :badges do
-  desc "Diagnose badge system performance and functionality"
+  desc 'Diagnose badge system performance and functionality'
   task diagnose: :environment do
-    puts "=== Badge System Diagnostics ==="
+    puts '=== Badge System Diagnostics ==='
     puts
 
     start_time = Time.current
@@ -10,23 +10,23 @@ namespace :badges do
       # Check basic badge setup
       total_badges = Badge.count
       active_badges = Badge.active.count
-      puts "📊 Badge Statistics:"
+      puts '📊 Badge Statistics:'
       puts "  Total badges: #{total_badges}"
       puts "  Active badges: #{active_badges}"
       puts
 
       # Check if test badge exists
-      test_badge = Badge.find_by(name: "テスト用バッジ")
+      test_badge = Badge.find_by(name: 'テスト用バッジ')
       if test_badge
         puts "✅ Test badge exists: #{test_badge.name} (condition: #{test_badge.condition_type} >= #{test_badge.condition_value})"
       else
-        puts "❌ Test badge missing - creating now..."
+        puts '❌ Test badge missing - creating now...'
         test_badge = Badge.create!(
-          name: "テスト用バッジ",
-          description: "バッジ機能をテストするためのバッジです",
-          condition_type: "total_habits",
+          name: 'テスト用バッジ',
+          description: 'バッジ機能をテストするためのバッジです',
+          condition_type: 'total_habits',
           condition_value: 1,
-          icon: "🎉",
+          icon: '🎉',
           active: true
         )
         puts "✅ Test badge created: #{test_badge.name}"
@@ -40,7 +40,11 @@ namespace :badges do
 
         # Test badge checking performance
         badge_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        newly_earned = sample_user.check_and_award_badges rescue []
+        newly_earned = begin
+          sample_user.check_and_award_badges
+        rescue StandardError
+          []
+        end
         badge_end = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         badge_duration = ((badge_end - badge_start) * 1000).round(2)
 
@@ -63,17 +67,21 @@ namespace :badges do
         puts "    Records: #{stats[:records]}"
         puts "    Completed: #{stats[:completed_records]}"
       else
-        puts "⚠️  No users found - create a user to test badge functionality"
+        puts '⚠️  No users found - create a user to test badge functionality'
       end
       puts
 
       # Check database performance
-      puts "🗄️  Database Performance:"
+      puts '🗄️  Database Performance:'
 
       # Check indexes
-      indexes = ActiveRecord::Base.connection.execute(
-        "SELECT schemaname, tablename, indexname FROM pg_indexes WHERE tablename IN ('badges', 'user_badges', 'users', 'habits', 'habit_records') ORDER BY tablename, indexname"
-      ).to_a rescue []
+      indexes = begin
+        ActiveRecord::Base.connection.execute(
+          "SELECT schemaname, tablename, indexname FROM pg_indexes WHERE tablename IN ('badges', 'user_badges', 'users', 'habits', 'habit_records') ORDER BY tablename, indexname"
+        ).to_a
+      rescue StandardError
+        []
+      end
 
       if indexes.any?
         puts "  Database indexes found: #{indexes.count}"
@@ -82,7 +90,7 @@ namespace :badges do
           puts "    #{table}: #{table_indexes.count} indexes"
         end
       else
-        puts "  ⚠️  Could not check database indexes"
+        puts '  ⚠️  Could not check database indexes'
       end
 
       end_time = Time.current
@@ -93,22 +101,21 @@ namespace :badges do
       if badge_duration && badge_duration > 1000
         puts
         puts "⚠️  WARNING: Badge checking is slow (#{badge_duration}ms)"
-        puts "   Consider optimizing database queries or adding indexes"
+        puts '   Consider optimizing database queries or adding indexes'
       end
-
-    rescue => e
+    rescue StandardError => e
       puts "❌ Error during diagnostics: #{e.message}"
       puts "   #{e.backtrace.first(3).join("\n   ")}"
     end
   end
 
-  desc "Create test badge for immediate testing"
+  desc 'Create test badge for immediate testing'
   task create_test_badge: :environment do
-    test_badge = Badge.find_or_create_by(name: "テスト用バッジ") do |badge|
-      badge.description = "バッジ機能をテストするためのバッジです。誰でも獲得できます。"
-      badge.condition_type = "total_habits"
+    test_badge = Badge.find_or_create_by(name: 'テスト用バッジ') do |badge|
+      badge.description = 'バッジ機能をテストするためのバッジです。誰でも獲得できます。'
+      badge.condition_type = 'total_habits'
       badge.condition_value = 0
-      badge.icon = "🎉"
+      badge.icon = '🎉'
       badge.active = true
     end
 

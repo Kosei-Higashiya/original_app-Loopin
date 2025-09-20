@@ -3,7 +3,7 @@ class UserBadge < ApplicationRecord
   belongs_to :badge
 
   validates :earned_at, presence: true
-  validates :user_id, uniqueness: { scope: :badge_id, message: "has already earned this badge" }
+  validates :user_id, uniqueness: { scope: :badge_id, message: 'has already earned this badge' }
 
   scope :recent, -> { order(earned_at: :desc) }
   scope :for_user, ->(user) { where(user: user) }
@@ -15,11 +15,10 @@ class UserBadge < ApplicationRecord
     # バッジの獲得条件を満たしていなければ付与しない
     return nil unless badge.earned_by?(user)
 
-    user_badge = create!(
+    create!(
       user: user,
       badge: badge,
       earned_at: Time.current
     )
-    user_badge
   end
 end

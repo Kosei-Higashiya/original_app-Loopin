@@ -2,14 +2,13 @@ class HabitsController < ApplicationController
   include BadgeNotifications
 
   before_action :authenticate_user!
-  before_action :set_habit, only: [:show, :edit, :update, :destroy, :individual_calendar, :toggle_record_for_date]
+  before_action :set_habit, only: %i[show edit update destroy individual_calendar toggle_record_for_date]
 
   def index
     @habits = current_user.habits.recent
   end
 
-  def show
-  end
+  def show; end
 
   def individual_calendar
     @habit_records = @habit.habit_records.includes(:habit)
@@ -21,7 +20,9 @@ class HabitsController < ApplicationController
       date = Date.parse(params[:date])
     rescue ArgumentError => e
       respond_to do |format|
-        format.json { render json: { success: false, error: "Invalid date format: #{params[:date]}" }, status: :bad_request }
+        format.json do
+          render json: { success: false, error: "Invalid date format: #{params[:date]}" }, status: :bad_request
+        end
       end
       return
     end
@@ -49,7 +50,10 @@ class HabitsController < ApplicationController
       else
         Rails.logger.error "Failed to create habit record: #{new_record.errors.full_messages.join(', ')}"
         respond_to do |format|
-          format.json { render json: { success: false, error: "Failed to create record: #{new_record.errors.full_messages.join(', ')}" }, status: :unprocessable_entity }
+          format.json do
+            render json: { success: false, error: "Failed to create record: #{new_record.errors.full_messages.join(', ')}" },
+                   status: :unprocessable_entity
+          end
         end
         return
       end
@@ -58,25 +62,25 @@ class HabitsController < ApplicationController
     respond_to do |format|
       format.json { render json: { success: true } }
     end
-
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Unexpected error in toggle_record_for_date: #{e.class.name}: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     respond_to do |format|
-      format.json { render json: { success: false, error: "Unexpected error: #{e.message}" }, status: :internal_server_error }
+      format.json do
+        render json: { success: false, error: "Unexpected error: #{e.message}" }, status: :internal_server_error
+      end
     end
   end
-
 
   def new
     @habit = current_user.habits.build
   end
 
   def create
-  @habit = current_user.habits.build(habit_params)
+    @habit = current_user.habits.build(habit_params)
 
     if @habit.save
-      flash[:success] = "習慣が作成されました！"
+      flash[:success] = '習慣が作成されました！'
 
       # バッジチェック実行（通知は session に積むだけ）
       newly_earned = current_user.check_and_award_badges
@@ -88,8 +92,7 @@ class HabitsController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @habit.update(habit_params)

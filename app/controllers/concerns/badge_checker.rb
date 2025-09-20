@@ -29,7 +29,7 @@ module BadgeChecker
         begin
           if badge_earned_by_stats?(badge, user_stats)
             # Create the badge record
-            user_badge = UserBadge.create!(
+            UserBadge.create!(
               user: user,
               badge: badge,
               earned_at: Time.current
@@ -37,7 +37,7 @@ module BadgeChecker
             results[:newly_earned] << badge
             Rails.logger.info "[BadgeCheck] Badge '#{badge.name}' awarded to user #{user.id}"
           end
-        rescue => e
+        rescue StandardError => e
           error_msg = "Failed to award badge '#{badge.name}': #{e.message}"
           results[:errors] << error_msg
           Rails.logger.error "[BadgeCheck] #{error_msg}"
@@ -47,8 +47,7 @@ module BadgeChecker
         check_duration = ((check_end - check_start) * 1000).round(2)
         Rails.logger.warn "[BadgeCheck] Badge '#{badge.name}' check took #{check_duration}ms" if check_duration > 100
       end
-
-    rescue => e
+    rescue StandardError => e
       error_msg = "Badge check failed: #{e.message}"
       results[:errors] << error_msg
       Rails.logger.error "[BadgeCheck] #{error_msg}"
@@ -100,12 +99,12 @@ module BadgeChecker
   end
 
   def calculate_max_consecutive_days(user)
-  # User インスタンスのメソッドを必ず呼ぶ
-  if user.respond_to?(:max_consecutive_days)
-    user.max_consecutive_days
-  else
-    Rails.logger.error "[BadgeCheck] User instance does not respond to max_consecutive_days"
-    0
+    # User インスタンスのメソッドを必ず呼ぶ
+    if user.respond_to?(:max_consecutive_days)
+      user.max_consecutive_days
+    else
+      Rails.logger.error '[BadgeCheck] User instance does not respond to max_consecutive_days'
+      0
+    end
   end
-end
 end
