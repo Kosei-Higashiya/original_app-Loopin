@@ -1,0 +1,74 @@
+<div class="dashboard-section">
+  <div class="container">
+    <h1 class="dashboard-title">💖 いいねした投稿</h1>
+    <p class="dashboard-subtitle">あなたがいいねした投稿の一覧です</p>
+
+    <div class="mb-4">
+      <div class="search-layout-container">
+        <div class="search-buttons-group">
+          <%= link_to "すべての投稿", posts_path, class: "btn btn-outline-primary btn-lg" %>
+        </div>
+      </div>
+    </div>
+
+    <div id="posts-container">
+      <% if @posts.any? %>
+        <div class="dashboard-grid">
+          <% @posts.each do |post| %>
+            <div class="dashboard-card" id="post-<%= post.id %>">
+              <div class="card-header">
+                <h3 class="card-title">
+                  🎯 <%= post.habit.title %>
+                </h3>
+                <small class="text-white-50">
+                  👤 <%= post.user.display_name%> •
+                  ⏰ <%= time_ago_in_words(post.created_at) %>前
+                </small>
+              </div>
+              <div class="card-content">
+                <% if post.tags.any? %>
+                  <div class="mb-3">
+                    <% post.tags.each do |tag| %>
+                      <%= link_to "##{tag.name}", posts_path(tag: tag.name),
+                          class: "badge bg-primary text-decoration-none me-2 mb-1",
+                          style: "font-size: 0.9rem; padding: 0.5rem 0.75rem;" %>
+                    <% end %>
+                  </div>
+                <% end %>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                  <%= simple_format(truncate(post.content, length: 39, separator: ' ')) %>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <%= render 'shared/like_button', post: post %>
+                  <% if post.user == current_user %>
+                    <div class="card-actions">
+                      <%= link_to "編集", edit_post_path(post), class: "btn btn-warning btn-sm" %>
+                      <%= link_to "削除", post_path(post),
+                          data: {
+                            turbo_method: :delete,
+                            turbo_confirm: "本当に削除しますか？"
+                          },
+                          class: "btn btn-danger btn-sm" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-5">
+          <div class="dashboard-card" style="max-width: 500px; margin: 40px auto;">
+            <div class="card-header">
+              <h3 class="card-title">いいねした投稿がありません</h3>
+            </div>
+            <div class="card-content">
+              <p>まだいいねした投稿がありません。</p>
+              <%= link_to "投稿を見に行く", posts_path, class: "btn btn-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

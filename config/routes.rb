@@ -25,7 +25,12 @@ Rails.application.routes.draw do
   end
 
   # Posts resource routes for community posts
-  resources :posts, only: %i[index new create edit update destroy]
+  resources :posts, only: %i[index new create edit update destroy] do
+    resource :like, only: %i[create destroy]
+    collection do
+      get :liked
+    end
+  end
 
   # バッジ関連のルーティング
   resources :badges, only: %i[index show]
