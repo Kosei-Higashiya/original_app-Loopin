@@ -3,6 +3,8 @@ class Post < ApplicationRecord
   belongs_to :habit
   has_many :post_tags, dependent: :destroy
   has_many :tags, through: :post_tags
+  has_many :likes, dependent: :destroy
+  has_many :liked_by_users, through: :likes, source: :user
 
   validates :content, presence: true, length: { maximum: 1000 }
 
@@ -30,5 +32,12 @@ class Post < ApplicationRecord
     self.tags = tag_names.map do |name|
       Tag.find_or_create_by(name: name)
     end
+  end
+
+  # この投稿が指定したユーザーに『いいね』されているかどうかを返す。
+  def liked_by?(user)
+    return false unless user
+
+    likes.exists?(user: user)
   end
 end

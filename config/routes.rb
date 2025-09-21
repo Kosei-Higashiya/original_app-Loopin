@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   # Dashboard route for the main app page
   get 'dashboard' => 'home#dashboard'
 
-  # Habits resource routes
+  # 習慣関連のルーティング
   resources :habits do
     member do
       get :calendar, to: 'habits#individual_calendar'
@@ -24,8 +24,13 @@ Rails.application.routes.draw do
     resources :habit_records, except: %i[index new edit]
   end
 
-  # Posts resource routes for community posts
-  resources :posts, only: %i[index new create edit update destroy]
+  # ポスト関連のルーティング
+  resources :posts, only: %i[index new create edit update destroy] do
+    resource :like, only: %i[create destroy]
+    collection do
+      get :liked
+    end
+  end
 
   # バッジ関連のルーティング
   resources :badges, only: %i[index show]
