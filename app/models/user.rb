@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :posts, dependent: :destroy
   has_many :user_badges, dependent: :destroy
   has_many :badges, through: :user_badges
+  has_many :likes, dependent: :destroy
+  has_many :liked_posts, through: :likes, source: :post
 
   # 名前が空の場合、ゲストを表示名として返す
   def display_name
