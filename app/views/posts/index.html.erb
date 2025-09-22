@@ -14,7 +14,7 @@
         <div class="search-buttons-group">
           <%= link_to "投稿する", new_post_path, class: "btn btn-primary btn-lg" %>
           <% if user_signed_in? %>
-            <%= link_to "いいねした投稿", liked_posts_path, class: "btn btn-outline-primary" %>
+            <%= link_to "いいねした投稿", liked_posts_path, class: "btn btn-primary" %>
           <% end %>
           <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-primary" %>
         </div>
@@ -39,14 +39,19 @@
         <div class="dashboard-grid">
           <% @posts.each do |post| %>
             <div class="dashboard-card" id="post-<%= post.id %>">
-              <div class="card-header">
-                <h3 class="card-title">
-                  🎯 <%= post.habit.title %>
-                </h3>
-                <small class="text-white-50">
-                  👤 <%= post.user.display_name%> •
-                  ⏰ <%= time_ago_in_words(post.created_at) %>前
-                </small>
+              <div class="card-header position-relative">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h3 class="card-title">
+                      🎯 <%= post.habit.title %>
+                    </h3>
+                    <small class="text-white-50">
+                      👤 <%= post.user.display_name%> •
+                      ⏰ <%= time_ago_in_words(post.created_at) %>前
+                    </small>
+                  </div>
+                  <%= render 'shared/like_button', post: post %>
+                </div>
               </div>
               <div class="card-content">
                 <% if post.tags.any? %>
@@ -61,8 +66,7 @@
                 <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
                   <%= simple_format(truncate(post.content, length: 39, separator: ' ')) %>
                 </p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <%= render 'shared/like_button', post: post %>
+                <div class="d-flex justify-content-end align-items-center">
                   <% if post.user == current_user %>
                     <div class="card-actions">
                       <%= link_to "編集", edit_post_path(post), class: "btn btn-warning btn-sm" %>

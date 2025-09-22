@@ -854,3 +854,30 @@ body {
     height: 4px;
   }
 }
+
+/* いいねのデザイン */
+.like-heart {
+  display: inline-block;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.like-heart:hover {
+  transform: scale(1.2);
+  text-decoration: none !important;
+}
+
+.like-heart.liked {
+  color: #dc3545 !important;
+}
+
+.like-heart.liked:hover {
+  color: #c82333 !important;
+  transform: scale(1.3);
+}
+
+/* Ensure the heart stays visible in card headers */
+.card-header .like-heart {
+  z-index: 2;
+  position: relative;
+}
