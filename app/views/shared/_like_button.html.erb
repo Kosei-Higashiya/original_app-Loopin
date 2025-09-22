@@ -1,23 +1,23 @@
-<div id="like-button-<%= post.id %>">
+<span id="like-button-<%= post.id %>">
   <% if user_signed_in? %>
     <% if post.liked_by?(current_user) %>
       <%= link_to post_like_path(post),
           data: { turbo_method: :delete, turbo_confirm: false },
-          class: "btn btn-sm btn-danger me-2",
-          style: "font-size: 0.8rem;" do %>
-        <i class="fas fa-heart"></i> <%= post.likes.count %>
+          class: "like-heart liked",
+          style: "color: #dc3545; text-decoration: none; font-size: 1.2rem;" do %>
+        ♡
       <% end %>
     <% else %>
       <%= link_to post_like_path(post),
           data: { turbo_method: :post, turbo_confirm: false },
-          class: "btn btn-sm btn-outline-secondary me-2",
-          style: "font-size: 0.8rem;" do %>
-        <i class="far fa-heart"></i> <%= post.likes.count %>
+          class: "like-heart",
+          style: "color: #6c757d; text-decoration: none; font-size: 1.2rem;" do %>
+        ♡
       <% end %>
     <% end %>
   <% else %>
-    <span class="btn btn-sm btn-outline-secondary me-2" style="font-size: 0.8rem;">
-      <i class="far fa-heart"></i> <%= post.likes.count %>
+    <span class="like-heart" style="color: #6c757d; font-size: 1.2rem;">
+      ♡
     </span>
   <% end %>
-</div>
+</span>
