@@ -4,20 +4,20 @@
       <%= link_to post_like_path(post),
           data: { turbo_method: :delete, turbo_confirm: false },
           class: "like-heart liked",
-          style: "color: #dc3545; text-decoration: none; font-size: 1.2rem;" do %>
-        ♡
+          style: "color: #dc3545; text-decoration: none; font-size: 1.5rem;" do %>
+        ♥
       <% end %>
     <% else %>
       <%= link_to post_like_path(post),
           data: { turbo_method: :post, turbo_confirm: false },
           class: "like-heart",
-          style: "color: #6c757d; text-decoration: none; font-size: 1.2rem;" do %>
-        ♡
+          style: "color: #6c757d; text-decoration: none; font-size: 1.5rem;" do %>
+        ♥
       <% end %>
     <% end %>
   <% else %>
-    <span class="like-heart" style="color: #6c757d; font-size: 1.2rem;">
-      ♡
+    <span class="like-heart" style="color: #6c757d; font-size: 1.5rem;">
+      ♥
     </span>
   <% end %>
 </span>

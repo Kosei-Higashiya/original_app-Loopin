@@ -12,7 +12,7 @@ class LikesController < ApplicationController
         format.html { redirect_back(fallback_location: posts_path) }
         format.turbo_stream
       else
-        format.html { redirect_back(fallback_location: posts_path, alert: 'いいねに失敗しました。') }
+        format.html { redirect_back(fallback_location: posts_path) }
         format.turbo_stream { head :unprocessable_entity }
       end
     end
@@ -27,7 +27,7 @@ class LikesController < ApplicationController
         format.html { redirect_back(fallback_location: posts_path) }
         format.turbo_stream
       else
-        format.html { redirect_back(fallback_location: posts_path, alert: 'いいね解除に失敗しました。') }
+        format.html { redirect_back(fallback_location: posts_path) }
         format.turbo_stream { head :unprocessable_entity }
       end
     end

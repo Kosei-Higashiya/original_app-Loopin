@@ -881,3 +881,10 @@ body {
   z-index: 2;
   position: relative;
 }
+
+/* Like container styling */
+.like-container {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.25rem;
+}
