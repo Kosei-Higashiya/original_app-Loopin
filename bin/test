@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# RSpec テスト実行スクリプト
+echo "=== RSpec テスト実行 ==="
+
+echo "1. モデルテストを実行中..."
+RAILS_ENV=test bundle exec rspec spec/models/ --format=progress
+
+echo ""
+echo "2. テストサマリー"
+RAILS_ENV=test bundle exec rspec spec/models/ --format=progress | grep -E "(examples|failures)"
+
+echo ""
+echo "=== システムテスト注意事項 ==="
+echo "システムテストを実行するには Chrome ブラウザが必要です。"
+echo "現在の環境では実行できませんが、以下のコマンドで実行できます："
+echo "RAILS_ENV=test bundle exec rspec spec/system/"
+
+echo ""
+echo "=== 完了 ==="
