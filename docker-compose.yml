@@ -37,11 +37,21 @@ services:
       - .:/app
       - bundle_data:/usr/local/bundle:cached
       - node_modules:/app/node_modules
+    environment:
+      TZ: Asia/Tokyo
+      SELENIUM_DRIVER_URL: http://chrome:4444/wd/hub
+
     depends_on:
       - db
       - redis
+      - chrome
+      
     env_file:                     # 環境変数を外部ファイルから読み込み
-      - .env.production                     # 同ディレクトリの .env ファイルを使用
+      - .env.development                     # 同ディレクトリの .env ファイルを使用
+  chrome:
+    image: seleniarm/standalone-chromium:latest
+    ports:
+      - 4444:4444
 
 volumes:
   postgres_data:
