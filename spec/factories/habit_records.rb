@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :habit_record do
-    user { habit.user }
     habit
+    user { habit.user }
     sequence(:recorded_at) { |n| Date.current - (n - 1).days }  # n=1は今日, n=2は昨日...
     completed { true }
     note { "今日もがんばりました！" }

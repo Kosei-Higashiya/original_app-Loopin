@@ -1,4 +1,8 @@
-<span id="like-button-<%= post.id %>">
+<div id="post_<%= post.id %>">
+  <p><%= post.user.name %></p>
+  <p><%= post.content %></p>
+
+  <span id="like-button-<%= post.id %>">
   <% if user_signed_in? %>
     <% if post.liked_by?(current_user) %>
       <%= link_to post_like_path(post),

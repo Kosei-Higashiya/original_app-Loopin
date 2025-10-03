@@ -51,7 +51,9 @@ RSpec.describe '習慣管理', type: :system do
     it '習慣を削除できること' do
       visit habit_path(habit)
 
-      click_link '🗑️ 削除'
+      accept_confirm do
+        click_link '🗑️ 削除'
+      end
 
       expect(page).to have_content('習慣が削除されました。')
       expect(page).not_to have_content('毎日ランニング')

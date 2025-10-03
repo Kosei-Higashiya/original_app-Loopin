@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'SNS機能（投稿・いいね）', type: :system do
-  let(:user) { create(:user) }
-  let(:habit) { create(:habit, user: user) }
+  let!(:user) { create(:user) }
+  let!(:habit) { create(:habit, user: user) }
 
   before do
     driven_by(:remote_chrome)
@@ -16,7 +16,7 @@ RSpec.describe 'SNS機能（投稿・いいね）', type: :system do
       select habit.title, from: 'post[habit_id]'
       fill_in 'post[content]', with: '今日のランニングはとても気持ちよかったです！'
 
-      click_button '投稿'
+      click_button '投稿する'
 
       expect(page).to have_content('投稿が作成されました')
       expect(page).to have_content('今日のランニングはとても気持ちよかったです！')
@@ -26,7 +26,7 @@ RSpec.describe 'SNS機能（投稿・いいね）', type: :system do
       visit new_post_path
 
       select habit.title, from: 'post[habit_id]'
-      click_button '投稿'
+      click_button '投稿する'
 
       expect(page).to have_content('を入力してください')
     end
@@ -44,14 +44,19 @@ RSpec.describe 'SNS機能（投稿・いいね）', type: :system do
     end
 
     it '投稿にいいねできること', js: true do
-      visit posts_path
+  visit posts_path
 
-      within("#post_#{post.id}") do
-        click_link '♡'
-      end
+  # 投稿 div が存在することを確認
+  expect(page).to have_selector("#post_#{post.id}")
 
-      expect(page).to have_content('♥')
-    end
+  # Ajax いいねボタンをクリック
+  within("#post_#{post.id}") do
+    find("#like-button-#{post.id} a").click
+  end
+
+  # Turbo による Ajax 反映を待機
+  expect(page).to have_css("#like-button-#{post.id} .liked")
+end
 
     it 'いいねした投稿一覧を表示できること' do
       create(:like, user: user, post: post)
