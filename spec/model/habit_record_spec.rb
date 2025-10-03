@@ -64,27 +64,30 @@ RSpec.describe HabitRecord, type: :model do
   describe 'スコープ' do
     let(:user) { create(:user) }
     let(:habit) { create(:habit, user: user) }
-    let!(:completed_record) { create(:habit_record, user: user, habit: habit, completed: true) }
-    let!(:incomplete_record) { create(:habit_record, :incomplete, user: user, habit: habit, recorded_at: 1.day.ago) }
-    let!(:old_record) { create(:habit_record, user: user, habit: habit, recorded_at: 2.days.ago) }
+
+    # 日付を固定してレコードを作成
+    let!(:completed_record)   { create(:habit_record, user: user, habit: habit, completed: true,  recorded_at: Date.current) }
+    let!(:incomplete_record)  { create(:habit_record, :incomplete, user: user, habit: habit, recorded_at: Date.current - 1) }
+    let!(:old_record)         { create(:habit_record, user: user, habit: habit, recorded_at: Date.current - 2) }
 
     it '.completedは完了した記録のみ返すこと' do
       expect(HabitRecord.completed).to include(completed_record)
-      expect(HabitRecord.completed).to_not include(incomplete_record)
+      expect(HabitRecord.completed).not_to include(incomplete_record)
     end
 
     it '.incompleteは未完了の記録のみ返すこと' do
       expect(HabitRecord.incomplete).to include(incomplete_record)
-      expect(HabitRecord.incomplete).to_not include(completed_record)
+      expect(HabitRecord.incomplete).not_to include(completed_record)
     end
 
     it '.recentは記録日時の降順で返すこと' do
-      expect(HabitRecord.recent.first).to eq(completed_record)
+      # 期待する順序を明示的に確認
+      expect(HabitRecord.recent).to eq([completed_record, incomplete_record, old_record])
     end
 
     it '.for_dateは指定した日付の記録を返すこと' do
       expect(HabitRecord.for_date(Date.current)).to include(completed_record)
-      expect(HabitRecord.for_date(Date.current)).to_not include(incomplete_record)
+      expect(HabitRecord.for_date(Date.current)).not_to include(incomplete_record)
     end
   end
 end
