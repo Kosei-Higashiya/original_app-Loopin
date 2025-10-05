@@ -83,6 +83,18 @@ body {
   .card-title {
     font-size: 1.5rem !important;
   }
+
+  /* Make form fields full width on mobile */
+  .form-control,
+  .form-control-lg {
+    width: 100% !important;
+  }
+
+  /* Adjust form button layout */
+  .mb-3 .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }
 
 /* Header and Navigation */
@@ -506,6 +518,19 @@ body {
 
   .card-actions .btn {
     width: 100%;
+  }
+
+  /* Features grid on mobile */
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Ensure container padding on mobile */
+  .hero-section .container,
+  .features-section .container,
+  .dashboard-section .container {
+    padding: 0 15px;
   }
 }
 
@@ -1109,5 +1134,15 @@ body {
   .d-flex.gap-3 .btn {
     width: 100% !important;
     margin: 0.3rem 0 !important;
+  }
+
+  /* Form submit buttons on mobile */
+  .text-center .btn-lg {
+    width: 100% !important;
+    margin: 0.5rem 0 !important;
+  }
+
+  .text-center .me-4 {
+    margin-right: 0 !important;
   }
 }
