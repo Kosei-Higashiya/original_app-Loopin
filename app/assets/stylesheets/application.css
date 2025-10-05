@@ -1145,4 +1145,42 @@ body {
   .text-center .me-4 {
     margin-right: 0 !important;
   }
+
+  /* Additional mobile improvements */
+  .card-body.p-5 {
+    padding: 1.5rem !important;
+  }
+
+  .container-fluid.px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .d-flex.justify-content-center.gap-3 {
+    flex-direction: column;
+  }
+}
+
+/* Extra small devices (very small phones) */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.25rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.25rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
 }
