@@ -102,6 +102,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .navbar-brand {
@@ -119,6 +120,57 @@ body {
   display: flex;
   align-items: center;
   gap: 2rem;
+}
+
+.navbar-toggler {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 101;
+}
+
+.navbar-toggler-icon {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background-color: #4B5563;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: '';
+  display: block;
+  width: 25px;
+  height: 2px;
+  background-color: #4B5563;
+  position: absolute;
+  transition: transform 0.3s ease;
+}
+
+.navbar-toggler-icon::before {
+  top: -8px;
+}
+
+.navbar-toggler-icon::after {
+  top: 8px;
+}
+
+.navbar-toggler.active .navbar-toggler-icon {
+  background-color: transparent;
+}
+
+.navbar-toggler.active .navbar-toggler-icon::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.navbar-toggler.active .navbar-toggler-icon::after {
+  transform: rotate(-45deg);
+  top: 0;
 }
 
 .nav-link {
@@ -293,16 +345,51 @@ body {
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .navbar-toggler {
+    display: block;
+  }
+
+  .navbar-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .navbar-nav.active {
+    display: flex;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .navbar-nav .nav-link:last-child {
+    border-bottom: none;
+  }
+
+  .btn-signup {
+    margin: 0.5rem 1.5rem;
+    text-align: center;
+    display: block;
+  }
+
   .hero-title {
     font-size: 2rem;
   }
 
   .hero-subtitle {
     font-size: 1rem;
-  }
-
-  .navbar-nav {
-    display: none;
   }
 
   .hero-buttons {
@@ -312,6 +399,22 @@ body {
 
   .btn {
     width: 200px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .dashboard-title {
+    font-size: 2rem;
+  }
+
+  .dashboard-subtitle {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 0 15px;
   }
 }
 
@@ -649,12 +752,49 @@ body {
 }
 
 @media (max-width: 768px) {
+  .habit-dashboard {
+    max-width: 100%;
+  }
+
+  .dashboard-habit-card .card {
+    width: 100%;
+  }
+
   .dashboard-habit-card .row {
     flex-direction: column;
   }
 
+  .dashboard-habit-card .col-md-4,
+  .dashboard-habit-card .col-md-8 {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .dashboard-habit-card .col-md-4 {
     margin-top: 1rem;
+  }
+
+  .dashboard-habit-card .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+
+  .dashboard-habit-card .btn-sm {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  .dashboard-habit-card .card-title {
+    font-size: 1.2rem !important;
+    margin-left: 0 !important;
+  }
+
+  .dashboard-habit-card .card-text {
+    margin-left: 0 !important;
+  }
+
+  .dashboard-habit-card .habit-icon {
+    font-size: 1.5rem !important;
   }
 }
 
@@ -880,4 +1020,65 @@ body {
 .card-header .like-heart {
   z-index: 2;
   position: relative;
+}
+
+/* Additional responsive styles for smaller screens */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
+  }
+
+  .card-title {
+    font-size: 1.25rem !important;
+  }
+
+  .card-content p {
+    font-size: 0.9rem;
+  }
+
+  .feature-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+  }
+
+  .navbar .container {
+    padding: 0 10px;
+  }
+
+  .logo {
+    height: 32px;
+  }
+
+  .search-buttons-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-buttons-group .btn {
+    width: 100%;
+  }
 }
