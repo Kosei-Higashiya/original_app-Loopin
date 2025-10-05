@@ -796,6 +796,25 @@ body {
   .dashboard-habit-card .habit-icon {
     font-size: 1.5rem !important;
   }
+
+  /* Posts page responsive improvements */
+  .card-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card-actions .btn {
+    width: 100%;
+  }
+
+  /* Better spacing for mobile */
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  .card-header h3 {
+    font-size: 1.25rem !important;
+  }
 }
 
 /* バッジデザイン */
@@ -1080,5 +1099,15 @@ body {
 
   .search-buttons-group .btn {
     width: 100%;
+  }
+
+  .d-flex.gap-3 {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .d-flex.gap-3 .btn {
+    width: 100% !important;
+    margin: 0.3rem 0 !important;
   }
 }
