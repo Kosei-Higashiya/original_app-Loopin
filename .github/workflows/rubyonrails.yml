@@ -18,7 +18,7 @@ jobs:
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ruby '3.2.3' # プロジェクトの Ruby バージョンに合わせる
+          ruby-version: 3.2.3   # プロジェクトの Ruby バージョンに合わせる
           bundler-cache: true
 
       - name: Install required Bundler version
