@@ -46,8 +46,6 @@ RSpec.describe '習慣管理', type: :system do
   describe '習慣詳細・記録' do
     let!(:habit) { create(:habit, user: user, title: '毎日ランニング') }
 
-
-
     it '習慣を削除できること' do
       visit habit_path(habit)
 

@@ -24,6 +24,14 @@ class PostsController < ApplicationController
     @user_habits = current_user.habits.order(:title)
   end
 
+  def edit
+    if @post.user != current_user
+      redirect_to posts_path, alert: '権限がありません。'
+      return
+    end
+    @user_habits = current_user.habits.order(:title)
+  end
+
   def create
     @post = current_user.posts.build(post_params)
 
@@ -32,6 +40,20 @@ class PostsController < ApplicationController
     else
       @user_habits = current_user.habits.order(:title)
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @post.user != current_user
+      redirect_to posts_path, alert: '権限がありません。'
+      return
+    end
+
+    if @post.update(post_params)
+      redirect_to posts_path, notice: '投稿が更新されました。'
+    else
+      @user_habits = current_user.habits.order(:title)
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -49,28 +71,6 @@ class PostsController < ApplicationController
           render turbo_stream: turbo_stream.prepend('flash', partial: 'shared/flash', locals: { alert: '権限がありません。' })
         end
       end
-    end
-  end
-
-  def edit
-    if @post.user != current_user
-      redirect_to posts_path, alert: '権限がありません。'
-      return
-    end
-    @user_habits = current_user.habits.order(:title)
-  end
-
-  def update
-    if @post.user != current_user
-      redirect_to posts_path, alert: '権限がありません。'
-      return
-    end
-
-    if @post.update(post_params)
-      redirect_to posts_path, notice: '投稿が更新されました。'
-    else
-      @user_habits = current_user.habits.order(:title)
-      render :edit, status: :unprocessable_entity
     end
   end
 

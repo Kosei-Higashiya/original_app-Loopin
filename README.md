@@ -112,7 +112,7 @@
 - **開発環境**：Docker
 - **フロントエンド**：Hotwire / Tailwind CSS
 - **バックエンド**：Ruby on Rails（7系）
-  - Ruby 3.2.3 / Rails 7.1.5.1
+  - Ruby 3.2.3 / Rails 7.2.0
 - **データベース**：PostgreSQL
 - **インフラ**：Render
 - **その他**：GitHub / GitHub Actions（CI/CD対応）

@@ -92,4 +92,4 @@ badges_data.each do |badge_data|
   end
 end
 
-puts "Created #{Badge.count} badges"
+Rails.logger.debug { "Created #{Badge.count} badges" }

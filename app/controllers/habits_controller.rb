@@ -44,7 +44,7 @@ class HabitsController < ApplicationController
       if new_record.save
         # バッジ獲得チェックと通知設定
         newly_earned_badges = current_user.check_and_award_badges
-        set_badge_notification(newly_earned_badges) if newly_earned_badges.any?
+        badge_notification(newly_earned_badges) if newly_earned_badges.any?
 
         Rails.logger.info "Created habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
       else
@@ -76,6 +76,8 @@ class HabitsController < ApplicationController
     @habit = current_user.habits.build
   end
 
+  def edit; end
+
   def create
     @habit = current_user.habits.build(habit_params)
 
@@ -84,15 +86,13 @@ class HabitsController < ApplicationController
 
       # バッジチェック実行（通知は session に積むだけ）
       newly_earned = current_user.check_and_award_badges
-      set_badge_notification(newly_earned) if newly_earned.any?
+      badge_notification(newly_earned) if newly_earned.any?
 
       redirect_to habits_path
     else
       render :new, status: :unprocessable_entity
     end
   end
-
-  def edit; end
 
   def update
     if @habit.update(habit_params)

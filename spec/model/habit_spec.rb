@@ -11,19 +11,19 @@ RSpec.describe Habit, type: :model do
     it 'titleが必須であること' do
       habit.title = nil
       expect(habit).to_not be_valid
-      expect(habit.errors[:title]).to include("を入力してください")
+      expect(habit.errors[:title]).to include('を入力してください')
     end
 
     it 'titleが255文字以下であること' do
       habit.title = 'a' * 256
       expect(habit).to_not be_valid
-      expect(habit.errors[:title]).to include("は255文字以内で入力してください")
+      expect(habit.errors[:title]).to include('は255文字以内で入力してください')
     end
 
     it 'descriptionが1000文字以下であること' do
       habit.description = 'a' * 1001
       expect(habit).to_not be_valid
-      expect(habit.errors[:description]).to include("は1000文字以内で入力してください")
+      expect(habit.errors[:description]).to include('は1000文字以内で入力してください')
     end
 
     it 'descriptionは空でも有効であること' do
@@ -62,13 +62,13 @@ RSpec.describe Habit, type: :model do
     let(:habit) { create(:habit) }
 
     it '習慣を削除すると関連する記録も削除されること' do
-      habit_record = create(:habit_record, habit: habit)
-      post = create(:post, habit: habit)
+      create(:habit_record, habit: habit)
+      create(:post, habit: habit)
 
-      expect {
+      expect do
         habit.destroy
-      }.to change(HabitRecord, :count).by(-1)
-       .and change(Post, :count).by(-1)
+      end.to change(HabitRecord, :count).by(-1)
+                                        .and change(Post, :count).by(-1)
     end
   end
 end

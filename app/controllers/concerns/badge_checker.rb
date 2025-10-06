@@ -12,11 +12,11 @@ module BadgeChecker
 
       # Step 1: Get user's current badge IDs
       earned_badge_ids = user.user_badges.pluck(:badge_id)
-      Rails.logger.debug "[BadgeCheck] User has #{earned_badge_ids.count} existing badges"
+      Rails.logger.debug { "[BadgeCheck] User has #{earned_badge_ids.count} existing badges" }
 
       # Step 2: Get all active badges not yet earned
       available_badges = Badge.active.where.not(id: earned_badge_ids).limit(20)
-      Rails.logger.debug "[BadgeCheck] Checking #{available_badges.count} available badges"
+      Rails.logger.debug { "[BadgeCheck] Checking #{available_badges.count} available badges" }
 
       # Step 3: Pre-calculate user stats
       user_stats = calculate_user_stats(user)
@@ -55,7 +55,8 @@ module BadgeChecker
     ensure
       end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       total_duration = ((end_time - start_time) * 1000).round(2)
-      Rails.logger.info "[BadgeCheck] Completed for user #{user.id} in #{total_duration}ms. Awarded: #{results[:newly_earned].count}, Errors: #{results[:errors].count}"
+      Rails.logger.info "[BadgeCheck] Completed for user #{user.id} in #{total_duration}ms. " \
+                        "Awarded: #{results[:newly_earned].count}, Errors: #{results[:errors].count}"
     end
 
     results
@@ -69,9 +70,9 @@ module BadgeChecker
     thirty_days_ago = 30.days.ago.to_date
     today = Date.current
 
-    total_possible_records = total_habits > 0 ? (today - thirty_days_ago + 1).to_i * total_habits : 0
+    total_possible_records = total_habits.positive? ? (today - thirty_days_ago + 1).to_i * total_habits : 0
     completed_records = user.habit_records.where(recorded_at: thirty_days_ago..today, completed: true).count
-    completion_rate = total_possible_records > 0 ? (completed_records.to_f / total_possible_records * 100).round(1) : 0.0
+    completion_rate = total_possible_records.positive? ? (completed_records.to_f / total_possible_records * 100).round(1) : 0.0
 
     {
       total_habits: total_habits,

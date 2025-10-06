@@ -11,19 +11,19 @@ RSpec.describe HabitRecord, type: :model do
     it 'recorded_atが必須であること' do
       habit_record.recorded_at = nil
       expect(habit_record).to_not be_valid
-      expect(habit_record.errors[:recorded_at]).to include("を入力してください")
+      expect(habit_record.errors[:recorded_at]).to include('を入力してください')
     end
 
     it 'noteが1000文字以下であること' do
       habit_record.note = 'a' * 1001
       expect(habit_record).to_not be_valid
-      expect(habit_record.errors[:note]).to include("は1000文字以内で入力してください")
+      expect(habit_record.errors[:note]).to include('は1000文字以内で入力してください')
     end
 
     it 'completedがboolean値であること' do
       habit_record.completed = nil
       expect(habit_record).to_not be_valid
-      expect(habit_record.errors[:completed]).to include("は一覧にありません")
+      expect(habit_record.errors[:completed]).to include('は一覧にありません')
     end
 
     it '同じユーザー・習慣・日付の記録は一意であること' do
@@ -33,7 +33,7 @@ RSpec.describe HabitRecord, type: :model do
 
       duplicate_record = build(:habit_record, user: user, habit: habit, recorded_at: Date.current)
       expect(duplicate_record).to_not be_valid
-      expect(duplicate_record.errors[:user_id]).to include("can only have one record per habit per day")
+      expect(duplicate_record.errors[:user_id]).to include('can only have one record per habit per day')
     end
   end
 
@@ -57,7 +57,7 @@ RSpec.describe HabitRecord, type: :model do
 
       habit_record = build(:habit_record, user: user2, habit: habit)
       expect(habit_record).to_not be_valid
-      expect(habit_record.errors[:habit]).to include("must belong to the same user")
+      expect(habit_record.errors[:habit]).to include('must belong to the same user')
     end
   end
 
@@ -66,9 +66,13 @@ RSpec.describe HabitRecord, type: :model do
     let(:habit) { create(:habit, user: user) }
 
     # 日付を固定してレコードを作成
-    let!(:completed_record)   { create(:habit_record, user: user, habit: habit, completed: true,  recorded_at: Date.current) }
-    let!(:incomplete_record)  { create(:habit_record, :incomplete, user: user, habit: habit, recorded_at: Date.current - 1) }
-    let!(:old_record)         { create(:habit_record, user: user, habit: habit, recorded_at: Date.current - 2) }
+    let!(:completed_record) do
+      create(:habit_record, user: user, habit: habit, completed: true, recorded_at: Date.current)
+    end
+    let!(:incomplete_record) do
+      create(:habit_record, :incomplete, user: user, habit: habit, recorded_at: Date.current - 1)
+    end
+    let!(:old_record) { create(:habit_record, user: user, habit: habit, recorded_at: Date.current - 2) }
 
     it '.completedは完了した記録のみ返すこと' do
       expect(HabitRecord.completed).to include(completed_record)

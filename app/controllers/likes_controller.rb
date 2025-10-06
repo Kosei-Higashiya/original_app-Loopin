@@ -1,5 +1,3 @@
-#
-
 class LikesController < ApplicationController
   before_action :authenticate_user!
 
@@ -8,11 +6,10 @@ class LikesController < ApplicationController
     @like = current_user.likes.build(post: @post)
 
     respond_to do |format|
+      format.html { head :ok }
       if @like.save
-        format.html { head :ok } # ← これでページリロードもフラッシュもなし
         format.turbo_stream
       else
-        format.html { head :ok }
         format.turbo_stream { head :unprocessable_entity }
       end
     end
@@ -23,11 +20,10 @@ class LikesController < ApplicationController
     @like = current_user.likes.find_by(post: @post)
 
     respond_to do |format|
+      format.html { head :ok }
       if @like&.destroy
-        format.html { head :ok }
         format.turbo_stream
       else
-        format.html { head :ok }
         format.turbo_stream { head :unprocessable_entity }
       end
     end
