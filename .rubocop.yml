@@ -1,0 +1,46 @@
+plugins:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+
+  NewCops: enable
+  # Rubyバージョンの指定
+  TargetRubyVersion: '3.2.3'
+  # 除外するファイルやディレクトリ
+  Exclude:
+   - 'spec/**/*'
+   - 'bin/**/*'
+   - 'db/schema.rb'
+   - 'node_modules/**/*'
+   - 'lib/tasks/**/*.rake'
+   - 'config/environments/*.rb'
+   - 'app/controllers/concerns/badge_checker.rb'
+   - 'app/controllers/concerns/badge_notifications.rb'
+   - 'app/controllers/habit_records_controller.rb'
+   - 'app/models/user.rb'
+   - 'app/controllers/habits_controller.rb'
+   - 'app/controllers/posts_controller.rb'
+   - 'app/models/badge.rb'
+
+# 行の長さに関する設定
+Layout/LineLength:
+  Max: 150
+# メソッドの行数制限
+Metrics/MethodLength:
+  Max: 20
+# クラスの行数制限
+Metrics/ClassLength:
+  Max: 200
+# ドキュメントコメントの要求を無効化
+Style/Documentation:
+  Enabled: false
+# 日本語コメントを許可
+Style/AsciiComments:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false # I18n対応は後回し
+
+Style/FrozenStringLiteralComment:
+  Enabled: false # frozen_string_literal: true コメントを無視

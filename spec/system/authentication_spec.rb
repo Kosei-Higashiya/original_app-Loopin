@@ -10,7 +10,7 @@ RSpec.describe 'ユーザー認証', type: :system do
       visit new_user_registration_path
 
       fill_in 'user[name]', with: '山田太郎'
-      fill_in 'user[email]', with: "yamada_#{SecureRandom.hex(4)}@example.com"  # ← ユニーク化
+      fill_in 'user[email]', with: "yamada_#{SecureRandom.hex(4)}@example.com" # ← ユニーク化
       fill_in 'user[password]', with: 'password123'
       fill_in 'user[password_confirmation]', with: 'password123'
 

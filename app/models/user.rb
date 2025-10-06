@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   include BadgeChecker
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -15,11 +16,11 @@ class User < ApplicationRecord
 
   # 名前が空の場合、ゲストを表示名として返す
   def display_name
-    name.present? ? name : 'ゲスト'
+    name.presence || 'ゲスト'
   end
 
   # バッジ関連メソッド
-  def has_badge?(badge)
+  def badge?(badge)
     user_badges.exists?(badge: badge)
   end
 
@@ -79,7 +80,9 @@ class User < ApplicationRecord
     # Use the optimized badge checker
     results = perform_badge_check_for_user(self)
 
-    Rails.logger.debug "Badge check completed for user #{id}. Awarded #{results[:newly_earned].count} badges via optimized checker"
+    Rails.logger.debug do
+      "Badge check completed for user #{id}. Awarded #{results[:newly_earned].count} badges via optimized checker"
+    end
 
     # Return newly earned badges for backward compatibility
     results[:newly_earned] || []

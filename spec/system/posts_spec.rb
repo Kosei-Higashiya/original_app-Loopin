@@ -44,19 +44,19 @@ RSpec.describe 'SNS機能（投稿・いいね）', type: :system do
     end
 
     it '投稿にいいねできること', js: true do
-  visit posts_path
+      visit posts_path
 
-  # 投稿 div が存在することを確認
-  expect(page).to have_selector("#post_#{post.id}")
+      # 投稿 div が存在することを確認
+      expect(page).to have_selector("#post_#{post.id}")
 
-  # Ajax いいねボタンをクリック
-  within("#post_#{post.id}") do
-    find("#like-button-#{post.id} a").click
-  end
+      # Ajax いいねボタンをクリック
+      within("#post_#{post.id}") do
+        find("#like-button-#{post.id} a").click
+      end
 
-  # Turbo による Ajax 反映を待機
-  expect(page).to have_css("#like-button-#{post.id} .liked")
-end
+      # Turbo による Ajax 反映を待機
+      expect(page).to have_css("#like-button-#{post.id} .liked")
+    end
 
     it 'いいねした投稿一覧を表示できること' do
       create(:like, user: user, post: post)

@@ -11,7 +11,7 @@ class UserBadge < ApplicationRecord
   # バッジをユーザーに付与するメソッド
   def self.award_badge(user, badge)
     # すでにバッジを持っていたら付与しない
-    return nil if user.has_badge?(badge)
+    return nil if user.badge?(badge)
     # バッジの獲得条件を満たしていなければ付与しない
     return nil unless badge.earned_by?(user)
 

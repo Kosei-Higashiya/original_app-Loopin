@@ -11,21 +11,21 @@ RSpec.describe User, type: :model do
     it 'emailが必須であること' do
       user.email = nil
       expect(user).to_not be_valid
-      expect(user.errors[:email]).to include("を入力してください")
+      expect(user.errors[:email]).to include('を入力してください')
     end
 
     it 'emailが一意であること' do
       create(:user, email: 'test@example.com')
       user.email = 'test@example.com'
       expect(user).to_not be_valid
-      expect(user.errors[:email]).to include("はすでに存在します")
+      expect(user.errors[:email]).to include('はすでに存在します')
     end
 
     it 'passwordが最低6文字であること' do
       user.password = '12345'
       user.password_confirmation = '12345'
       expect(user).to_not be_valid
-      expect(user.errors[:password]).to include("は6文字以上で入力してください")
+      expect(user.errors[:password]).to include('は6文字以上で入力してください')
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe User, type: :model do
       let(:user) { build(:user, :with_name) }
 
       it '名前を返すこと' do
-        expect(user.display_name).to eq("山田太郎")
+        expect(user.display_name).to eq('山田太郎')
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe User, type: :model do
       let(:user) { build(:user, :guest) }
 
       it 'ゲストを返すこと' do
-        expect(user.display_name).to eq("ゲスト")
+        expect(user.display_name).to eq('ゲスト')
       end
     end
   end

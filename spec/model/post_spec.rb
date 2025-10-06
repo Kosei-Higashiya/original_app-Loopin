@@ -11,13 +11,13 @@ RSpec.describe Post, type: :model do
     it 'contentが必須であること' do
       post.content = nil
       expect(post).to_not be_valid
-      expect(post.errors[:content]).to include("を入力してください")
+      expect(post.errors[:content]).to include('を入力してください')
     end
 
     it 'contentが1000文字以下であること' do
       post.content = 'a' * 1001
       expect(post).to_not be_valid
-      expect(post.errors[:content]).to include("は1000文字以内で入力してください")
+      expect(post.errors[:content]).to include('は1000文字以内で入力してください')
     end
   end
 
@@ -106,21 +106,21 @@ RSpec.describe Post, type: :model do
       post.tag_list = 'ランニング, 健康, フィットネス'
       post.save
 
-      expect(post.tags.pluck(:name)).to match_array(['ランニング', '健康', 'フィットネス'])
+      expect(post.tags.pluck(:name)).to match_array(%w[ランニング 健康 フィットネス])
     end
 
     it '重複するタグ名は除去されること' do
       post.tag_list = 'ランニング, ランニング, 健康'
       post.save
 
-      expect(post.tags.pluck(:name)).to match_array(['ランニング', '健康'])
+      expect(post.tags.pluck(:name)).to match_array(%w[ランニング 健康])
     end
 
     it '空白は除去されること' do
       post.tag_list = ' ランニング , 健康 , '
       post.save
 
-      expect(post.tags.pluck(:name)).to match_array(['ランニング', '健康'])
+      expect(post.tags.pluck(:name)).to match_array(%w[ランニング 健康])
     end
   end
 end

@@ -10,7 +10,7 @@
   <!-- Trophy Grid Display -->
   <div class="trophy-grid">
     <% @badges.each do |badge| %>
-      <% user_has_badge = current_user.has_badge?(badge) %>
+      <% user_has_badge = current_user.badge?(badge) %>
       <%
         # Determine progress based on badge condition
         progress_class = if user_has_badge

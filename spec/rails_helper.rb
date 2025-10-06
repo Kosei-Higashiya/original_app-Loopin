@@ -3,7 +3,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
 # Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
@@ -38,17 +38,15 @@ end
 
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
-
 RSpec.configure do |config|
-
   config.before(:each, type: :system) do
     driven_by :remote_chrome
     DatabaseCleaner.strategy = :truncation
 
     # Docker 内で Selenium がアクセスできるホストとポートを指定
     Capybara.server_host = '0.0.0.0'
-    Capybara.server_port = 3001         # 3000 は Rails 本番/開発で使用済み
-    Capybara.app_host = "http://web:3001"
+    Capybara.server_port = 3001 # 3000 は Rails 本番/開発で使用済み
+    Capybara.app_host = 'http://web:3001'
     Capybara.ignore_hidden_elements = false
   end
 
@@ -62,13 +60,13 @@ RSpec.configure do |config|
 
   # Database cleaner configuration
   config.before(:suite) do
-  if ActiveRecord::Base.connection.adapter_name == "SQLite"
-    # SQLite ならセーフガード無視 & truncate不要
-    DatabaseCleaner.allow_remote_database_url = true
-  else
-    DatabaseCleaner.clean_with(:truncation)
+    if ActiveRecord::Base.connection.adapter_name == 'SQLite'
+      # SQLite ならセーフガード無視 & truncate不要
+      DatabaseCleaner.allow_remote_database_url = true
+    else
+      DatabaseCleaner.clean_with(:truncation)
+    end
   end
-end
 
   config.around(:each) do |example|
     DatabaseCleaner.cleaning do

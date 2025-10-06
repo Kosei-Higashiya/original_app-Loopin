@@ -11,38 +11,38 @@ RSpec.describe Badge, type: :model do
     it 'nameが必須であること' do
       badge.name = nil
       expect(badge).to_not be_valid
-      expect(badge.errors[:name]).to include("を入力してください")
+      expect(badge.errors[:name]).to include('を入力してください')
     end
 
     it 'nameが一意であること' do
       create(:badge, name: '初回達成')
       badge.name = '初回達成'
       expect(badge).to_not be_valid
-      expect(badge.errors[:name]).to include("はすでに存在します")
+      expect(badge.errors[:name]).to include('はすでに存在します')
     end
 
     it 'nameが255文字以下であること' do
       badge.name = 'a' * 256
       expect(badge).to_not be_valid
-      expect(badge.errors[:name]).to include("は255文字以内で入力してください")
+      expect(badge.errors[:name]).to include('は255文字以内で入力してください')
     end
 
     it 'condition_typeが必須であること' do
       badge.condition_type = nil
       expect(badge).to_not be_valid
-      expect(badge.errors[:condition_type]).to include("を入力してください")
+      expect(badge.errors[:condition_type]).to include('を入力してください')
     end
 
     it 'condition_valueが必須であること' do
       badge.condition_value = nil
       expect(badge).to_not be_valid
-      expect(badge.errors[:condition_value]).to include("を入力してください")
+      expect(badge.errors[:condition_value]).to include('を入力してください')
     end
 
     it 'condition_valueが正の数であること' do
       badge.condition_value = 0
       expect(badge).to_not be_valid
-      expect(badge.errors[:condition_value]).to include("は0より大きい値にしてください")
+      expect(badge.errors[:condition_value]).to include('は0より大きい値にしてください')
     end
   end
 

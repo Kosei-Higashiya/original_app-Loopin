@@ -5,26 +5,28 @@ module BadgeNotifications
   private
 
   # バッジ獲得後に呼び出して通知をセッションに保存（重複を防ぐ）
-  def set_badge_notification(badges)
+  def badge_notification(badges)
     return if badges.blank?
 
     begin
       session[:newly_earned_badges] ||= []
 
-      Rails.logger.debug "[BadgeNotifications] Before adding, session contains: #{session[:newly_earned_badges].map do |b|
-        b['name']
-      end.join(', ')}"
+      Rails.logger.debug do
+        "[BadgeNotifications] Before adding, session contains: #{session[:newly_earned_badges].map do |b|
+          b['name']
+        end.join(', ')}"
+      end
 
       badges.each do |badge|
         badge_data = { 'id' => badge.id, 'name' => badge.name }
-        unless session[:newly_earned_badges].any? { |b| b['id'] == badge.id }
-          session[:newly_earned_badges] << badge_data
-        end
+        session[:newly_earned_badges] << badge_data unless session[:newly_earned_badges].any? { |b| b['id'] == badge.id }
       end
 
-      Rails.logger.debug "[BadgeNotifications] Stored badges in session: #{session[:newly_earned_badges].map do |b|
-        b['name']
-      end.join(', ')}"
+      Rails.logger.debug do
+        "[BadgeNotifications] Stored badges in session: #{session[:newly_earned_badges].map do |b|
+          b['name']
+        end.join(', ')}"
+      end
     rescue StandardError => e
       # セッション関連エラーをキャッチして本番環境での問題を防ぐ
       Rails.logger.error "[BadgeNotifications] Error storing badge notifications in session: #{e.message}"
@@ -34,19 +36,15 @@ module BadgeNotifications
   end
 
   # 保存された通知を取得してクリア（デバッグログ付き）
-  def get_and_clear_badge_notifications
-    return [] unless session[:newly_earned_badges].present?
+  def getandclear_badge_notifications
+    return [] if session[:newly_earned_badges].blank?
 
     notifications = session[:newly_earned_badges].dup
     # セッションをクリア
     session.delete(:newly_earned_badges)
 
     # デバッグログ
-    if notifications.any?
-      Rails.logger.info "Badge notifications cleared from session: #{notifications.map do |n|
-        n['name']
-      end.join(', ')}"
-    end
+    Rails.logger.info "Badge notifications cleared from session: #{notifications.pluck('name').join(', ')}" if notifications.any?
     notifications
   rescue StandardError => e
     # セッション関連エラーをキャッチして本番環境での問題を防ぐ
@@ -56,12 +54,12 @@ module BadgeNotifications
   end
 
   # 通知フラッシュメッセージを設定（デバッグログ付き）
-  def set_badge_notification_flash
+  def badge_notification_flash
     # Turboリクエストではフラッシュを使わない
     return if request.format.turbo_stream?
 
     begin
-      notifications = get_and_clear_badge_notifications
+      notifications = getandclear_badge_notifications
       return if notifications.blank?
 
       flash[:success] = if notifications.size == 1
@@ -70,7 +68,11 @@ module BadgeNotifications
                           "🎉おめでとうございます! #{notifications.size}個のバッジを獲得しました！"
                         end
 
-      Rails.logger.debug "[BadgeNotifications] Flash set for badges: #{notifications.map { |n| n['name'] }.join(', ')}"
+      Rails.logger.debug do
+        "[BadgeNotifications] Flash set for badges: #{notifications.map do |n|
+          n['name']
+        end.join(', ')}"
+      end
     rescue StandardError => e
       # 本番環境でのセッション関連エラーを防ぐため、エラーをログに記録するのみ
       Rails.logger.error "[BadgeNotifications] Error setting badge notification flash: #{e.message}"

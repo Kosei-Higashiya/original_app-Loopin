@@ -28,7 +28,7 @@ class Post < ApplicationRecord
 
   # カンマ区切り, 空白削除, 重複削除したタグ名の配列を受け取り、タグを関連付ける。
   def tag_list=(names)
-    tag_names = names.split(',').map(&:strip).reject(&:blank?).uniq
+    tag_names = names.split(',').map(&:strip).compact_blank.uniq
     self.tags = tag_names.map do |name|
       Tag.find_or_create_by(name: name)
     end
