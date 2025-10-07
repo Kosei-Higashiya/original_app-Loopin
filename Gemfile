@@ -58,8 +58,8 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows]
   gem 'factory_bot_rails'
-  gem 'rubocop-factory_bot', require: false
   gem 'rspec-rails'
+  gem 'rubocop-factory_bot', require: false
   gem 'rubocop-discourse', require: false
 end
 
