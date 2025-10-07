@@ -23,6 +23,7 @@ AllCops:
    - 'app/controllers/habits_controller.rb'
    - 'app/controllers/posts_controller.rb'
    - 'app/models/badge.rb'
+   - 'vendor/**/*'
 
 # 行の長さに関する設定
 Layout/LineLength:
@@ -47,4 +48,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false # frozen_string_literal: true コメントを無視
 
 FactoryBot/CreateList:
+  Enabled: false
+
+Capybara/RSpec/PredicateMatcher:
   Enabled: false
