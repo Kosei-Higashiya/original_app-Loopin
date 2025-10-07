@@ -44,3 +44,6 @@ Rails/I18nLocaleTexts:
 
 Style/FrozenStringLiteralComment:
   Enabled: false # frozen_string_literal: true コメントを無視
+
+FactoryBot/CreateList:
+  Enabled: false
