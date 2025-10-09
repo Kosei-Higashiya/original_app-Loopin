@@ -28,7 +28,10 @@
           <%= link_to root_path, class: "navbar-brand" do %>
             <%= image_tag "logo.svg", alt: "Loopin", class: "logo" %>
           <% end %>
-          <div class="navbar-nav">
+          <button class="navbar-toggler" id="navbarToggle" aria-label="メニュー">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-nav" id="navbarNav">
             <a href="#" class="nav-link">使い方</a>
             <% if user_signed_in? %>
               <%= link_to "ログアウト", destroy_user_session_path, "data-turbo-method": :delete, class: "nav-link" %>
@@ -51,3 +54,18 @@
         <p>&copy; 2025 Loopin. All rights reserved.</p>
       </div>
     </footer>
+
+    <script>
+      // Mobile navigation toggle
+      document.addEventListener('DOMContentLoaded', function() {
+        const navbarToggle = document.getElementById('navbarToggle');
+        const navbarNav = document.getElementById('navbarNav');
+
+        if (navbarToggle) {
+          navbarToggle.addEventListener('click', function() {
+            navbarNav.classList.toggle('active');
+            this.classList.toggle('active');
+          });
+        }
+      });
+    </script>

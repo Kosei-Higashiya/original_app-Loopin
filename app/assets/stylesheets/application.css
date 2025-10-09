@@ -83,7 +83,21 @@ body {
   .card-title {
     font-size: 1.5rem !important;
   }
+
+   /* モバイルのフォーム */
+  .form-control,
+  .form-control-lg {
+    width: 100% !important;
+  }
+
+  /* Adjust form button layout */
+  .mb-3 .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }
+
+
 
 /* Header and Navigation */
 .header {
@@ -102,6 +116,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .navbar-brand {
@@ -120,6 +135,58 @@ body {
   align-items: center;
   gap: 2rem;
 }
+
+.navbar-toggler {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 101;
+}
+
+.navbar-toggler-icon {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background-color: #4B5563;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: '';
+  display: block;
+  width: 25px;
+  height: 2px;
+  background-color: #4B5563;
+  position: absolute;
+  transition: transform 0.3s ease;
+}
+
+.navbar-toggler-icon::before {
+  top: -8px;
+}
+
+.navbar-toggler-icon::after {
+  top: 8px;
+}
+
+.navbar-toggler.active .navbar-toggler-icon {
+  background-color: transparent;
+}
+
+.navbar-toggler.active .navbar-toggler-icon::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.navbar-toggler.active .navbar-toggler-icon::after {
+  transform: rotate(-45deg);
+  top: 0;
+}
+
 
 .nav-link {
   text-decoration: none;
@@ -291,18 +358,53 @@ body {
   opacity: 0.8;
 }
 
-/* Responsive design */
+/* レスポンシブデザイン */
 @media (max-width: 768px) {
+  .navbar-toggler {
+    display: block;
+  }
+
+  .navbar-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .navbar-nav.active {
+    display: flex;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .navbar-nav .nav-link:last-child {
+    border-bottom: none;
+  }
+
+  .btn-signup {
+    margin: 0.5rem 1.5rem;
+    text-align: center;
+    display: block;
+  }
+
   .hero-title {
     font-size: 2rem;
   }
 
   .hero-subtitle {
     font-size: 1rem;
-  }
-
-  .navbar-nav {
-    display: none;
   }
 
   .hero-buttons {
@@ -312,6 +414,23 @@ body {
 
   .btn {
     width: 200px;
+  }
+
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .dashboard-title {
+    font-size: 2rem;
+  }
+
+  .dashboard-subtitle {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 0 15px;
   }
 }
 
@@ -391,7 +510,7 @@ body {
   text-align: center;
 }
 
-/* Responsive dashboard */
+/* レスポンシブダッシュボード */
 @media (max-width: 768px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -403,6 +522,19 @@ body {
 
   .card-actions .btn {
     width: 100%;
+  }
+
+  /* モバイルの特徴セクション */
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Ensure container padding on mobile */
+  .hero-section .container,
+  .features-section .container,
+  .dashboard-section .container {
+    padding: 0 15px;
   }
 }
 
@@ -649,12 +781,69 @@ body {
 }
 
 @media (max-width: 768px) {
+  .habit-dashboard {
+    max-width: 100%;
+  }
+
+  .dashboard-habit-card .card {
+    width: 100%;
+  }
+
   .dashboard-habit-card .row {
     flex-direction: column;
   }
 
+  .dashboard-habit-card .col-md-4,
+  .dashboard-habit-card .col-md-8 {
+    width: 100%;
+    max-width: 100%;
+  }
+
+
   .dashboard-habit-card .col-md-4 {
     margin-top: 1rem;
+  }
+
+  .dashboard-habit-card .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+
+  .dashboard-habit-card .btn-sm {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  .dashboard-habit-card .card-title {
+    font-size: 1.2rem !important;
+    margin-left: 0 !important;
+  }
+
+  .dashboard-habit-card .card-text {
+    margin-left: 0 !important;
+  }
+
+  .dashboard-habit-card .habit-icon {
+    font-size: 1.5rem !important;
+  }
+
+  /* 投稿ページのレスポンシブ改善 */
+  .card-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card-actions .btn {
+    width: 100%;
+  }
+
+  /* Better spacing for mobile */
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  .card-header h3 {
+    font-size: 1.25rem !important;
   }
 }
 
@@ -876,8 +1065,127 @@ body {
   transform: scale(1.3);
 }
 
-/* Ensure the heart stays visible in card headers */
+/* ハートアイコンが常に見えるようにする */
 .card-header .like-heart {
   z-index: 2;
   position: relative;
+}
+
+/* 追加のレスポンシブスタイル（小さい画面用） */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
+  }
+
+  .card-title {
+    font-size: 1.25rem !important;
+  }
+
+  .card-content p {
+    font-size: 0.9rem;
+  }
+
+  .feature-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+  }
+
+  .navbar .container {
+    padding: 0 10px;
+  }
+
+  .logo {
+    height: 32px;
+  }
+
+  .search-buttons-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-buttons-group .btn {
+    width: 100%;
+  }
+
+  .d-flex.gap-3 {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .d-flex.gap-3 .btn {
+    width: 100% !important;
+    margin: 0.3rem 0 !important;
+  }
+
+  /* フォーム送信ボタンのモバイル対応 */
+  .text-center .btn-lg {
+    width: 100% !important;
+    margin: 0.5rem 0 !important;
+  }
+
+  .text-center .me-4 {
+    margin-right: 0 !important;
+  }
+
+  /* 追加のモバイル改善 */
+  .card-body.p-5 {
+    padding: 1.5rem !important;
+  }
+
+  .container-fluid.px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .d-flex.justify-content-center.gap-3 {
+    flex-direction: column;
+  }
+}
+
+/* 超小型デバイス（非常に小さな電話） */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.25rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.25rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
 }
