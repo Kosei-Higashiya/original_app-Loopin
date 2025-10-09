@@ -217,4 +217,19 @@
     padding: 0.4rem 0.1rem;
     font-size: 0.8rem;
   }
+
+  .simple-calendar .calendar-heading {
+    font-size: 1rem;
+  }
+
+  /* ボタングループのレスポンシブ対応 */
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }
