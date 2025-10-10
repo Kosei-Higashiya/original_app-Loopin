@@ -47,6 +47,8 @@ gem 'bootsnap', require: false
 gem 'devise'
 gem 'devise-i18n-views'
 gem 'letter_opener_web', '~> 2.0'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
 gem 'nokogiri', '>= 1.18.9'
 gem 'rails-i18n'
 gem 'ransack'

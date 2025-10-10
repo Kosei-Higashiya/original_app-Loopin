@@ -4,7 +4,8 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :omniauthable, omniauth_providers: [:google_oauth2]
 
   has_many :habits, dependent: :destroy
   has_many :habit_records, dependent: :destroy
@@ -13,6 +14,15 @@ class User < ApplicationRecord
   has_many :badges, through: :user_badges
   has_many :likes, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
+
+  # OmniAuth callback handler
+  def self.from_omniauth(auth)
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email = auth.info.email
+      user.password = Devise.friendly_token[0, 20]
+      user.name = auth.info.name # Googleから取得した名前を設定
+    end
+  end
 
   # 名前が空の場合、ゲストを表示名として返す
   def display_name
