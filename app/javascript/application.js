@@ -85,3 +85,20 @@ document.addEventListener('turbo:after-stream-render', function() {
   setTimeout(initializeFlashMessages, 200);
   setTimeout(initializeFlashMessages, 500);
 });
+
+// ========== Navbar toggle functionality ==========
+function initNavbar() {
+  const navbarToggle = document.getElementById("navbarToggle");
+  const navbarNav = document.getElementById("navbarNav");
+
+  if (navbarToggle && !navbarToggle.dataset.listenerAdded) {
+    navbarToggle.addEventListener("click", () => {
+      navbarNav.classList.toggle("active");
+      navbarToggle.classList.toggle("active");
+    });
+    navbarToggle.dataset.listenerAdded = "true"; // 二重登録防止
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initNavbar);
+document.addEventListener("turbo:load", initNavbar);
