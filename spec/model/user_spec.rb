@@ -130,4 +130,90 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '.from_omniauth' do
+    let(:auth) do
+      OmniAuth::AuthHash.new({
+        provider: 'google_oauth2',
+        uid: '123456789',
+        info: {
+          email: 'test@example.com',
+          name: 'Test User'
+        }
+      })
+    end
+
+    context '新規ユーザーの場合' do
+      it 'ユーザーを作成すること' do
+        expect {
+          User.from_omniauth(auth)
+        }.to change(User, :count).by(1)
+      end
+
+      it '正しい情報でユーザーを作成すること' do
+        user = User.from_omniauth(auth)
+        expect(user.provider).to eq('google_oauth2')
+        expect(user.uid).to eq('123456789')
+        expect(user.email).to eq('test@example.com')
+        expect(user.name).to eq('Test User')
+      end
+    end
+
+    context '既にプロバイダーとUIDでユーザーが存在する場合' do
+      let!(:existing_user) do
+        create(:user, :oauth_user, 
+               provider: 'google_oauth2', 
+               uid: '123456789',
+               email: 'test@example.com')
+      end
+
+      it '新しいユーザーを作成しないこと' do
+        expect {
+          User.from_omniauth(auth)
+        }.not_to change(User, :count)
+      end
+
+      it '既存のユーザーを返すこと' do
+        user = User.from_omniauth(auth)
+        expect(user.id).to eq(existing_user.id)
+      end
+    end
+
+    context '同じメールアドレスのユーザーが存在する場合' do
+      let!(:existing_user) do
+        create(:user, email: 'test@example.com', provider: nil, uid: nil)
+      end
+
+      it '新しいユーザーを作成しないこと' do
+        expect {
+          User.from_omniauth(auth)
+        }.not_to change(User, :count)
+      end
+
+      it 'プロバイダーとUIDを既存ユーザーに追加すること' do
+        user = User.from_omniauth(auth)
+        expect(user.id).to eq(existing_user.id)
+        expect(user.provider).to eq('google_oauth2')
+        expect(user.uid).to eq('123456789')
+      end
+    end
+  end
+
+  describe '#password_required?' do
+    context 'OAuth ユーザーの場合' do
+      let(:oauth_user) { build(:user, :oauth_user) }
+
+      it 'パスワードが不要であること' do
+        expect(oauth_user.password_required?).to be_falsey
+      end
+    end
+
+    context '通常のユーザーの場合' do
+      let(:normal_user) { build(:user, provider: nil) }
+
+      it 'パスワードが必要であること' do
+        expect(normal_user.password_required?).to be_truthy
+      end
+    end
+  end
 end

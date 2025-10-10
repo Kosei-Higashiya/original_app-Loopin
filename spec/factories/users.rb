@@ -12,5 +12,11 @@ FactoryBot.define do
     trait :guest do
       name { nil }
     end
+
+    trait :oauth_user do
+      provider { 'google_oauth2' }
+      uid { '123456789' }
+      password { nil }
+    end
   end
 end
