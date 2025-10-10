@@ -48,12 +48,13 @@ gem 'devise'
 gem 'devise-i18n-views'
 gem 'letter_opener_web', '~> 2.0'
 gem 'nokogiri', '>= 1.18.9'
+gem 'rack', '~> 2.2.19'
 gem 'rails-i18n'
 gem 'ransack'
 gem 'rexml', '>= 3.4.2'
 gem 'sassc-rails'
 gem 'simple_calendar', '~> 2.4'
-gem 'rack', '~> 2.2.19'
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
