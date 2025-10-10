@@ -44,10 +44,48 @@
 
 　〈MVPリリース時〉
 
+---
+
+## セットアップ手順
+
+### 1. リポジトリのクローン
+```bash
+git clone https://github.com/Kosei-Higashiya/original_app-Loopin.git
+cd original_app-Loopin
+```
+
+### 2. 環境変数の設定
+`.env.development.example` を `.env.development` にコピーして、Google OAuth2の認証情報を設定してください。
+
+```bash
+cp .env.development.example .env.development
+```
+
+#### Google OAuth2の設定方法
+1. [Google Cloud Console](https://console.cloud.google.com/) にアクセス
+2. プロジェクトを作成または選択
+3. 「APIとサービス」→「認証情報」を開く
+4. 「認証情報を作成」→「OAuth 2.0 クライアントID」を選択
+5. アプリケーションの種類で「ウェブアプリケーション」を選択
+6. 承認済みのリダイレクトURIに以下を追加：
+   - `http://localhost:3000/users/auth/google_oauth2/callback` (開発環境)
+   - 本番環境のURL + `/users/auth/google_oauth2/callback`
+7. 作成されたクライアントIDとクライアントシークレットを `.env.development` に設定
+
+### 3. Dockerコンテナの起動
+```bash
+docker compose up
+```
+
+アプリケーションは http://localhost:3000 でアクセス可能です。
+
+---
+
 ## 機能
 
 - **認証機能**
-  ユーザー登録 / ログイン
+  - ユーザー登録 / ログイン
+  - **Googleログイン機能** ← New!
 
 - **習慣の投稿(編集・閲覧・削除)**
   例：「英語の勉強」「筋トレ」など複数登録可
@@ -96,6 +134,8 @@
   ## 使用Gem
 
 - **Devise**：認証機能
+- **omniauth-google-oauth2**：Google OAuth2認証
+- **omniauth-rails_csrf_protection**：OmniAuth CSRF保護
 - **Ransack**：検索機能
 - **Simple Calendar**：カレンダー表示
 - **Kaminari**：ページネーション（ページ分割）
