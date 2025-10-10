@@ -17,16 +17,45 @@ class User < ApplicationRecord
 
   # OmniAuth callback handler
   def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0, 20]
-      user.name = auth.info.name # Googleから取得した名前を設定
+    # First, try to find user by provider and uid
+    user = where(provider: auth.provider, uid: auth.uid).first
+    
+    # If not found, check if user exists with this email
+    if user.nil?
+      user = find_by(email: auth.info.email)
+      
+      if user
+        # User exists with email but different provider
+        # Update provider and uid to link accounts
+        user.update(provider: auth.provider, uid: auth.uid)
+      else
+        # Create new user
+        user = create(
+          provider: auth.provider,
+          uid: auth.uid,
+          email: auth.info.email,
+          password: Devise.friendly_token[0, 20],
+          name: auth.info.name
+        )
+      end
     end
+    
+    user
   end
 
   # 名前が空の場合、ゲストを表示名として返す
   def display_name
     name.presence || 'ゲスト'
+  end
+
+  # OAuthユーザーはパスワード不要
+  def password_required?
+    provider.blank? && super
+  end
+
+  # OAuthユーザーはパスワード確認不要
+  def password_confirmation_required?
+    provider.blank? && super
   end
 
   # バッジ関連メソッド
