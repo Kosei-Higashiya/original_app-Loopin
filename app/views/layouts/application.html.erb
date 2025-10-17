@@ -3,10 +3,26 @@
   <head>
     <title>Loopin - 習慣管理アプリ</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="習慣形成をサポートする「Loopin」。バッジ機能やカレンダー表示で、あなたの目標達成を手助けします。">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= favicon_link_tag "/favicon-32x32.png", type: "image/png" %>
+
+    <%# OGP (Open Graph Protocol) meta tags %>
+    <meta property="og:title" content="Loopin - 習慣管理アプリ">
+    <meta property="og:description" content="習慣形成をサポートする「Loopin」。バッジ機能やカレンダー表示で、あなたの目標達成を手助けします。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:image" content="<%= request.base_url %>/ogp.png">
+    <meta property="og:site_name" content="Loopin">
+    <meta property="og:locale" content="ja_JP">
+
+    <%# Twitter Card meta tags %>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Loopin - 習慣管理アプリ">
+    <meta name="twitter:description" content="習慣形成をサポートする「Loopin」。バッジ機能やカレンダー表示で、あなたの目標達成を手助けします。">
+    <meta name="twitter:image" content="<%= request.base_url %>/ogp.png">
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
