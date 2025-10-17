@@ -48,7 +48,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="navbar-nav" id="navbarNav">
-            <a href="#" class="nav-link">使い方</a>
+            <%= link_to "使い方", how_to_use_path, class: "nav-link" %>
             <% if user_signed_in? %>
               <%= link_to "ログアウト", destroy_user_session_path, "data-turbo-method": :delete, class: "nav-link" %>
               <%= link_to "プロフィール", edit_user_registration_path, class: "nav-link" %>
