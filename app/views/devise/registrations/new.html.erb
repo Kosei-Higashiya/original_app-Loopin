@@ -70,6 +70,10 @@
 
           <div class="text-center">
             <div class="mb-3">
+
+              <!-- Google Login Button -->
+              <%= render "devise/shared/links" %>
+
               <%= link_to "既にアカウントをお持ちの方はこちら", new_session_path(resource_name),
                   class: "btn btn-outline-primary btn-lg",
                   style: "font-size: 1.1rem; padding: 0.75rem 2rem;" %>
