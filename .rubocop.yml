@@ -24,6 +24,8 @@ AllCops:
    - 'app/controllers/posts_controller.rb'
    - 'app/models/badge.rb'
    - 'vendor/**/*'
+   - 'app/controllers/users/omniauth_callbacks_controller.rb'
+   - 'config/initializers/devise.rb'
 
 # 行の長さに関する設定
 Layout/LineLength:
