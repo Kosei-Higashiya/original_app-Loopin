@@ -46,6 +46,7 @@ gem 'bootsnap', require: false
 
 gem 'devise'
 gem 'devise-i18n-views'
+gem 'high_voltage', '~> 4.0'
 gem 'letter_opener_web', '~> 2.0'
 gem 'nokogiri', '>= 1.18.9'
 gem 'omniauth-google-oauth2'
