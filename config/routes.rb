@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   # Dashboard route for the main app page
   get 'dashboard' => 'home#dashboard'
 
+  # 使い方ページのルーティング
+  get 'how_to_use' => 'home#how_to_use'
+
   # 習慣関連のルーティング
   resources :habits do
     member do
