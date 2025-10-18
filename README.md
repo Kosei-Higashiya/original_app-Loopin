@@ -131,6 +131,7 @@
 - [x] ログイン機能
 - [x] パスワード変更機能
 - [x] メールアドレス変更機能
+- [x] パスワードリセット機能（メール経由）
 - [x] 習慣投稿機能
 - [x] 習慣閲覧機能
 - [x] 習慣編集機能
@@ -140,3 +141,30 @@
 - [x] タグ削除機能
 - [x] いいね機能
 - [x] いいね解除機能
+
+### パスワードリセット機能の設定（本番環境）
+
+本番環境でパスワードリセット機能を有効にするには、以下の環境変数を設定してください：
+
+1. **Render Dashboard** にログインし、本番環境の設定画面へ移動
+2. 以下の環境変数を追加：
+   ```
+   SMTP_ADDRESS=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_DOMAIN=original-app-loopin.onrender.com
+   SMTP_USERNAME=your-email@gmail.com
+   SMTP_PASSWORD=your-app-password
+   SMTP_AUTHENTICATION=plain
+   SMTP_ENABLE_STARTTLS_AUTO=true
+   ```
+
+#### Gmail を使用する場合の設定手順：
+1. Google アカウントで2段階認証を有効化
+2. [アプリパスワードを生成](https://myaccount.google.com/apppasswords)
+3. 生成されたパスワードを `SMTP_PASSWORD` に設定
+
+#### 他のSMTPプロバイダーを使用する場合：
+- SendGrid、Mailgun、Amazon SES なども利用可能
+- 各プロバイダーの設定に応じて環境変数を調整してください
+
+詳細は `.env.production.example` ファイルを参照してください。
