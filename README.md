@@ -167,4 +167,6 @@
 - SendGrid、Mailgun、Amazon SES なども利用可能
 - 各プロバイダーの設定に応じて環境変数を調整してください
 
+**詳細なセットアップガイドは [docs/PASSWORD_RESET_SETUP.md](docs/PASSWORD_RESET_SETUP.md) を参照してください。**
+
 詳細は `.env.production.example` ファイルを参照してください。
