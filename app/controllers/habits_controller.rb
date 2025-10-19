@@ -8,6 +8,30 @@ class HabitsController < ApplicationController
     @habits = current_user.habits.recent
   end
 
+  def graphs
+    @habits = current_user.habits.includes(:habit_records)
+    
+    # Calculate daily achievement rate for the last 30 days
+    end_date = Date.current
+    start_date = end_date - 29.days
+    @date_range = (start_date..end_date).to_a
+    
+    # Calculate achievement rate per habit (last 30 days)
+    @habit_data = @habits.map do |habit|
+      total_days = 30
+      completed_days = habit.habit_records
+                            .where(recorded_at: start_date..end_date, completed: true)
+                            .count
+      achievement_rate = total_days.zero? ? 0 : (completed_days.to_f / total_days * 100).round(1)
+      
+      {
+        title: habit.title,
+        achievement_rate: achievement_rate,
+        completed_days: completed_days
+      }
+    end
+  end
+
   def show; end
 
   def individual_calendar

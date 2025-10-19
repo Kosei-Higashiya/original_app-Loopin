@@ -1,0 +1,222 @@
+<div class="container-fluid mt-4 px-4">
+  <div class="row justify-content-center">
+    <div class="col-md-12 col-xl-10">
+      <div class="card shadow-lg border-2" style="border-color: #007bff;">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h1 class="card-title mb-2" style="font-size: 2rem;">📊 習慣達成グラフ</h1>
+          <p class="mb-0" style="font-size: 1.1rem;">あなたの習慣達成状況を可視化</p>
+        </div>
+        <div class="card-body p-5">
+          
+          <div class="d-flex justify-content-center gap-3 mb-5">
+            <%= link_to "習慣一覧に戻る", habits_path,
+                class: "btn btn-primary btn-lg px-4",
+                style: "font-size: 1.1rem; padding: 0.8rem 2rem;" %>
+            <%= link_to "ダッシュボードに戻る", dashboard_path,
+                class: "btn btn-primary btn-lg px-4",
+                style: "font-size: 1.1rem; padding: 0.8rem 2rem;" %>
+          </div>
+
+          <% if @habits.any? %>
+            <!-- Daily Achievement Rate Line Chart -->
+            <div class="card mb-5 shadow-sm">
+              <div class="card-header bg-light">
+                <h3 class="card-title mb-0" style="font-size: 1.5rem;">📈 日別達成率（直近30日間）</h3>
+              </div>
+              <div class="card-body">
+                <canvas id="dailyAchievementChart" style="max-height: 400px;"></canvas>
+              </div>
+            </div>
+
+            <!-- Habit Achievement Rate Bar Chart -->
+            <div class="card shadow-sm">
+              <div class="card-header bg-light">
+                <h3 class="card-title mb-0" style="font-size: 1.5rem;">📊 習慣別達成率（直近30日間）</h3>
+              </div>
+              <div class="card-body">
+                <canvas id="habitAchievementChart" style="max-height: 400px;"></canvas>
+              </div>
+            </div>
+
+          <% else %>
+            <div class="text-center py-5">
+              <div class="mb-4" style="font-size: 3rem;">📝</div>
+              <h3 class="text-primary mb-3" style="font-size: 1.5rem; font-weight: 600;">
+                まだ習慣が登録されていません
+              </h3>
+              <p class="text-muted mb-4" style="font-size: 1.1rem; line-height: 1.6;">
+                新しい習慣を作成して、グラフで達成状況を確認しましょう！
+              </p>
+              <%= link_to "最初の習慣を作成", new_habit_path,
+                  class: "btn btn-primary btn-lg px-5",
+                  style: "font-size: 1.2rem; padding: 1rem 2.5rem; border-radius: 0.7rem;" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @habits.any? %>
+<script type="module">
+  import { Chart, registerables } from 'chart.js';
+  Chart.register(...registerables);
+
+  // Prepare daily achievement data
+  const dateRange = <%= raw @date_range.map { |d| d.strftime('%Y-%m-%d') }.to_json %>;
+  
+  // Calculate daily achievement rate
+  const dailyAchievementData = dateRange.map(date => {
+    const totalHabits = <%= @habits.count %>;
+    if (totalHabits === 0) return 0;
+    
+    const completedHabits = [
+      <% @habits.each_with_index do |habit, index| %>
+        <%= habit.habit_records.where(recorded_at: @date_range.first..@date_range.last).pluck(:recorded_at).to_json %>
+        <%= ',' unless index == @habits.count - 1 %>
+      <% end %>
+    ].filter(records => records.includes(date)).length;
+    
+    return ((completedHabits / totalHabits) * 100).toFixed(1);
+  });
+
+  // Calculate daily achievement rate more accurately
+  const dailyCompletionData = <%= raw @date_range.map { |date|
+    total_habits = @habits.count
+    completed_habits = @habits.count { |habit| 
+      habit.habit_records.exists?(recorded_at: date, completed: true)
+    }
+    total_habits.zero? ? 0 : (completed_habits.to_f / total_habits * 100).round(1)
+  }.to_json %>;
+
+  // Daily Achievement Rate Line Chart
+  const dailyCtx = document.getElementById('dailyAchievementChart');
+  if (dailyCtx) {
+    new Chart(dailyCtx, {
+      type: 'line',
+      data: {
+        labels: dateRange.map(date => {
+          const d = new Date(date);
+          return `${d.getMonth() + 1}/${d.getDate()}`;
+        }),
+        datasets: [{
+          label: '達成率 (%)',
+          data: dailyCompletionData,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          title: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `達成率: ${context.parsed.y}%`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Habit Achievement Rate Bar Chart
+  const habitData = <%= raw @habit_data.to_json %>;
+  const habitCtx = document.getElementById('habitAchievementChart');
+  if (habitCtx) {
+    new Chart(habitCtx, {
+      type: 'bar',
+      data: {
+        labels: habitData.map(h => h.title),
+        datasets: [{
+          label: '達成率 (%)',
+          data: habitData.map(h => h.achievement_rate),
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)',
+            'rgba(255, 159, 64, 0.7)',
+            'rgba(199, 199, 199, 0.7)',
+            'rgba(83, 102, 255, 0.7)',
+            'rgba(255, 99, 255, 0.7)',
+            'rgba(99, 255, 132, 0.7)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(199, 199, 199, 1)',
+            'rgba(83, 102, 255, 1)',
+            'rgba(255, 99, 255, 1)',
+            'rgba(99, 255, 132, 1)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          title: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const habit = habitData[context.dataIndex];
+                return [
+                  `達成率: ${context.parsed.y}%`,
+                  `完了日数: ${habit.completed_days}/30日`
+                ];
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+</script>
+<% end %>
