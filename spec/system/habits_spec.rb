@@ -57,4 +57,32 @@ RSpec.describe '習慣管理', type: :system do
       expect(page).not_to have_content('毎日ランニング')
     end
   end
+
+  describe '習慣グラフ表示' do
+    let!(:habit1) { create(:habit, user: user, title: 'ランニング') }
+    let!(:habit2) { create(:habit, user: user, title: '読書') }
+
+    before do
+      # Create some habit records for testing
+      create(:habit_record, user: user, habit: habit1, recorded_at: Date.current, completed: true)
+      create(:habit_record, user: user, habit: habit1, recorded_at: Date.current - 1.day, completed: true)
+      create(:habit_record, user: user, habit: habit2, recorded_at: Date.current, completed: true)
+    end
+
+    it 'グラフページが表示されること' do
+      visit graphs_habits_path
+
+      expect(page).to have_content('習慣達成グラフ')
+      expect(page).to have_content('日別達成率')
+      expect(page).to have_content('習慣別達成率')
+    end
+
+    it '習慣一覧からグラフページに遷移できること' do
+      visit habits_path
+
+      click_link '📊 グラフを見る'
+
+      expect(page).to have_content('習慣達成グラフ')
+    end
+  end
 end

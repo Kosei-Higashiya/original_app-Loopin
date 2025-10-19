@@ -23,6 +23,9 @@ Rails.application.routes.draw do
 
   # 習慣関連のルーティング
   resources :habits do
+    collection do
+      get :graphs
+    end
     member do
       get :calendar, to: 'habits#individual_calendar'
       post :toggle_record_for_date, to: 'habits#toggle_record_for_date'
