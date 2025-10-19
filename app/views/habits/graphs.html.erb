@@ -63,25 +63,10 @@
   import { Chart, registerables } from 'chart.js';
   Chart.register(...registerables);
 
-  // Prepare daily achievement data
+  // Prepare date range for X-axis labels
   const dateRange = <%= raw @date_range.map { |d| d.strftime('%Y-%m-%d') }.to_json %>;
   
-  // Calculate daily achievement rate
-  const dailyAchievementData = dateRange.map(date => {
-    const totalHabits = <%= @habits.count %>;
-    if (totalHabits === 0) return 0;
-    
-    const completedHabits = [
-      <% @habits.each_with_index do |habit, index| %>
-        <%= habit.habit_records.where(recorded_at: @date_range.first..@date_range.last).pluck(:recorded_at).to_json %>
-        <%= ',' unless index == @habits.count - 1 %>
-      <% end %>
-    ].filter(records => records.includes(date)).length;
-    
-    return ((completedHabits / totalHabits) * 100).toFixed(1);
-  });
-
-  // Calculate daily achievement rate more accurately
+  // Calculate daily achievement rate (calculated on server side for accuracy)
   const dailyCompletionData = <%= raw @date_range.map { |date|
     total_habits = @habits.count
     completed_habits = @habits.count { |habit| 
