@@ -23,7 +23,8 @@ Chart.jsを使用して、ユーザーの習慣達成状況を可視化するグ
 
 ### 使用技術
 - **Chart.js 4.4.0**: グラフ描画ライブラリ
-- **ES6 Modules**: モダンなJavaScriptのインポート方式を使用
+- **esbuild**: JavaScriptバンドラー（jsbundling-rails経由）
+- **Stimulus**: Chart.jsを制御するコントローラー
 
 ### ファイル構成
 
@@ -35,7 +36,12 @@ Chart.jsを使用して、ユーザーの習慣達成状況を可視化するグ
 #### ビュー
 - `app/views/habits/graphs.html.erb`
   - グラフ表示用のキャンバス要素
-  - Chart.jsを使用したグラフ初期化スクリプト
+  - Stimulusコントローラーを使用したグラフ初期化
+
+#### JavaScript
+- `app/javascript/controllers/chart_controller.js`
+  - Chart.jsを使用したグラフ描画のStimulusコントローラー
+  - esbuildでバンドルされChart.jsを含む
 
 #### ルーティング
 - `config/routes.rb`
@@ -62,6 +68,21 @@ Chart.jsを使用して、ユーザーの習慣達成状況を可視化するグ
 3. グラフページ（`/habits/graphs`）が表示されます
 
 または、直接 `/habits/graphs` にアクセスすることも可能です。
+
+## ビルド方法
+
+Chart.jsはesbuildによってバンドルされるため、以下のコマンドでビルドが必要です：
+
+```bash
+yarn install  # 初回またはpackage.json変更時
+yarn build    # JavaScriptのビルド
+```
+
+Rails開発サーバーを起動する際は、以下のコマンドを使用してJavaScriptの自動ビルドを有効にすることをおすすめします：
+
+```bash
+./bin/dev  # または foreman start -f Procfile.dev
+```
 
 ## セキュリティ
 

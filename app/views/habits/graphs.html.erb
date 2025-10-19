@@ -18,13 +18,125 @@
           </div>
 
           <% if @habits.any? %>
+            <%
+              # Prepare date range for X-axis labels
+              date_labels = @date_range.map { |date| date.strftime('%-m/%-d') }
+              
+              # Calculate daily achievement rate (calculated on server side for accuracy)
+              daily_completion_data = @date_range.map do |date|
+                total_habits = @habits.count
+                completed_habits = @habits.count { |habit| 
+                  habit.habit_records.exists?(recorded_at: date, completed: true)
+                }
+                total_habits.zero? ? 0 : (completed_habits.to_f / total_habits * 100).round(1)
+              end
+
+              # Daily chart configuration
+              daily_chart_data = {
+                labels: date_labels,
+                datasets: [{
+                  label: '達成率 (%)',
+                  data: daily_completion_data,
+                  borderColor: 'rgb(75, 192, 192)',
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  tension: 0.3,
+                  fill: true
+                }]
+              }
+
+              daily_chart_options = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'top',
+                  },
+                  title: {
+                    display: false
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                      callback: ->(value) { "#{value}%" }
+                    }
+                  }
+                }
+              }
+
+              # Habit chart configuration with completed days info
+              habit_chart_data = {
+                labels: @habit_data.map { |h| h[:title] },
+                datasets: [{
+                  label: '達成率 (%)',
+                  data: @habit_data.map { |h| h[:achievement_rate] },
+                  completedDays: @habit_data.map { |h| h[:completed_days] },
+                  backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(199, 199, 199, 0.7)',
+                    'rgba(83, 102, 255, 0.7)',
+                    'rgba(255, 99, 255, 0.7)',
+                    'rgba(99, 255, 132, 0.7)'
+                  ],
+                  borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(199, 199, 199, 1)',
+                    'rgba(83, 102, 255, 1)',
+                    'rgba(255, 99, 255, 1)',
+                    'rgba(99, 255, 132, 1)'
+                  ],
+                  borderWidth: 2
+                }]
+              }
+
+              habit_chart_options = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'top',
+                  },
+                  title: {
+                    display: false
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                      callback: ->(value) { "#{value}%" }
+                    }
+                  }
+                }
+              }
+            %>
+
             <!-- Daily Achievement Rate Line Chart -->
             <div class="card mb-5 shadow-sm">
               <div class="card-header bg-light">
                 <h3 class="card-title mb-0" style="font-size: 1.5rem;">📈 日別達成率（直近30日間）</h3>
               </div>
-              <div class="card-body">
-                <canvas id="dailyAchievementChart" style="max-height: 400px;"></canvas>
+              <div class="card-body"
+                   data-controller="chart"
+                   data-chart-type-value="line"
+                   data-chart-data-value="<%= daily_chart_data.to_json %>"
+                   data-chart-options-value="<%= daily_chart_options.to_json %>">
+                <canvas style="max-height: 400px;"></canvas>
               </div>
             </div>
 
@@ -33,8 +145,12 @@
               <div class="card-header bg-light">
                 <h3 class="card-title mb-0" style="font-size: 1.5rem;">📊 習慣別達成率（直近30日間）</h3>
               </div>
-              <div class="card-body">
-                <canvas id="habitAchievementChart" style="max-height: 400px;"></canvas>
+              <div class="card-body"
+                   data-controller="chart"
+                   data-chart-type-value="bar"
+                   data-chart-data-value="<%= habit_chart_data.to_json %>"
+                   data-chart-options-value="<%= habit_chart_options.to_json %>">
+                <canvas style="max-height: 400px;"></canvas>
               </div>
             </div>
 
@@ -57,151 +173,3 @@
     </div>
   </div>
 </div>
-
-<% if @habits.any? %>
-<script type="module">
-  import { Chart, registerables } from 'chart.js';
-  Chart.register(...registerables);
-
-  // Prepare date range for X-axis labels
-  const dateRange = <%= raw @date_range.map { |d| d.strftime('%Y-%m-%d') }.to_json %>;
-  
-  // Calculate daily achievement rate (calculated on server side for accuracy)
-  const dailyCompletionData = <%= raw @date_range.map { |date|
-    total_habits = @habits.count
-    completed_habits = @habits.count { |habit| 
-      habit.habit_records.exists?(recorded_at: date, completed: true)
-    }
-    total_habits.zero? ? 0 : (completed_habits.to_f / total_habits * 100).round(1)
-  }.to_json %>;
-
-  // Daily Achievement Rate Line Chart
-  const dailyCtx = document.getElementById('dailyAchievementChart');
-  if (dailyCtx) {
-    new Chart(dailyCtx, {
-      type: 'line',
-      data: {
-        labels: dateRange.map(date => {
-          const d = new Date(date);
-          return `${d.getMonth() + 1}/${d.getDate()}`;
-        }),
-        datasets: [{
-          label: '達成率 (%)',
-          data: dailyCompletionData,
-          borderColor: 'rgb(75, 192, 192)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          tension: 0.3,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-          },
-          title: {
-            display: false
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `達成率: ${context.parsed.y}%`;
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              callback: function(value) {
-                return value + '%';
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // Habit Achievement Rate Bar Chart
-  const habitData = <%= raw @habit_data.to_json %>;
-  const habitCtx = document.getElementById('habitAchievementChart');
-  if (habitCtx) {
-    new Chart(habitCtx, {
-      type: 'bar',
-      data: {
-        labels: habitData.map(h => h.title),
-        datasets: [{
-          label: '達成率 (%)',
-          data: habitData.map(h => h.achievement_rate),
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.7)',
-            'rgba(54, 162, 235, 0.7)',
-            'rgba(255, 206, 86, 0.7)',
-            'rgba(75, 192, 192, 0.7)',
-            'rgba(153, 102, 255, 0.7)',
-            'rgba(255, 159, 64, 0.7)',
-            'rgba(199, 199, 199, 0.7)',
-            'rgba(83, 102, 255, 0.7)',
-            'rgba(255, 99, 255, 0.7)',
-            'rgba(99, 255, 132, 0.7)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-            'rgba(199, 199, 199, 1)',
-            'rgba(83, 102, 255, 1)',
-            'rgba(255, 99, 255, 1)',
-            'rgba(99, 255, 132, 1)'
-          ],
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-          },
-          title: {
-            display: false
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const habit = habitData[context.dataIndex];
-                return [
-                  `達成率: ${context.parsed.y}%`,
-                  `完了日数: ${habit.completed_days}/30日`
-                ];
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              callback: function(value) {
-                return value + '%';
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-</script>
-<% end %>
