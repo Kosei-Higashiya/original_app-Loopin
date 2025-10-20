@@ -11,6 +11,9 @@ export default class extends Controller {
   }
 
   connect() {
+
+    console.log("✅ chart_controller connected", this.element)
+    
     const canvas = this.element.querySelector('canvas')
     if (!canvas) return
 

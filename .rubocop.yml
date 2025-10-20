@@ -26,6 +26,7 @@ AllCops:
    - 'vendor/**/*'
    - 'app/controllers/users/omniauth_callbacks_controller.rb'
    - 'config/initializers/devise.rb'
+   - 'config/routes.rb'
 
 # 行の長さに関する設定
 Layout/LineLength:
