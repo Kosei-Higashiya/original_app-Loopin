@@ -12,6 +12,9 @@
             <%= link_to "新しい習慣を作成", new_habit_path,
                 class: "btn btn-primary btn-lg px-4",
                 style: "font-size: 1.1rem; padding: 0.8rem 2rem; margin: 0.7rem 0.3rem;" %>
+            <%= link_to "📊 グラフを見る", graphs_habits_path,
+                class: "btn btn-success btn-lg px-4",
+                style: "font-size: 1.1rem; padding: 0.8rem 2rem; margin: 0.7rem 0.3rem;" %>
             <%= link_to "ダッシュボードに戻る", dashboard_path,
                 class: "btn btn-primary btn-lg px-4",
                 style: "font-size: 1.1rem; padding: 0.8rem 2rem; margin: 0.7rem 0rem;" %>
@@ -43,7 +46,7 @@
                             <%= link_to calendar_habit_path(habit),
                                 class: "btn btn-success btn-sm flex-fill",
                                 style: "font-size: 0.9rem; border-radius: 0.5rem; padding: 0.6rem; margin-left: 1rem;" do %>
-                              📊 カレンダーを見る
+                              📅 カレンダーを見る
                             <% end %>
                             <%= link_to "✏️ 編集", edit_habit_path(habit),
                                 class: "btn btn-outline-secondary btn-sm flex-fill",
