@@ -1,0 +1,171 @@
+<div class="container-fluid mt-4 px-4">
+  <div class="row justify-content-center">
+    <div class="col-md-12 col-xl-10">
+      <div class="card shadow-lg border-2" style="border-color: #007bff;">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h1 class="card-title mb-2" style="font-size: 2rem;">📊 習慣達成グラフ</h1>
+          <p class="mb-0" style="font-size: 1.1rem;">あなたの習慣達成状況を可視化</p>
+        </div>
+        <div class="card-body p-5">
+
+          <div class="d-flex justify-content-center gap-3 mb-5">
+            <%= link_to "習慣一覧に戻る", habits_path,
+                class: "btn btn-primary btn-lg px-4",
+                style: "font-size: 1.1rem; padding: 0.8rem 2rem;" %>
+            <%= link_to "ダッシュボードに戻る", dashboard_path,
+                class: "btn btn-primary btn-lg px-4",
+                style: "font-size: 1.1rem; padding: 0.8rem 2rem;" %>
+          </div>
+
+          <% if @habits.any? %>
+            <%
+              # Prepare date range for X-axis labels
+              date_labels = @date_range.map { |date| date.strftime('%-m/%-d') }
+
+              # Calculate daily achievement rate (calculated on server side for accuracy)
+              daily_completion_data = @date_range.map do |date|
+                total_habits = @habits.count
+                completed_habits = @habits.count { |habit|
+                  habit.habit_records.exists?(recorded_at: date, completed: true)
+                }
+                total_habits.zero? ? 0 : (completed_habits.to_f / total_habits * 100).round(1)
+              end
+
+              # Daily chart configuration
+              daily_chart_data = {
+                labels: date_labels,
+                datasets: [{
+                  label: '達成率 (%)',
+                  data: daily_completion_data,
+                  borderColor: 'rgb(75, 192, 192)',
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  tension: 0.3,
+                  fill: true
+                }]
+              }
+
+              daily_chart_options = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'top',
+                  },
+                  title: {
+                    display: false
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                      callback: ->(value) { "#{value}%" }
+                    }
+                  }
+                }
+              }
+
+              # Habit chart configuration with completed days info
+              habit_chart_data = {
+                labels: @habit_data.map { |h| h[:title] },
+                datasets: [{
+                  label: '達成率 (%)',
+                  data: @habit_data.map { |h| h[:achievement_rate] },
+                  completedDays: @habit_data.map { |h| h[:completed_days] },
+                  backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(199, 199, 199, 0.7)',
+                    'rgba(83, 102, 255, 0.7)',
+                    'rgba(255, 99, 255, 0.7)',
+                    'rgba(99, 255, 132, 0.7)'
+                  ],
+                  borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(199, 199, 199, 1)',
+                    'rgba(83, 102, 255, 1)',
+                    'rgba(255, 99, 255, 1)',
+                    'rgba(99, 255, 132, 1)'
+                  ],
+                  borderWidth: 2
+                }]
+              }
+
+              habit_chart_options = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'top',
+                  },
+                  title: {
+                    display: false
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                      callback: ->(value) { "#{value}%" }
+                    }
+                  }
+                }
+              }
+            %>
+
+            <!-- Daily Achievement Rate Line Chart -->
+            <div class="card mb-5 shadow-sm">
+              <div class="card-header bg-light">
+                <h3 class="card-title mb-0" style="font-size: 1.5rem;">📈 日別達成率（直近30日間）</h3>
+              </div>
+              <div class="card-body"
+                   data-controller="chart"
+                   data-chart-type-value="line"
+                   data-chart-data-value="<%= daily_chart_data.to_json %>"
+                   data-chart-options-value="<%= daily_chart_options.to_json %>">
+                <canvas style="max-height: 400px;"></canvas>
+              </div>
+            </div>
+
+            <!-- Habit Achievement Rate Bar Chart -->
+            <div class="card shadow-sm">
+              <div class="card-header bg-light">
+                <h3 class="card-title mb-0" style="font-size: 1.5rem;">📊 習慣別達成率（直近30日間）</h3>
+              </div>
+              <div class="card-body">
+                <canvas id="habitAchievementChart" style="max-height: 400px;"></canvas>
+              </div>
+            </div>
+
+          <% else %>
+            <div class="text-center py-5">
+              <div class="mb-4" style="font-size: 3rem;">📝</div>
+              <h3 class="text-primary mb-3" style="font-size: 1.5rem; font-weight: 600;">
+                まだ習慣が登録されていません
+              </h3>
+              <p class="text-muted mb-4" style="font-size: 1.1rem; line-height: 1.6;">
+                新しい習慣を作成して、グラフで達成状況を確認しましょう！
+              </p>
+              <%= link_to "最初の習慣を作成", new_habit_path,
+                  class: "btn btn-primary btn-lg px-5",
+                  style: "font-size: 1.2rem; padding: 1rem 2.5rem; border-radius: 0.7rem;" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
