@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 <div class="container-fluid mt-4 px-4">
   <div class="row justify-content-center">
     <div class="col-md-12 col-xl-10">
@@ -54,6 +56,11 @@
                   },
                   title: {
                     display: false
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: ->(context) { "達成率: #{context.parsed.y}%" }
+                    }
                   }
                 },
                 scales: {
@@ -131,12 +138,8 @@
               <div class="card-header bg-light">
                 <h3 class="card-title mb-0" style="font-size: 1.5rem;">📈 日別達成率（直近30日間）</h3>
               </div>
-              <div class="card-body"
-                   data-controller="chart"
-                   data-chart-type-value="line"
-                   data-chart-data-value="<%= daily_chart_data.to_json %>"
-                   data-chart-options-value="<%= daily_chart_options.to_json %>">
-                <canvas style="max-height: 400px;"></canvas>
+              <div class="card-body">
+                <canvas id="daily-chart" style="max-height: 400px;"></canvas>
               </div>
             </div>
 
@@ -145,12 +148,8 @@
               <div class="card-header bg-light">
                 <h3 class="card-title mb-0" style="font-size: 1.5rem;">📊 習慣別達成率（直近30日間）</h3>
               </div>
-              <div class="card-body"
-                   data-controller="chart"
-                   data-chart-type-value="bar"
-                   data-chart-data-value="<%= habit_chart_data.to_json %>"
-                   data-chart-options-value="<%= habit_chart_options.to_json %>">
-                <canvas style="max-height: 400px;"></canvas>
+              <div class="card-body">
+                <canvas id="habit-chart" style="max-height: 400px;"></canvas>
               </div>
             </div>
             
@@ -173,3 +172,101 @@
     </div>
   </div>
 </div>
+
+<% if @habits.any? %>
+<script>
+// Chart initialization flag to prevent multiple initializations
+let chartsInitialized = false;
+let dailyChart = null;
+let habitChart = null;
+
+function initializeCharts() {
+  // Prevent multiple initializations
+  if (chartsInitialized) {
+    console.log('Charts already initialized, skipping...');
+    return;
+  }
+
+  const dailyCanvas = document.getElementById('daily-chart');
+  const habitCanvas = document.getElementById('habit-chart');
+
+  if (!dailyCanvas || !habitCanvas) {
+    console.error('Chart canvases not found');
+    return;
+  }
+
+  console.log('Initializing charts...');
+
+  // Chart data from server
+  const dailyChartData = <%= raw daily_chart_data.to_json %>;
+  const dailyChartOptions = <%= raw daily_chart_options.to_json %>;
+  const habitChartData = <%= raw habit_chart_data.to_json %>;
+  const habitChartOptions = <%= raw habit_chart_options.to_json %>;
+
+  // Add tooltip callbacks for daily chart
+  dailyChartOptions.plugins = dailyChartOptions.plugins || {};
+  dailyChartOptions.plugins.tooltip = dailyChartOptions.plugins.tooltip || {};
+  dailyChartOptions.plugins.tooltip.callbacks = {
+    label: function(context) {
+      return '達成率: ' + context.parsed.y + '%';
+    }
+  };
+
+  // Add tooltip callbacks for habit chart with completed days
+  const completedDays = habitChartData.datasets[0].completedDays;
+  habitChartOptions.plugins = habitChartOptions.plugins || {};
+  habitChartOptions.plugins.tooltip = habitChartOptions.plugins.tooltip || {};
+  habitChartOptions.plugins.tooltip.callbacks = {
+    label: function(context) {
+      const value = context.parsed.y;
+      const days = completedDays[context.dataIndex];
+      return [
+        '達成率: ' + value + '%',
+        '完了日数: ' + days + '/30日'
+      ];
+    }
+  };
+
+  // Create daily achievement rate line chart
+  dailyChart = new Chart(dailyCanvas, {
+    type: 'line',
+    data: dailyChartData,
+    options: dailyChartOptions
+  });
+
+  // Create habit achievement rate bar chart
+  habitChart = new Chart(habitCanvas, {
+    type: 'bar',
+    data: habitChartData,
+    options: habitChartOptions
+  });
+
+  chartsInitialized = true;
+  console.log('Charts initialized successfully');
+}
+
+function destroyCharts() {
+  if (dailyChart) {
+    dailyChart.destroy();
+    dailyChart = null;
+  }
+  if (habitChart) {
+    habitChart.destroy();
+    habitChart = null;
+  }
+  chartsInitialized = false;
+  console.log('Charts destroyed');
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initializeCharts);
+
+// Handle Turbo navigation
+document.addEventListener('turbo:load', function() {
+  destroyCharts();
+  initializeCharts();
+});
+
+document.addEventListener('turbo:before-visit', destroyCharts);
+</script>
+<% end %>
