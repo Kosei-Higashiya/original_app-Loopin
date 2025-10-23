@@ -13,12 +13,19 @@ export default class extends Controller {
   connect() {
 
     console.log("✅ chart_controller connected", this.element)
-    
+
     const canvas = this.element.querySelector('canvas')
     if (!canvas) return
 
     // Clone options to avoid mutating the original
     const options = JSON.parse(JSON.stringify(this.optionsValue))
+
+     // Y軸ラベルに % を付与
+    if (options.scales?.y?.ticks) {
+      options.scales.y.ticks.callback = function(value) {
+      return value + '%'
+      }
+    }
 
     // Add custom tooltip for bar charts with completedDays data
     if (this.typeValue === 'bar' && this.dataValue.datasets[0].completedDays) {

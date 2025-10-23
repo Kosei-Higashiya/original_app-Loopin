@@ -59,10 +59,7 @@
                 scales: {
                   y: {
                     beginAtZero: true,
-                    max: 100,
-                    ticks: {
-                      callback: ->(value) { "#{value}%" }
-                    }
+                    max: 100
                   }
                 }
               }
@@ -117,10 +114,7 @@
                 scales: {
                   y: {
                     beginAtZero: true,
-                    max: 100,
-                    ticks: {
-                      callback: ->(value) { "#{value}%" }
-                    }
+                    max: 100
                   }
                 }
               }
@@ -134,8 +128,8 @@
               <div class="card-body"
                    data-controller="chart"
                    data-chart-type-value="line"
-                   data-chart-data-value="<%= daily_chart_data.to_json %>"
-                   data-chart-options-value="<%= daily_chart_options.to_json %>">
+                   data-chart-data-value="<%= habit_chart_data.to_json %>"
+                   data-chart-options-value="<%= habit_chart_options.to_json %>">
                 <canvas style="max-height: 400px;"></canvas>
               </div>
             </div>
@@ -147,13 +141,13 @@
               </div>
               <div class="card-body"
                    data-controller="chart"
-                   data-chart-type-value="line"
+                   data-chart-type-value="bar"
                    data-chart-data-value="<%= daily_chart_data.to_json %>"
                    data-chart-options-value="<%= daily_chart_options.to_json %>">
                 <canvas style="max-height: 400px;"></canvas>
               </div>
             </div>
-            
+
           <% else %>
             <div class="text-center py-5">
               <div class="mb-4" style="font-size: 3rem;">📝</div>
