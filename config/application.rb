@@ -26,5 +26,8 @@ module App
     # デフォルトのロケールを日本語に設定
     config.i18n.default_locale = :ja
     config.i18n.available_locales = %i[ja en]
+
+    # Add app/javascript to asset paths for importmap
+    config.assets.paths << Rails.root.join("app/javascript")
   end
 end
