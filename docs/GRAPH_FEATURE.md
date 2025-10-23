@@ -22,8 +22,8 @@ Chart.jsを使用して、ユーザーの習慣達成状況を可視化するグ
 ## 技術詳細
 
 ### 使用技術
-- **Chart.js 4.4.0**: グラフ描画ライブラリ
-- **esbuild**: JavaScriptバンドラー（jsbundling-rails経由）
+- **Chart.js 4.4.0**: グラフ描画ライブラリ（CDN経由で読み込み）
+- **importmap-rails**: JavaScriptモジュールの管理
 - **Stimulus**: Chart.jsを制御するコントローラー
 
 ### ファイル構成
@@ -41,7 +41,12 @@ Chart.jsを使用して、ユーザーの習慣達成状況を可視化するグ
 #### JavaScript
 - `app/javascript/controllers/chart_controller.js`
   - Chart.jsを使用したグラフ描画のStimulusコントローラー
-  - esbuildでバンドルされChart.jsを含む
+  - importmap経由でChart.jsをCDNから読み込み
+
+#### インポートマップ
+- `config/importmap.rb`
+  - Chart.jsとその依存関係をCDNからピン留め
+  - Stimulus関連ライブラリの設定
 
 #### ルーティング
 - `config/routes.rb`
@@ -69,20 +74,20 @@ Chart.jsを使用して、ユーザーの習慣達成状況を可視化するグ
 
 または、直接 `/habits/graphs` にアクセスすることも可能です。
 
-## ビルド方法
+## セットアップ方法
 
-Chart.jsはesbuildによってバンドルされるため、以下のコマンドでビルドが必要です：
+Chart.jsはCDN経由で自動的に読み込まれるため、特別なビルドプロセスは不要です。
 
-```bash
-yarn install  # 初回またはpackage.json変更時
-yarn build    # JavaScriptのビルド
-```
-
-Rails開発サーバーを起動する際は、以下のコマンドを使用してJavaScriptの自動ビルドを有効にすることをおすすめします：
+開発サーバーを起動するだけで使用できます：
 
 ```bash
 ./bin/dev  # または foreman start -f Procfile.dev
 ```
+
+importmap-railsを使用することで：
+- ビルドプロセスが不要
+- 高速な開発体験
+- シンプルな設定
 
 
 ## セキュリティ

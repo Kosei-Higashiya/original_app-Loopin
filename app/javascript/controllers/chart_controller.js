@@ -1,7 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { Chart, registerables } from "chart.js"
-
-Chart.register(...registerables)
+import { Chart } from "chart.js"
 
 export default class extends Controller {
   static values = {
@@ -11,7 +9,6 @@ export default class extends Controller {
   }
 
   connect() {
-
     console.log("✅ chart_controller connected", this.element)
     
     const canvas = this.element.querySelector('canvas')
