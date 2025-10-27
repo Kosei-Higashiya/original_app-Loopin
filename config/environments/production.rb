@@ -85,7 +85,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: ENV.fetch('SMTP_ADDRESS', 'smtp.gmail.com'),
     port: ENV.fetch('SMTP_PORT', 587).to_i,
-    domain: ENV.fetch('SMTP_DOMAIN', 'original-app-loopin.onrender.com'),
+    domain: ENV.fetch('SMTP_DOMAIN', 'app-loopin.com'),
     user_name: ENV.fetch('SMTP_USERNAME', nil),
     password: ENV.fetch('SMTP_PASSWORD', nil),
     authentication: ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
@@ -102,9 +102,12 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  # Allow both custom domain and Render domain
   config.hosts << 'original-app-loopin.onrender.com'
+  config.hosts << 'app-loopin.com'
 
-  config.action_mailer.default_url_options = { host: 'original-app-loopin.onrender.com', protocol: 'https' }
+  # Use custom domain as primary for email links
+  config.action_mailer.default_url_options = { host: 'app-loopin.com', protocol: 'https' }
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
