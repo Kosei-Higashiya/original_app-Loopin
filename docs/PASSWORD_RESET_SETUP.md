@@ -12,7 +12,7 @@
 |-----------|------|-----|
 | `SMTP_ADDRESS` | SMTPサーバーのアドレス | `smtp.gmail.com` |
 | `SMTP_PORT` | SMTPポート番号 | `587` |
-| `SMTP_DOMAIN` | アプリケーションのドメイン | `original-app-loopin.onrender.com` |
+| `SMTP_DOMAIN` | アプリケーションのドメイン | `app-loopin.com` |
 | `SMTP_USERNAME` | SMTP認証用のユーザー名（通常はメールアドレス） | `your-email@gmail.com` |
 | `SMTP_PASSWORD` | SMTP認証用のパスワード | `your-app-password` |
 | `SMTP_AUTHENTICATION` | 認証方式 | `plain` |
@@ -38,7 +38,7 @@
    ```
    SMTP_ADDRESS=smtp.gmail.com
    SMTP_PORT=587
-   SMTP_DOMAIN=original-app-loopin.onrender.com
+   SMTP_DOMAIN=app-loopin.com
    SMTP_USERNAME=your-email@gmail.com
    SMTP_PASSWORD=生成したアプリパスワード
    SMTP_AUTHENTICATION=plain
