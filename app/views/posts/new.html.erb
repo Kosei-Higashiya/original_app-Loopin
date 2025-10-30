@@ -10,8 +10,8 @@
 
           <%= form_with(model: @post, local: true) do |form| %>
             <% if @post.errors.any? %>
-              <div class="alert alert-danger">
-                <h6><%= pluralize(@post.errors.count, "つのエラー") %>があります:</h6>
+              <div class="alert alert-danger mb-4" style="border-radius: 0.7rem;">
+                <h6 class="mb-2" style="font-size: 1.1rem;"><%= pluralize(@post.errors.count, "つのエラー") %>があります:</h6>
                 <ul class="mb-0">
                   <% @post.errors.full_messages.each do |message| %>
                     <li><%= message %></li>
@@ -20,39 +20,38 @@
               </div>
             <% end %>
 
-            <div class="mb-5">
-              <%= form.label :habit_id, "習慣を選択", class: "form-label fw-bold", style: "font-size: 1.3rem;" %>
+            <div class="mb-5" style="margin-top: 0.5rem;">
+              <%= form.label :habit_id, "習慣を選択", class: "form-label fw-bold", style: "font-size: 1.3rem; color: #495057;" %>
               <div class="mt-2">
                 <%= form.collection_select :habit_id, @user_habits, :id, :title,
                       { prompt: "習慣を選択してください" },
-                      { class: "form-select form-select-lg w-100", style: "font-size: 1.1rem; padding: 1rem;" } %>
+                      { class: "form-select form-select-lg", style: "font-size: 1.1rem; padding: 1rem; border-radius: 0.7rem; border: 2px solid #e9ecef; width: 25%; margin-top: 0.5rem;" } %>
               </div>
             </div>
 
-            <div class="mb-5">
-              <%= form.label :content, "投稿内容", class: "form-label fw-bold", style: "font-size: 1.3rem;" %>
+            <div class="mb-5" style="margin-top: 1rem;">
+              <%= form.label :content, "投稿内容", class: "form-label fw-bold", style: "font-size: 1.3rem; color: #495057;" %>
               <div class="mt-2">
-                <%= form.text_area :content, class: "form-control form-control-lg w-100", rows: 6,
+                <%= form.text_area :content, class: "form-control form-control-lg", rows: 6,
                     placeholder: "今日の習慣の取り組みや感想を書いてください...",
-                    style: "font-size: 1.1rem; padding: 1rem; line-height: 1.6; resize: vertical; width: 70%;" %>
+                    style: "font-size: 1.1rem; padding: 1rem; line-height: 1.6; resize: vertical; border-radius: 0.7rem; border: 2px solid #e9ecef; width: 50%; margin-top: 0.5rem; margin-bottom: 0.5rem;" %>
+                <small class="form-text text-muted mt-2" style="font-size: 1rem;">習慣の取り組みや感想を記載してください</small>
               </div>
             </div>
 
-            <div class="mb-5">
-              <%= form.label :tag_list, "タグ", class: "form-label fw-bold", style: "font-size: 1.3rem;" %>
+            <div class="mb-5" style="margin-top: 1rem;">
+              <%= form.label :tag_list, "タグ", class: "form-label fw-bold", style: "font-size: 1.3rem; color: #495057;" %>
               <div class="mt-2">
-                <%= form.text_field :tag_list, class: "form-control form-control-lg w-100",
+                <%= form.text_field :tag_list, class: "form-control form-control-lg",
                     placeholder: "勉強, 運動, 読書 (カンマ区切りで複数入力可)",
-                    style: "font-size: 1.1rem; padding: 1rem; width: 30%;" %>
+                    style: "font-size: 1.1rem; padding: 1rem; border-radius: 0.7rem; border: 2px solid #e9ecef; width: 25%; margin-top: 0.5rem;" %>
                 <small class="form-text text-muted mt-2" style="font-size: 1rem;">タグをカンマ区切りで入力してください（例：勉強, 運動, 読書）</small>
               </div>
             </div>
 
-            <div class="text-center mt-5 pt-4">
-              <%= form.submit "投稿する", class: "btn btn-primary btn-lg px-5 me-4",
-                  style: "font-size: 1.2rem; padding: 1rem 2.5rem; margin-top: 1rem;" %>
-              <%= link_to "キャンセル", posts_path, class: "btn btn-primary btn-lg px-5",
-                  style: "font-size: 1.2rem; padding: 1rem 2.5rem;" %>
+            <div class="mb-3">
+              <%= form.submit "投稿する", class: "btn btn-primary" %>
+              <%= link_to "キャンセル", posts_path, class: "btn btn-primary" %>
             </div>
           <% end %>
         </div>
