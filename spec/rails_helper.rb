@@ -39,6 +39,7 @@ end
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
 RSpec.configure do |config|
+  config.include ActiveJob::TestHelper
   config.before(:each, type: :system) do
     driven_by :remote_chrome
     DatabaseCleaner.strategy = :truncation
