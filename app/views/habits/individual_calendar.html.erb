@@ -9,6 +9,16 @@
 
   <div class="card">
     <div class="card-body">
+      <% current_streak = habit_current_streak(@habit) %>
+      <% if current_streak >= 2 %>
+        <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
+          <div>
+            <strong>🔥 <%= current_streak %>日継続中！</strong>
+            <span class="ms-2">素晴らしい！この調子で続けましょう！</span>
+          </div>
+        </div>
+      <% end %>
+      
       <div>
         <h6 class="mb-2">💡 使い方</h6>
         <p class="mb-0">カレンダーの日付をクリックして習慣の達成状況を記録できます。クリックするたびに「完了」と「未記録」が切り替わります。<br><small class="text-muted">※3日前までの日付のみクリック可能です</small></p>
