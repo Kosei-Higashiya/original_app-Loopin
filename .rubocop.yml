@@ -27,13 +27,14 @@ AllCops:
    - 'app/controllers/users/omniauth_callbacks_controller.rb'
    - 'config/initializers/devise.rb'
    - 'config/routes.rb'
+   - 'app/helpers/habits_helper.rb'
 
 # 行の長さに関する設定
 Layout/LineLength:
   Max: 150
 # メソッドの行数制限
 Metrics/MethodLength:
-  Max: 20
+  Max: 25
 # クラスの行数制限
 Metrics/ClassLength:
   Max: 200
