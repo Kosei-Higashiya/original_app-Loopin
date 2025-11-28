@@ -22,13 +22,13 @@ module HabitsHelper
   end
 
   # 計算習慣の現在の連続達成日数
-  def habit_current_streak(habit)
+  def count_streak(habit)
     # Get all completed records for this habit, sorted by date descending
     completed_dates = habit.habit_records
-                          .where(completed: true)
-                          .order(recorded_at: :desc)
-                          .pluck(:recorded_at)
-                          .uniq
+                           .where(completed: true)
+                           .order(recorded_at: :desc)
+                           .pluck(:recorded_at)
+                           .uniq
 
     return 0 if completed_dates.empty?
 
