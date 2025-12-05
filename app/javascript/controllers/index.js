@@ -6,3 +6,6 @@ import { application } from "./application"
 
 import ChartController from "./chart_controller"
 application.register("chart", ChartController)
+
+import NavbarController from "./navbar_controller"
+application.register("navbar", NavbarController)
