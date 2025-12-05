@@ -49,15 +49,15 @@
     <% end %>
     </div>
     <header class="header">
-      <nav class="navbar" data-turbo-permanent>
+       <nav class="navbar" data-controller="navbar" data-turbo-permanent>
         <div class="container">
           <%= link_to root_path, class: "navbar-brand" do %>
             <%= image_tag "logo.svg", alt: "Loopin", class: "logo" %>
           <% end %>
-          <button class="navbar-toggler" id="navbarToggle" aria-label="メニュー">
+          <button class="navbar-toggler" data-navbar-target="toggler" data-action="click->navbar#toggle" aria-label="メニュー">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="navbar-nav" id="navbarNav">
+          <div class="navbar-nav" data-navbar-target="menu">
             <%= link_to "使い方", how_to_use_path, class: "nav-link" %>
             <% if user_signed_in? %>
               <%= link_to "ログアウト", destroy_user_session_path, "data-turbo-method": :delete, class: "nav-link" %>
