@@ -1,0 +1,235 @@
+/* Simple Calendar Customizations */
+
+.simple-calendar {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: white;
+}
+
+.simple-calendar .calendar-heading {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.simple-calendar .calendar-heading a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.simple-calendar .calendar-heading a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.simple-calendar table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+}
+
+.simple-calendar .day {
+  padding: 8px;
+  border: 1px solid #e9ecef;
+  height: 120px;
+  vertical-align: top;
+  position: relative;
+  background-color: white;
+  font-weight: 500;
+}
+
+/* Completed day styling - full green background */
+.simple-calendar .day .completed-day {
+  background-color: #d4edda !important;
+  border-radius: 8px;
+  border: 2px solid #28a745;
+}
+
+/* Alternative approach for completed day styling */
+.calendar-date.completed-day {
+  background-color: #d4edda !important;
+  border-radius: 8px;
+  border: 2px solid #28a745 !important;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+}
+
+.simple-calendar .day:has(.completed-day) {
+  background-color: #d4edda !important;
+}
+
+.simple-calendar .day .calendar-date {
+  cursor: pointer;
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.no-record-indicator {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.simple-calendar .day:hover {
+  background-color: #f8f9fa;
+}
+
+/* Calendar date interaction */
+.calendar-date:hover {
+  background-color: #e3f2fd !important;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.calendar-date:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+
+.simple-calendar .today {
+  background-color: #e3f2fd !important;
+  border-color: #2196f3;
+}
+
+.simple-calendar .today:hover {
+  background-color: #bbdefb !important;
+}
+
+.simple-calendar .prev-month,
+.simple-calendar .next-month {
+  color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+.simple-calendar .prev-month:hover,
+.simple-calendar .next-month:hover {
+  background-color: #e9ecef;
+}
+
+.simple-calendar .wday-0,
+.simple-calendar .wday-6 {
+  background-color: #fffaf0;
+}
+
+.simple-calendar .wday-0:hover,
+.simple-calendar .wday-6:hover {
+  background-color: #fdf2e9;
+}
+
+.simple-calendar th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #495057;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid #dee2e6;
+}
+
+/* Calendar Events */
+.calendar-events {
+  max-height: 80px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.calendar-event {
+  margin-bottom: 2px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  padding: 2px 4px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendar-event.completed {
+  background-color: transparent;
+  color: #155724;
+  border: none;
+}
+
+.completion-check {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #28a745;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.calendar-event .badge {
+  font-size: 0.6rem;
+  padding: 1px 4px;
+}
+
+/* Responsive design for calendar */
+@media (max-width: 768px) {
+  .simple-calendar .day {
+    height: 80px;
+    padding: 4px;
+    font-size: 0.9rem;
+  }
+
+  .calendar-events {
+    max-height: 50px;
+  }
+
+  .calendar-event {
+    font-size: 0.7rem;
+    margin-bottom: 1px;
+    padding: 1px 2px;
+  }
+
+  .simple-calendar th {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.9rem;
+  }
+
+  .simple-calendar .calendar-heading {
+    padding: 0.75rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .simple-calendar .day {
+    height: 60px;
+    padding: 2px;
+    font-size: 0.8rem;
+  }
+
+  .calendar-events {
+    max-height: 35px;
+  }
+
+  .calendar-event {
+    font-size: 0.65rem;
+  }
+
+  .simple-calendar th {
+    padding: 0.4rem 0.1rem;
+    font-size: 0.8rem;
+  }
+
+  .simple-calendar .calendar-heading {
+    font-size: 1rem;
+  }
+
+  /* ボタングループのレスポンシブ対応 */
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}

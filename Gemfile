@@ -57,7 +57,6 @@ gem 'ransack'
 gem 'rexml', '>= 3.4.2'
 gem 'sassc-rails'
 gem 'simple_calendar', '~> 2.4'
-gem 'tailwindcss-rails', '~> 2.0'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

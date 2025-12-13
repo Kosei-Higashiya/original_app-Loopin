@@ -23,7 +23,8 @@
     <meta name="twitter:title" content="Loopin - 習慣管理アプリ">
     <meta name="twitter:description" content="習慣形成をサポートする「Loopin」。バッジ機能やカレンダー表示で、あなたの目標達成を手助けします。">
     <meta name="twitter:image" content="<%= request.base_url %>/ogp.png">
-    <%= stylesheet_link_tag "application.tailwind", "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 
     <!-- Google tag (gtag.js) -->
@@ -39,47 +40,47 @@
   </head>
 
   <body>
-    <div id="flash-messages" class="max-w-7xl mx-auto px-4">
+    <div id="flash-messages" class="flash-messages container">
     <% flash.each do |key, message| %>
-      <div class="bg-<%= ['notice', 'success'].include?(key.to_s) ? 'green' : 'red' %>-100 border-<%= ['notice', 'success'].include?(key.to_s) ? 'green' : 'red' %>-400 text-<%= ['notice', 'success'].include?(key.to_s) ? 'green' : 'red' %>-700 px-5 py-3 my-3 rounded-lg border relative flex items-center justify-between font-medium shadow-sm" role="alert">
+      <div class="alert alert-<%= ['notice', 'success'].include?(key.to_s) ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
         <%= message %>
-        <button type="button" class="absolute top-1/2 right-4 -translate-y-1/2 bg-transparent border-0 text-lg cursor-pointer opacity-60 hover:opacity-100 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 font-bold px-2 py-1 min-w-[20px] min-h-[20px] flex items-center justify-center" aria-label="Close">×</button>
+        <button type="button" class="btn-close" aria-label="Close">×</button>
       </div>
     <% end %>
     </div>
-    <header class="bg-white shadow-sm sticky top-0 z-[100]">
-       <nav class="py-4" data-controller="navbar" data-turbo-permanent>
-        <div class="max-w-7xl mx-auto px-5 flex justify-between items-center relative">
-          <%= link_to root_path, class: "no-underline flex items-center" do %>
-            <%= image_tag "logo.svg", alt: "Loopin", class: "h-10 w-auto" %>
+    <header class="header">
+       <nav class="navbar" data-controller="navbar" data-turbo-permanent>
+        <div class="container">
+          <%= link_to root_path, class: "navbar-brand" do %>
+            <%= image_tag "logo.svg", alt: "Loopin", class: "logo" %>
           <% end %>
-          <button class="hidden bg-transparent border-0 cursor-pointer p-2 z-[101] md:hidden" data-navbar-target="toggler" data-action="click->navbar#toggle" aria-label="メニュー">
+          <button class="navbar-toggler" data-navbar-target="toggler" data-action="click->navbar#toggle" aria-label="メニュー">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="flex items-center gap-8 md:hidden md:absolute md:top-full md:left-0 md:right-0 md:bg-white md:flex-col md:gap-0 md:py-4 md:shadow-md md:border-t md:border-gray-200" data-navbar-target="menu">
-            <%= link_to "使い方", how_to_use_path, class: "no-underline text-gray-600 font-medium transition-colors duration-300 hover:text-indigo-600 md:py-3 md:px-6 md:w-full md:text-left md:border-b md:border-gray-100" %>
+          <div class="navbar-nav" data-navbar-target="menu">
+            <%= link_to "使い方", how_to_use_path, class: "nav-link" %>
             <% if user_signed_in? %>
-              <%= link_to "ログアウト", destroy_user_session_path, "data-turbo-method": :delete, class: "no-underline text-gray-600 font-medium transition-colors duration-300 hover:text-indigo-600 md:py-3 md:px-6 md:w-full md:text-left md:border-b md:border-gray-100" %>
-              <%= link_to "プロフィール", edit_user_registration_path, class: "no-underline text-gray-600 font-medium transition-colors duration-300 hover:text-indigo-600 md:py-3 md:px-6 md:w-full md:text-left" %>
+              <%= link_to "ログアウト", destroy_user_session_path, "data-turbo-method": :delete, class: "nav-link" %>
+              <%= link_to "プロフィール", edit_user_registration_path, class: "nav-link" %>
             <% else %>
-              <%= link_to "ログイン", new_user_session_path, class: "no-underline text-gray-600 font-medium transition-colors duration-300 hover:text-indigo-600 md:py-3 md:px-6 md:w-full md:text-left md:border-b md:border-gray-100" %>
-              <%= link_to "新規登録", new_user_registration_path, class: "bg-indigo-600 text-white px-4 py-2 rounded-md transition-colors duration-300 hover:bg-indigo-800 md:mx-6 md:my-2 md:text-center md:block" %>
+              <%= link_to "ログイン", new_user_session_path, class: "nav-link" %>
+              <%= link_to "新規登録", new_user_registration_path, class: "nav-link btn-signup" %>
             <% end %>
           </div>
         </div>
       </nav>
     </header>
 
-    <main class="min-h-[calc(100vh-200px)]">
+    <main class="main-content">
       <%= yield %>
     </main>
 
-    <footer class="bg-gray-800 text-white py-8 text-center">
-      <div class="max-w-7xl mx-auto px-5">
-        <p class="opacity-80">&copy; 2025 Loopin. All rights reserved.</p>
-        <div class="mt-4 flex justify-center gap-8">
-          <%= link_to "利用規約", page_path("terms"), class: "text-white no-underline opacity-80 transition-opacity duration-200 hover:opacity-100 hover:underline" %>
-          <%= link_to "プライバシーポリシー", page_path("privacy"), class: "text-white no-underline opacity-80 transition-opacity duration-200 hover:opacity-100 hover:underline" %>
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 Loopin. All rights reserved.</p>
+        <div class="footer-links">
+          <%= link_to "利用規約", page_path("terms"), class: "footer-link" %>
+          <%= link_to "プライバシーポリシー", page_path("privacy"), class: "footer-link" %>
         </div>
       </div>
     </footer>
