@@ -1,120 +1,120 @@
-<div class="how-to-use-section">
-  <div class="container">
-    <h1 class="hero-title">Loopinの使い方</h1>
-    <p class="hero-subtitle">このガイドでは、Loopinの基本的な使い方をご紹介します</p>
+<div class="py-16 bg-gray-50 min-h-[calc(100vh-200px)] md:py-8">
+  <div class="max-w-7xl mx-auto px-5 md:px-4">
+    <h1 class="text-5xl font-bold mb-4 md:text-3xl text-center">Loopinの使い方</h1>
+    <p class="text-xl mb-8 opacity-90 md:text-base text-center text-gray-600">このガイドでは、Loopinの基本的な使い方をご紹介します</p>
 
-    <div class="how-to-content">
+    <div class="max-w-4xl mx-auto">
       <!-- Step 1: Getting Started -->
-      <div class="how-to-step">
-        <h2 class="step-title">1. はじめに</h2>
-        <div class="step-content">
-          <p>Loopinは、習慣形成をサポートするアプリです。日々の習慣を記録し、カレンダーやグラフで可視化することで、継続のモチベーションを高めます。</p>
-          <div class="step-actions">
+      <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg md:p-6 md:mb-6">
+        <h2 class="text-3xl text-indigo-600 mb-6 font-semibold border-l-4 border-indigo-600 pl-4 md:text-2xl">1. はじめに</h2>
+        <div>
+          <p class="text-gray-600 leading-loose mb-6 text-lg md:text-base">Loopinは、習慣形成をサポートするアプリです。日々の習慣を記録し、カレンダーやグラフで可視化することで、継続のモチベーションを高めます。</p>
+          <div class="flex gap-4 flex-wrap mt-6 md:flex-col">
             <% unless user_signed_in? %>
-              <%= link_to "新規登録する", new_user_registration_path, class: "btn btn-primary" %>
-              <%= link_to "ログイン", new_user_session_path, class: "btn btn-primary" %>
+              <%= link_to "新規登録する", new_user_registration_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
+              <%= link_to "ログイン", new_user_session_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
             <% else %>
-              <%= link_to "ダッシュボードへ", dashboard_path, class: "btn btn-primary" %>
+              <%= link_to "ダッシュボードへ", dashboard_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
             <% end %>
           </div>
         </div>
       </div>
 
       <!-- Step 2: Recording Habits -->
-      <div class="how-to-step">
-        <h2 class="step-title">2. 習慣を登録する</h2>
-        <div class="step-content">
-          <p>まずは続けたい習慣を登録しましょう。「記録する」ボタンから新しい習慣を作成できます。</p>
-          <ul class="step-list">
-            <li>習慣名を入力（例：「毎日の筋トレ」「英語の勉強」）</li>
-            <li>目標や詳細を記入</li>
-            <li>タグをつけて管理しやすくする</li>
+      <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg md:p-6 md:mb-6">
+        <h2 class="text-3xl text-indigo-600 mb-6 font-semibold border-l-4 border-indigo-600 pl-4 md:text-2xl">2. 習慣を登録する</h2>
+        <div>
+          <p class="text-gray-600 leading-loose mb-6 text-lg md:text-base">まずは続けたい習慣を登録しましょう。「記録する」ボタンから新しい習慣を作成できます。</p>
+          <ul class="list-none pl-0 mb-6">
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">習慣名を入力（例：「毎日の筋トレ」「英語の勉強」）</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">目標や詳細を記入</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">タグをつけて管理しやすくする</li>
           </ul>
           <% if user_signed_in? %>
-            <div class="step-actions">
-              <%= link_to "習慣を登録する", new_habit_path, class: "btn btn-primary" %>
+            <div class="flex gap-4 flex-wrap mt-6 md:flex-col">
+              <%= link_to "習慣を登録する", new_habit_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
             </div>
           <% end %>
         </div>
       </div>
 
       <!-- Step 3: Recording Progress -->
-      <div class="how-to-step">
-        <h2 class="step-title">3. 記録をつける</h2>
-        <div class="step-content">
-          <p>習慣を実行したら、カレンダーから日付をクリックして記録をつけましょう。継続日数が増えるとモチベーションも上がります！</p>
-          <ul class="step-list">
-            <li>カレンダーで日付を選択</li>
-            <li>実行した内容や感想を記録</li>
-            <li>連続記録日数を確認</li>
+      <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg md:p-6 md:mb-6">
+        <h2 class="text-3xl text-indigo-600 mb-6 font-semibold border-l-4 border-indigo-600 pl-4 md:text-2xl">3. 記録をつける</h2>
+        <div>
+          <p class="text-gray-600 leading-loose mb-6 text-lg md:text-base">習慣を実行したら、カレンダーから日付をクリックして記録をつけましょう。継続日数が増えるとモチベーションも上がります！</p>
+          <ul class="list-none pl-0 mb-6">
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">カレンダーで日付を選択</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">実行した内容や感想を記録</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">連続記録日数を確認</li>
           </ul>
           <% if user_signed_in? %>
-            <div class="step-actions">
-              <%= link_to "習慣一覧へ", habits_path, class: "btn btn-primary" %>
+            <div class="flex gap-4 flex-wrap mt-6 md:flex-col">
+              <%= link_to "習慣一覧へ", habits_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
             </div>
           <% end %>
         </div>
       </div>
 
       <!-- Step 4: Community -->
-      <div class="how-to-step">
-        <h2 class="step-title">4. みんなの習慣を見る</h2>
-        <div class="step-content">
-          <p>他のユーザーの習慣を見て、いいね！で応援したり、自分の習慣をシェアすることができます。</p>
-          <ul class="step-list">
-            <li>「みんなの習慣」から他のユーザーの投稿を閲覧</li>
-            <li>いいね！でモチベーションを応援</li>
-            <li>自分の習慣を投稿してシェア</li>
+      <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg md:p-6 md:mb-6">
+        <h2 class="text-3xl text-indigo-600 mb-6 font-semibold border-l-4 border-indigo-600 pl-4 md:text-2xl">4. みんなの習慣を見る</h2>
+        <div>
+          <p class="text-gray-600 leading-loose mb-6 text-lg md:text-base">他のユーザーの習慣を見て、いいね！で応援したり、自分の習慣をシェアすることができます。</p>
+          <ul class="list-none pl-0 mb-6">
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">「みんなの習慣」から他のユーザーの投稿を閲覧</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">いいね！でモチベーションを応援</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">自分の習慣を投稿してシェア</li>
           </ul>
           <% if user_signed_in? %>
-            <div class="step-actions">
-              <%= link_to "みんなの習慣を見る", posts_path, class: "btn btn-primary" %>
-              <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
+            <div class="flex gap-4 flex-wrap mt-6 md:flex-col">
+              <%= link_to "みんなの習慣を見る", posts_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
+              <%= link_to "投稿する", new_post_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
             </div>
           <% end %>
         </div>
       </div>
 
       <!-- Step 5: Badges -->
-      <div class="how-to-step">
-        <h2 class="step-title">5. バッジを獲得する</h2>
-        <div class="step-content">
-          <p>習慣を継続すると、達成に応じたバッジを獲得できます。様々な種類のバッジを集めましょう！</p>
-          <ul class="step-list">
-            <li>3日連続達成でバッジを獲得</li>
-            <li>1週間、1ヶ月と継続してレアバッジをゲット</li>
-            <li>獲得したバッジをコレクション</li>
+      <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg md:p-6 md:mb-6">
+        <h2 class="text-3xl text-indigo-600 mb-6 font-semibold border-l-4 border-indigo-600 pl-4 md:text-2xl">5. バッジを獲得する</h2>
+        <div>
+          <p class="text-gray-600 leading-loose mb-6 text-lg md:text-base">習慣を継続すると、達成に応じたバッジを獲得できます。様々な種類のバッジを集めましょう！</p>
+          <ul class="list-none pl-0 mb-6">
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">3日連続達成でバッジを獲得</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">1週間、1ヶ月と継続してレアバッジをゲット</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl">獲得したバッジをコレクション</li>
           </ul>
           <% if user_signed_in? %>
-            <div class="step-actions">
-              <%= link_to "バッジ一覧を見る", badges_path, class: "btn btn-primary" %>
+            <div class="flex gap-4 flex-wrap mt-6 md:flex-col">
+              <%= link_to "バッジ一覧を見る", badges_path, class: "flex-1 min-w-[150px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
             </div>
           <% end %>
         </div>
       </div>
 
       <!-- Tips -->
-      <div class="how-to-step">
-        <h2 class="step-title">💡 継続のコツ</h2>
-        <div class="step-content">
-          <ul class="step-list">
-            <li><strong>小さく始める</strong> - 最初から高い目標を設定せず、無理なく続けられる目標から始めましょう</li>
-            <li><strong>毎日記録する</strong> - たとえ少しでも、毎日記録をつけることで習慣が定着します</li>
-            <li><strong>仲間と共有</strong> - 他のユーザーと交流することで、モチベーションを維持できます</li>
-            <li><strong>自分を褒める</strong> - 小さな達成でも自分を褒めて、ポジティブに継続しましょう</li>
+      <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg md:p-6 md:mb-6">
+        <h2 class="text-3xl text-indigo-600 mb-6 font-semibold border-l-4 border-indigo-600 pl-4 md:text-2xl">💡 継続のコツ</h2>
+        <div>
+          <ul class="list-none pl-0 mb-6">
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl"><strong>小さく始める</strong> - 最初から高い目標を設定せず、無理なく続けられる目標から始めましょう</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl"><strong>毎日記録する</strong> - たとえ少しでも、毎日記録をつけることで習慣が定着します</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl"><strong>仲間と共有</strong> - 他のユーザーと交流することで、モチベーションを維持できます</li>
+            <li class="py-3 pl-8 text-gray-600 relative leading-relaxed before:content-['✓'] before:absolute before:left-0 before:text-green-600 before:font-bold before:text-xl"><strong>自分を褒める</strong> - 小さな達成でも自分を褒めて、ポジティブに継続しましょう</li>
           </ul>
         </div>
       </div>
 
       <!-- Call to Action -->
-      <div class="how-to-cta">
-        <h2 class="cta-title">さあ、始めましょう！</h2>
-        <p class="cta-text">Loopinで習慣を作り、目標を達成しましょう。小さな一歩が大きな変化を生み出します。</p>
-        <div class="cta-actions">
+      <div class="bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 text-white rounded-2xl p-12 text-center mt-12 shadow-xl md:p-8">
+        <h2 class="text-3xl font-bold mb-4 text-white md:text-2xl">さあ、始めましょう！</h2>
+        <p class="text-xl mb-8 opacity-95 md:text-base">Loopinで習慣を作り、目標を達成しましょう。小さな一歩が大きな変化を生み出します。</p>
+        <div class="flex justify-center gap-4 flex-wrap">
           <% if user_signed_in? %>
-            <%= link_to "ダッシュボードへ", dashboard_path, class: "btn btn-primary" %>
+            <%= link_to "ダッシュボードへ", dashboard_path, class: "inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5" %>
           <% else %>
-            <%= link_to "無料で始める", new_user_registration_path, class: "btn btn-primary" %>
+            <%= link_to "無料で始める", new_user_registration_path, class: "inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5" %>
           <% end %>
         </div>
       </div>

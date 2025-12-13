@@ -1,60 +1,60 @@
-<div class="dashboard-section">
-  <div class="container">
-    <h1 class="dashboard-title">ダッシュボード</h1>
-    <p class="dashboard-subtitle">あなたの習慣管理を始めましょう</p>
+<div class="py-16 bg-gray-50 min-h-[calc(100vh-200px)] md:py-8">
+  <div class="max-w-7xl mx-auto px-5 md:px-4">
+    <h1 class="text-center text-4xl mb-4 text-gray-800 font-bold md:text-3xl">ダッシュボード</h1>
+    <p class="text-center text-xl mb-12 text-gray-600 md:text-base md:mb-8">あなたの習慣管理を始めましょう</p>
 
-    <div class="dashboard-grid">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 mt-8 md:grid-cols-1 md:gap-6">
       <!-- 記録・カレンダーセクション -->
-      <div class="dashboard-card">
-        <div class="card-header">
-          <h3 class="card-title">記録・カレンダー</h3>
+      <div class="bg-white rounded-2xl shadow-sm transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-xl">
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-6">
+          <h3 class="text-2xl font-semibold m-0">記録・カレンダー</h3>
         </div>
-        <div class="card-content">
-          <p>日々の習慣を記録し、カレンダーで確認できます</p>
-          <div class="card-actions">
-            <%= link_to "記録する", new_habit_path, class: "btn btn-primary" %>
-            <%= link_to "習慣一覧", habits_path, class: "btn btn-primary" %>
+        <div class="p-8 md:p-6">
+          <p class="text-gray-600 leading-relaxed mb-8 md:text-sm md:mb-6">日々の習慣を記録し、カレンダーで確認できます</p>
+          <div class="flex gap-4 flex-wrap md:flex-col">
+            <%= link_to "記録する", new_habit_path, class: "flex-1 min-w-[120px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
+            <%= link_to "習慣一覧", habits_path, class: "flex-1 min-w-[120px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
           </div>
         </div>
       </div>
 
       <!-- 進捗・グラフセクション -->
-      <div class="dashboard-card">
-        <div class="card-header">
-          <h3 class="card-title">進捗・グラフ</h3>
+      <div class="bg-white rounded-2xl shadow-sm transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-xl">
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-6">
+          <h3 class="text-2xl font-semibold m-0">進捗・グラフ</h3>
         </div>
-        <div class="card-content">
-          <p>あなたの成長をグラフで可視化します</p>
-          <div class="card-actions">
-            <%= link_to "進捗を見る", habits_path, class: "btn btn-primary" %>
-            <%= link_to "グラフ表示", graphs_habits_path, class: "btn btn-primary" %>
+        <div class="p-8 md:p-6">
+          <p class="text-gray-600 leading-relaxed mb-8 md:text-sm md:mb-6">あなたの成長をグラフで可視化します</p>
+          <div class="flex gap-4 flex-wrap md:flex-col">
+            <%= link_to "進捗を見る", habits_path, class: "flex-1 min-w-[120px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
+            <%= link_to "グラフ表示", graphs_habits_path, class: "flex-1 min-w-[120px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
           </div>
         </div>
       </div>
 
       <!-- みんなの習慣セクション -->
-      <div class="dashboard-card">
-        <div class="card-header">
-          <h3 class="card-title">みんなの習慣</h3>
+      <div class="bg-white rounded-2xl shadow-sm transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-xl">
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-6">
+          <h3 class="text-2xl font-semibold m-0">みんなの習慣</h3>
         </div>
-        <div class="card-content">
-          <p>コミュニティのメンバーと習慣を共有しましょう</p>
-          <div class="card-actions">
-            <%= link_to "習慣を見る", posts_path, class: "btn btn-primary" %>
-            <%= link_to "投稿する", new_post_path, class: "btn btn-primary" %>
+        <div class="p-8 md:p-6">
+          <p class="text-gray-600 leading-relaxed mb-8 md:text-sm md:mb-6">コミュニティのメンバーと習慣を共有しましょう</p>
+          <div class="flex gap-4 flex-wrap md:flex-col">
+            <%= link_to "習慣を見る", posts_path, class: "flex-1 min-w-[120px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
+            <%= link_to "投稿する", new_post_path, class: "flex-1 min-w-[120px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
           </div>
         </div>
       </div>
 
       <!-- バッジセクション -->
-      <div class="dashboard-card">
-        <div class="card-header">
-          <h3 class="card-title">バッジ</h3>
+      <div class="bg-white rounded-2xl shadow-sm transition-all duration-300 overflow-hidden hover:-translate-y-1 hover:shadow-xl">
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-6">
+          <h3 class="text-2xl font-semibold m-0">バッジ</h3>
         </div>
-        <div class="card-content">
-          <p>達成した目標に応じてバッジを獲得できます</p>
-          <div class="card-actions">
-            <%= link_to "バッジ一覧", badges_path, class: "btn btn-primary" %>
+        <div class="p-8 md:p-6">
+          <p class="text-gray-600 leading-relaxed mb-8 md:text-sm md:mb-6">達成した目標に応じてバッジを獲得できます</p>
+          <div class="flex gap-4 flex-wrap md:flex-col">
+            <%= link_to "バッジ一覧", badges_path, class="flex-1 min-w-[120px] text-center inline-block px-8 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5 md:w-full" %>
           </div>
         </div>
       </div>
