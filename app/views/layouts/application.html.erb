@@ -23,8 +23,9 @@
     <meta name="twitter:title" content="Loopin - 習慣管理アプリ">
     <meta name="twitter:description" content="習慣形成をサポートする「Loopin」。バッジ機能やカレンダー表示で、あなたの目標達成を手助けします。">
     <meta name="twitter:image" content="<%= request.base_url %>/ogp.png">
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application.tailwind", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 
     <!-- Google tag (gtag.js) -->

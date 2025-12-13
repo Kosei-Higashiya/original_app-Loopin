@@ -1,0 +1,312 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Simple Calendar Styles */
+  .simple-calendar {
+    @apply border border-gray-300 rounded-lg overflow-hidden bg-white;
+  }
+  
+  .simple-calendar .calendar-heading {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 text-center font-semibold text-xl;
+  }
+  
+  .simple-calendar .calendar-heading a {
+    @apply text-white no-underline px-4 py-2 rounded transition-colors duration-200 hover:bg-white/20;
+  }
+  
+  .simple-calendar table {
+    @apply w-full m-0 border-collapse;
+  }
+  
+  .simple-calendar .day {
+    @apply p-2 border border-gray-200 h-[120px] align-top relative bg-white font-medium;
+  }
+  
+  .simple-calendar .day .completed-day {
+    @apply bg-green-100 rounded-lg border-2 border-green-600;
+  }
+  
+  .calendar-date.completed-day {
+    @apply bg-green-100 rounded-lg border-2 border-green-600 shadow-md;
+  }
+  
+  .simple-calendar .day:has(.completed-day) {
+    @apply bg-green-100;
+  }
+  
+  .simple-calendar .day .calendar-date {
+    @apply cursor-pointer block h-full w-full p-1 rounded;
+  }
+  
+  .no-record-indicator {
+    @apply text-gray-600 italic;
+  }
+  
+  .simple-calendar .day:hover {
+    @apply bg-gray-50;
+  }
+  
+  .calendar-date:hover {
+    @apply bg-blue-100 rounded transition-colors duration-200;
+  }
+  
+  .calendar-date:active {
+    @apply scale-[0.98] transition-transform duration-100;
+  }
+  
+  .simple-calendar .today {
+    @apply bg-blue-100 border-blue-500;
+  }
+  
+  .simple-calendar .today:hover {
+    @apply bg-blue-200;
+  }
+  
+  .simple-calendar .prev-month,
+  .simple-calendar .next-month {
+    @apply text-gray-600 bg-gray-50;
+  }
+  
+  .simple-calendar .prev-month:hover,
+  .simple-calendar .next-month:hover {
+    @apply bg-gray-100;
+  }
+  
+  .simple-calendar .wday-0,
+  .simple-calendar .wday-6 {
+    @apply bg-orange-50;
+  }
+  
+  .simple-calendar .wday-0:hover,
+  .simple-calendar .wday-6:hover {
+    @apply bg-orange-100;
+  }
+  
+  .simple-calendar th {
+    @apply bg-gradient-to-r from-gray-50 to-gray-200 text-gray-700 font-semibold text-center py-3 px-2 border border-gray-300;
+  }
+  
+  .calendar-events {
+    @apply max-h-[80px] overflow-y-auto mt-1;
+  }
+  
+  .calendar-event {
+    @apply mb-0.5 text-xs leading-tight py-0.5 px-1 rounded flex items-center justify-between;
+  }
+  
+  .calendar-event.completed {
+    @apply bg-transparent text-green-900 border-0;
+  }
+  
+  .completion-check {
+    @apply text-2xl font-bold text-green-600 drop-shadow;
+  }
+  
+  .calendar-event .badge {
+    @apply text-[0.6rem] px-1 py-0;
+  }
+  
+  /* Badge/Trophy Styles */
+  .trophy-header {
+    @apply text-center mb-8;
+  }
+  
+  .trophy-count {
+    @apply text-4xl font-bold text-gray-600 mb-2 flex items-center justify-center gap-4;
+  }
+  
+  .trophy-count-icon {
+    @apply text-5xl text-gray-400;
+  }
+  
+  .trophy-section-title {
+    @apply text-2xl font-semibold text-gray-700 mb-8;
+  }
+  
+  .trophy-grid {
+    @apply grid grid-cols-4 gap-8 p-8 bg-gray-50 rounded-2xl;
+  }
+  
+  .trophy-badge-link {
+    @apply no-underline text-inherit block transition-transform duration-300 hover:-translate-y-0.5;
+  }
+  
+  .trophy-badge {
+    @apply flex flex-col items-center p-4 relative cursor-pointer;
+  }
+  
+  .trophy-platform {
+    @apply relative w-20 h-20 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 shadow-lg mb-4 flex items-center justify-center transition-all duration-300;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .trophy-platform.earned {
+    @apply bg-gradient-to-br from-green-50 to-green-200;
+    box-shadow: 0 8px 16px rgba(82, 196, 26, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -2px 4px rgba(82, 196, 26, 0.1);
+  }
+  
+  .trophy-icon {
+    @apply text-5xl transition-transform duration-300;
+  }
+  
+  .trophy-badge.earned .trophy-icon {
+    filter: drop-shadow(0 4px 8px rgba(82, 196, 26, 0.3));
+  }
+  
+  .trophy-badge:not(.earned) .trophy-icon {
+    @apply opacity-40 grayscale;
+  }
+  
+  .trophy-progress {
+    @apply w-[60px] h-1.5 bg-gray-200 rounded-full overflow-hidden mt-2;
+  }
+  
+  .trophy-progress-bar {
+    @apply h-full bg-gradient-to-r from-green-600 to-green-400 rounded-full transition-all duration-700;
+  }
+  
+  .trophy-progress-bar.empty {
+    @apply w-0;
+  }
+  
+  .trophy-progress-bar.partial {
+    @apply w-3/5;
+  }
+  
+  .trophy-progress-bar.full {
+    @apply w-full;
+  }
+  
+  .trophy-badge-link:hover .trophy-platform {
+    @apply -translate-y-0.5;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .trophy-badge-link:hover .trophy-platform.earned {
+    box-shadow: 0 12px 24px rgba(82, 196, 26, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -2px 4px rgba(82, 196, 26, 0.1);
+  }
+  
+  .trophy-badge-link:hover .trophy-icon {
+    @apply scale-110;
+  }
+  
+  /* Like Heart */
+  .like-heart {
+    @apply inline-block transition-all duration-200 cursor-pointer;
+  }
+  
+  .like-heart:hover {
+    @apply scale-125 no-underline;
+  }
+  
+  .like-heart.liked {
+    @apply text-red-600;
+  }
+  
+  .like-heart.liked:hover {
+    @apply text-red-700 scale-[1.3];
+  }
+  
+  /* Dashboard Habit Card */
+  .dashboard-habit-card {
+    @apply transition-all duration-300 mt-1 mb-2;
+  }
+  
+  .dashboard-habit-card:hover {
+    @apply -translate-y-0.5;
+  }
+  
+  .dashboard-habit-card .card {
+    @apply w-[70%] bg-gradient-to-br from-white to-gray-50 border border-gray-200 relative overflow-hidden;
+  }
+  
+  .dashboard-habit-card .card::before {
+    content: '';
+    @apply absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-blue-500 to-blue-700 z-[1];
+  }
+  
+  .dashboard-habit-card .habit-icon {
+    @apply bg-gradient-to-br from-blue-500 to-blue-700 bg-clip-text text-transparent;
+    filter: drop-shadow(0 2px 4px rgba(0, 123, 255, 0.3));
+  }
+  
+  .dashboard-habit-card .card-title {
+    @apply bg-gradient-to-br from-blue-500 to-blue-700 bg-clip-text text-transparent;
+  }
+  
+  .dashboard-habit-card .btn-success {
+    @apply bg-gradient-to-br from-green-600 to-green-800 border-0;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+  }
+  
+  .dashboard-habit-card .btn-success:hover {
+    @apply -translate-y-px;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+  }
+  
+  /* Badge Check Button Spinner */
+  .spinner {
+    @apply inline-block;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes slideInDown {
+    from {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .flash-messages .alert {
+    animation: slideInDown 0.3s ease-out;
+  }
+  
+  /* Navbar Toggler Animation */
+  .navbar-toggler-icon {
+    @apply block w-6 h-0.5 bg-gray-600 relative transition-colors duration-300;
+  }
+  
+  .navbar-toggler-icon::before,
+  .navbar-toggler-icon::after {
+    content: '';
+    @apply block w-6 h-0.5 bg-gray-600 absolute transition-transform duration-300;
+  }
+  
+  .navbar-toggler-icon::before {
+    @apply -top-2;
+  }
+  
+  .navbar-toggler-icon::after {
+    @apply top-2;
+  }
+  
+  .navbar-toggler.active .navbar-toggler-icon {
+    @apply bg-transparent;
+  }
+  
+  .navbar-toggler.active .navbar-toggler-icon::before {
+    @apply top-0 rotate-45;
+  }
+  
+  .navbar-toggler.active .navbar-toggler-icon::after {
+    @apply top-0 -rotate-45;
+  }
+}
+
+@layer base {
+  body {
+    @apply font-sans leading-relaxed text-gray-800 bg-white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
