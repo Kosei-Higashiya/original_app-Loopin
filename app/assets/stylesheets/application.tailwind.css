@@ -3,6 +3,119 @@
 @tailwind utilities;
 
 @layer components {
+  /* Bootstrap-compatible Button Styles for existing views */
+  .btn {
+    @apply inline-block px-6 py-3 no-underline rounded-lg font-semibold transition-all duration-300 cursor-pointer border-0 text-base;
+  }
+  
+  .btn-primary {
+    @apply bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5;
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent text-white border-2 border-white hover:bg-white hover:text-indigo-600;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 hover:-translate-y-0.5;
+  }
+  
+  .btn-warning {
+    @apply bg-blue-500 text-white hover:bg-blue-600 hover:-translate-y-0.5;
+  }
+  
+  .btn-outline-secondary {
+    @apply bg-transparent text-gray-600 border-2 border-gray-400 hover:bg-gray-100;
+  }
+  
+  .btn-lg {
+    @apply px-8 py-3 text-lg;
+  }
+  
+  .btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+  
+  .btn-success {
+    @apply bg-green-600 text-white hover:bg-green-700 hover:-translate-y-0.5;
+  }
+  
+  /* Bootstrap-compatible Form Styles */
+  .form-control {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200;
+  }
+  
+  .form-control-lg {
+    @apply px-5 py-3 text-lg;
+  }
+  
+  .form-label {
+    @apply block mb-2 font-medium text-gray-700;
+  }
+  
+  .fw-bold {
+    @apply font-bold;
+  }
+  
+  /* Bootstrap-compatible Card Styles */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm overflow-hidden;
+  }
+  
+  .card-header {
+    @apply bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-6;
+  }
+  
+  .card-title {
+    @apply text-2xl font-semibold m-0;
+  }
+  
+  .card-body {
+    @apply p-8;
+  }
+  
+  .card-text {
+    @apply text-gray-600 leading-relaxed;
+  }
+  
+  /* Bootstrap-compatible Alert Styles */
+  .alert {
+    @apply px-5 py-3 my-3 rounded-lg border relative flex items-center justify-between font-medium;
+  }
+  
+  .alert-success {
+    @apply bg-green-100 border-green-400 text-green-700;
+  }
+  
+  .alert-danger {
+    @apply bg-red-100 border-red-400 text-red-700;
+  }
+  
+  .alert-dismissible {
+    @apply pr-12;
+  }
+  
+  .btn-close {
+    @apply absolute top-1/2 right-4 -translate-y-1/2 bg-transparent border-0 text-lg cursor-pointer opacity-60 hover:opacity-100 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 font-bold px-2 py-1 min-w-[20px] min-h-[20px] flex items-center justify-center;
+  }
+  
+  .fade {
+    @apply transition-opacity duration-150;
+  }
+  
+  .fade:not(.show) {
+    @apply opacity-0;
+  }
+  
+  /* Bootstrap-compatible Layout */
+  .container {
+    @apply max-w-7xl mx-auto px-5;
+  }
+  
+  .container-fluid {
+    @apply w-[70%] max-w-[70%] mx-auto px-4;
+  }
+  
   /* Simple Calendar Styles */
   .simple-calendar {
     @apply border border-gray-300 rounded-lg overflow-hidden bg-white;
@@ -246,6 +359,23 @@
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
   }
   
+  /* Dashboard Section and Grid */
+  .dashboard-section {
+    @apply py-16 bg-gray-50 min-h-[calc(100vh-200px)];
+  }
+  
+  .dashboard-title {
+    @apply text-center text-4xl mb-4 text-gray-800 font-bold;
+  }
+  
+  .dashboard-subtitle {
+    @apply text-center text-xl mb-12 text-gray-600;
+  }
+  
+  .dashboard-grid {
+    @apply grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 mt-8;
+  }
+  
   /* Badge Check Button Spinner */
   .spinner {
     @apply inline-block;
@@ -272,7 +402,41 @@
     animation: slideInDown 0.3s ease-out;
   }
   
+  /* Search Layout */
+  .search-layout-container {
+    @apply flex flex-col gap-4;
+  }
+  
+  .search-buttons-group {
+    @apply flex gap-2 flex-shrink-0;
+  }
+  
+  .search-form-wrapper {
+    @apply flex-1 flex justify-start;
+  }
+  
+  .search-form-flex {
+    @apply flex gap-2 w-full max-w-[500px];
+  }
+  
+  .search-input {
+    @apply flex-1 min-w-0;
+  }
+  
+  .search-btn {
+    @apply flex-shrink-0 whitespace-nowrap;
+  }
+  
+  /* Habit Dashboard */
+  .habit-dashboard {
+    @apply max-w-[70%];
+  }
+  
   /* Navbar Toggler Animation */
+  .navbar-toggler {
+    @apply hidden bg-transparent border-0 cursor-pointer p-2 z-[101];
+  }
+  
   .navbar-toggler-icon {
     @apply block w-6 h-0.5 bg-gray-600 relative transition-colors duration-300;
   }
@@ -301,6 +465,107 @@
   
   .navbar-toggler.active .navbar-toggler-icon::after {
     @apply top-0 -rotate-45;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .navbar-toggler {
+      @apply block;
+    }
+    
+    .container-fluid {
+      @apply w-[95%] max-w-[95%];
+    }
+    
+    .dashboard-grid {
+      @apply grid-cols-1 gap-6;
+    }
+    
+    .trophy-grid {
+      @apply grid-cols-2 gap-4 p-4;
+    }
+    
+    .trophy-platform {
+      @apply w-[60px] h-[60px];
+    }
+    
+    .trophy-icon {
+      @apply text-3xl;
+    }
+    
+    .trophy-count {
+      @apply text-3xl;
+    }
+    
+    .dashboard-title {
+      @apply text-3xl;
+    }
+    
+    .dashboard-subtitle {
+      @apply text-base;
+    }
+    
+    .dashboard-habit-card .card {
+      @apply w-full;
+    }
+    
+    .habit-dashboard {
+      @apply max-w-full;
+    }
+    
+    .search-layout-container {
+      @apply flex-col;
+    }
+    
+    .search-form-wrapper {
+      @apply justify-start;
+    }
+    
+    .calendar-events {
+      @apply max-h-[50px];
+    }
+    
+    .simple-calendar .day {
+      @apply h-[80px] p-1 text-sm;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .trophy-grid {
+      @apply grid-cols-2 gap-2;
+    }
+    
+    .trophy-platform {
+      @apply w-[50px] h-[50px];
+    }
+    
+    .trophy-icon {
+      @apply text-2xl;
+    }
+    
+    .trophy-progress {
+      @apply w-[40px] h-1;
+    }
+    
+    .dashboard-title {
+      @apply text-2xl;
+    }
+    
+    .dashboard-subtitle {
+      @apply text-sm;
+    }
+    
+    .simple-calendar .day {
+      @apply h-[60px] p-0.5 text-xs;
+    }
+    
+    .calendar-events {
+      @apply max-h-[35px];
+    }
+    
+    .calendar-event {
+      @apply text-[0.65rem];
+    }
   }
 }
 
