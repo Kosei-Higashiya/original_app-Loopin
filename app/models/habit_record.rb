@@ -8,7 +8,7 @@ class HabitRecord < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[habit_id recorded_at],
                                     message: 'can only have one record per habit per day' }
 
-  # Ensure the habit belongs to the user
+  # 習慣の所有者とレコードの所有者が一致することを確認
   validate :habit_must_belong_to_user
 
   scope :completed, -> { where(completed: true) }

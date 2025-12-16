@@ -1,4 +1,4 @@
-# Badge checking concern to isolate and optimize badge logic
+# バッジチェックの最適化モジュール
 module BadgeChecker
   extend ActiveSupport::Concern
 
@@ -10,25 +10,25 @@ module BadgeChecker
     begin
       Rails.logger.info "[BadgeCheck] Starting for user #{user.id} at #{Time.current}"
 
-      # Step 1: Get user's current badge IDs
+      # Step 1: ユーザーが既に獲得しているバッジIDを取得
       earned_badge_ids = user.user_badges.pluck(:badge_id)
       Rails.logger.debug { "[BadgeCheck] User has #{earned_badge_ids.count} existing badges" }
 
-      # Step 2: Get all active badges not yet earned
+      # Step 2: 獲得していないすべてのアクティブなバッジを取得
       available_badges = Badge.active.where.not(id: earned_badge_ids).limit(20)
       Rails.logger.debug { "[BadgeCheck] Checking #{available_badges.count} available badges" }
 
-      # Step 3: Pre-calculate user stats
+      # Step 3: ユーザーの統計情報を事前計算
       user_stats = calculate_user_stats(user)
       results[:stats] = user_stats
 
-      # Step 4: Check each badge
+      # Step 4: 各バッジをチェック
       available_badges.each do |badge|
         check_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
         begin
           if badge_earned_by_stats?(badge, user_stats)
-            # Create the badge record
+            # バッジを付与
             UserBadge.create!(
               user: user,
               badge: badge,
@@ -64,7 +64,7 @@ module BadgeChecker
 
   private
 
-  # Pre-calculate all user stats
+  # ユーザーの統計情報を計算(step3で使うメソッド)
   def calculate_user_stats(user)
     total_habits = user.habits.count
     thirty_days_ago = 30.days.ago.to_date
@@ -83,7 +83,7 @@ module BadgeChecker
     }
   end
 
-  # Check if badge condition is met based on pre-calculated stats
+  # 事前計算された統計情報に基づいてバッジ条件を満たしているかチェック (step4で使うメソッド)
   def badge_earned_by_stats?(badge, user_stats)
     case badge.condition_type
     when 'consecutive_days'

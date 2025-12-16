@@ -117,19 +117,19 @@ class User < ApplicationRecord
   # 新しいバッジを自動的にチェックして付与
   # This method is kept for backward compatibility but delegates to the optimized BadgeChecker
   def check_and_award_badges
-    # Use the optimized badge checker
+    # バッジチェックを最適化したモジュール(BadgeChecker)を使用
     results = perform_badge_check_for_user(self)
 
     Rails.logger.debug do
       "Badge check completed for user #{id}. Awarded #{results[:newly_earned].count} badges via optimized checker"
     end
 
-    # Return newly earned badges for backward compatibility
+    # 新しく獲得したバッジの配列を返す
     results[:newly_earned] || []
   rescue StandardError => e
     Rails.logger.error "Error during optimized badge check for user #{id}: #{e.message}"
     Rails.logger.error "Backtrace: #{e.backtrace.first(3).join("\n")}" if e.backtrace
-    # Return empty array on error to prevent user registration/action failure
+    # エラーが発生した場合は空の配列を返す
     []
   end
 end

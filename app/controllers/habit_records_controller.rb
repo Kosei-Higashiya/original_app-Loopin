@@ -5,7 +5,7 @@ class HabitRecordsController < ApplicationController
   before_action :set_habit
   before_action :set_habit_record, only: %i[show update destroy]
 
-  # GET /habits/:habit_id/habit_records/:id
+  # habits/:habit_id/habit_records/:id を取得する
   def show
     respond_to do |format|
       format.html
@@ -13,7 +13,7 @@ class HabitRecordsController < ApplicationController
     end
   end
 
-  # POST /habits/:habit_id/habit_records
+  # habits/:habit_id/habit_recordsを作成する
   def create
     @habit_record = @habit.habit_records.build(habit_record_params)
     @habit_record.user = current_user
@@ -33,7 +33,6 @@ class HabitRecordsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /habits/:habit_id/habit_records/:id
   def update
     respond_to do |format|
       if @habit_record.update(habit_record_params)
@@ -50,7 +49,6 @@ class HabitRecordsController < ApplicationController
     end
   end
 
-  # DELETE /habits/:habit_id/habit_records/:id
   def destroy
     @habit_record.destroy
     respond_to do |format|

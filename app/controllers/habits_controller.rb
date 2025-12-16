@@ -11,12 +11,12 @@ class HabitsController < ApplicationController
   def graphs
     @habits = current_user.habits.includes(:habit_records)
 
-    # Calculate daily achievement rate for the last 30 days
+    # 過去30日間の毎日の達成率を計算する
     end_date = Date.current
     start_date = end_date - 29.days
     @date_range = (start_date..end_date).to_a
 
-    # Calculate achievement rate per habit (last 30 days)
+    # 過去30日間の各習慣の達成率を計算する
     @habit_data = @habits.map do |habit|
       total_days = 30
       completed_days = habit.habit_records
