@@ -201,7 +201,7 @@ RSpec.describe Badge, type: :model do
       end
     end
 
-    context '不正な入力の場合' do
+    context 'user_statsが不正なデータ型または不明な条件タイプの場合' do
       let(:badge) { create(:badge) }
 
       it 'user_statsがHashでない場合はfalseを返すこと' do

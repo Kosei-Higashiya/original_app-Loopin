@@ -26,6 +26,7 @@ class Badge < ApplicationRecord
   # Check if badge conditions are met using precomputed stats
   # @param user_stats [Hash] Hash containing :consecutive_days, :total_habits, :total_records, :completion_rate
   # @return [Boolean] true if badge conditions are met
+  # @note Missing hash keys are treated as 0 values via .to_i/.to_f for defensive programming
   def earned_by_stats?(user_stats)
     return false unless user_stats.is_a?(Hash)
 

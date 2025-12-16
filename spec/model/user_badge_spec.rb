@@ -118,8 +118,6 @@ RSpec.describe UserBadge, type: :model do
     end
 
     context '各条件タイプでの動作確認' do
-      let(:user) { create(:user) }
-
       it 'consecutive_daysバッジが正しく付与されること' do
         badge = create(:badge, :consecutive_days_badge, condition_value: 3)
         habit = create(:habit, user: user)
