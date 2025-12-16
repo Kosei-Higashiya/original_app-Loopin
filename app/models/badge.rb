@@ -23,6 +23,26 @@ class Badge < ApplicationRecord
     CONDITION_TYPES[condition_type] || condition_type
   end
 
+  # Check if badge conditions are met using precomputed stats
+  # @param user_stats [Hash] Hash containing :consecutive_days, :total_habits, :total_records, :completion_rate
+  # @return [Boolean] true if badge conditions are met
+  def earned_by_stats?(user_stats)
+    return false unless user_stats.is_a?(Hash)
+
+    case condition_type
+    when 'consecutive_days'
+      user_stats[:consecutive_days].to_i >= condition_value
+    when 'total_habits'
+      user_stats[:total_habits].to_i >= condition_value
+    when 'total_records'
+      user_stats[:total_records].to_i >= condition_value
+    when 'completion_rate'
+      user_stats[:completion_rate].to_f >= condition_value
+    else
+      false
+    end
+  end
+
   # ユーザーがこのバッジの条件を満たしているかチェック
   def earned_by?(user)
     return false unless user

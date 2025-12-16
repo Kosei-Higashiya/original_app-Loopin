@@ -27,15 +27,12 @@ module BadgeChecker
         check_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
         begin
-          if badge_earned_by_stats?(badge, user_stats)
-            # Create the badge record
-            UserBadge.create!(
-              user: user,
-              badge: badge,
-              earned_at: Time.current
-            )
+          awarded_badge = UserBadge.award_badge(user, badge, user_stats: user_stats)
+          if awarded_badge
             results[:newly_earned] << badge
             Rails.logger.info "[BadgeCheck] Badge '#{badge.name}' awarded to user #{user.id}"
+          else
+            Rails.logger.debug { "[BadgeCheck] Badge '#{badge.name}' not awarded (condition not met or already owned)" }
           end
         rescue StandardError => e
           error_msg = "Failed to award badge '#{badge.name}': #{e.message}"
@@ -81,22 +78,6 @@ module BadgeChecker
       consecutive_days: calculate_max_consecutive_days(user),
       completion_rate: completion_rate
     }
-  end
-
-  # Check if badge condition is met based on pre-calculated stats
-  def badge_earned_by_stats?(badge, user_stats)
-    case badge.condition_type
-    when 'consecutive_days'
-      user_stats[:consecutive_days] >= badge.condition_value
-    when 'total_habits'
-      user_stats[:total_habits] >= badge.condition_value
-    when 'total_records'
-      user_stats[:total_records] >= badge.condition_value
-    when 'completion_rate'
-      user_stats[:completion_rate] >= badge.condition_value
-    else
-      false
-    end
   end
 
   def calculate_max_consecutive_days(user)

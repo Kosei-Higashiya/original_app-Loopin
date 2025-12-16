@@ -138,4 +138,83 @@ RSpec.describe Badge, type: :model do
       end
     end
   end
+
+  describe '#earned_by_stats?' do
+    context 'consecutive_daysバッジの場合' do
+      let(:badge) { create(:badge, :consecutive_days_badge, condition_value: 7) }
+
+      it '連続日数が条件を満たす場合はtrueを返すこと' do
+        user_stats = { consecutive_days: 10, total_habits: 5, total_records: 20, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be true
+      end
+
+      it '連続日数が条件を満たさない場合はfalseを返すこと' do
+        user_stats = { consecutive_days: 5, total_habits: 5, total_records: 20, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be false
+      end
+
+      it '連続日数がちょうど条件値と等しい場合はtrueを返すこと' do
+        user_stats = { consecutive_days: 7, total_habits: 5, total_records: 20, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be true
+      end
+    end
+
+    context 'total_habitsバッジの場合' do
+      let(:badge) { create(:badge, :total_habits_badge, condition_value: 5) }
+
+      it '習慣数が条件を満たす場合はtrueを返すこと' do
+        user_stats = { consecutive_days: 3, total_habits: 6, total_records: 20, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be true
+      end
+
+      it '習慣数が条件を満たさない場合はfalseを返すこと' do
+        user_stats = { consecutive_days: 3, total_habits: 3, total_records: 20, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be false
+      end
+    end
+
+    context 'total_recordsバッジの場合' do
+      let(:badge) { create(:badge, condition_type: 'total_records', condition_value: 10) }
+
+      it '記録数が条件を満たす場合はtrueを返すこと' do
+        user_stats = { consecutive_days: 3, total_habits: 5, total_records: 15, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be true
+      end
+
+      it '記録数が条件を満たさない場合はfalseを返すこと' do
+        user_stats = { consecutive_days: 3, total_habits: 5, total_records: 5, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be false
+      end
+    end
+
+    context 'completion_rateバッジの場合' do
+      let(:badge) { create(:badge, condition_type: 'completion_rate', condition_value: 75) }
+
+      it '完了率が条件を満たす場合はtrueを返すこと' do
+        user_stats = { consecutive_days: 3, total_habits: 5, total_records: 20, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be true
+      end
+
+      it '完了率が条件を満たさない場合はfalseを返すこと' do
+        user_stats = { consecutive_days: 3, total_habits: 5, total_records: 20, completion_rate: 60.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be false
+      end
+    end
+
+    context '不正な入力の場合' do
+      let(:badge) { create(:badge) }
+
+      it 'user_statsがHashでない場合はfalseを返すこと' do
+        expect(badge.earned_by_stats?(nil)).to be false
+        expect(badge.earned_by_stats?('string')).to be false
+        expect(badge.earned_by_stats?(123)).to be false
+      end
+
+      it '不明なcondition_typeの場合はfalseを返すこと' do
+        badge = create(:badge, condition_type: 'unknown_type', condition_value: 10)
+        user_stats = { consecutive_days: 3, total_habits: 5, total_records: 20, completion_rate: 80.0 }
+        expect(badge.earned_by_stats?(user_stats)).to be false
+      end
+    end
+  end
 end
