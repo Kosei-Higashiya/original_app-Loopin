@@ -88,7 +88,8 @@ RSpec.describe 'Badge awarding integration', type: :model do
     
     context 'when user calls check_and_award_badges' do
       it 'returns newly earned badges array for backward compatibility' do
-        create(:habit_record, user: user, habit: habit, completed: true)
+        # Create first habit record
+        create(:habit_record, user: user, habit: habit, recorded_at: Date.current, completed: true)
         
         # This method is used by controllers
         newly_earned = user.check_and_award_badges
@@ -96,14 +97,15 @@ RSpec.describe 'Badge awarding integration', type: :model do
         expect(newly_earned).to be_an(Array)
         expect(newly_earned).to be_empty # No badges meet condition with just 1 record
         
-        # Add more records to meet condition (spread across different dates to avoid consecutive_days badge)
-        4.times do |i|
-          create(:habit_record,
-                 user: user,
-                 habit: habit,
-                 recorded_at: Date.current - ((i + 1) * 2).days, # Non-consecutive
-                 completed: true)
-        end
+        # Create additional habits to add more records
+        habit2 = create(:habit, user: user)
+        habit3 = create(:habit, user: user)
+        
+        # Add more records to meet condition (5 total records needed)
+        create(:habit_record, user: user, habit: habit2, recorded_at: Date.current, completed: true)
+        create(:habit_record, user: user, habit: habit3, recorded_at: Date.current, completed: true)
+        create(:habit_record, user: user, habit: habit2, recorded_at: Date.current - 1.day, completed: true)
+        create(:habit_record, user: user, habit: habit3, recorded_at: Date.current - 1.day, completed: true)
         
         newly_earned = user.check_and_award_badges
         # Should award total_records badge (need 5 records)
