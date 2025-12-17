@@ -126,11 +126,11 @@ function toggleRecord(habitId, date, dateElement) {
     return;
   }
 
-  console.log('Making request to:', `/habits/${habitId}/toggle_record_for_date`);
+  console.log('Making request to:', `/habits/${habitId}/toggle_daily_record`);
   console.log('Request body:', { date: date });
 
 
-  fetch(`/habits/${habitId}/toggle_record_for_date`, {
+  fetch(`/habits/${habitId}/toggle_daily_record`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

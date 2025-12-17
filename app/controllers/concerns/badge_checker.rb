@@ -3,7 +3,7 @@ module BadgeChecker
   extend ActiveSupport::Concern
 
   # 高速バッジチェックメソッド
-  def perform_badge_check_for_user(user)
+  def check_and_award_badges_for_user(user)
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     results = { newly_earned: [], errors: [], stats: {} }
 
@@ -27,15 +27,15 @@ module BadgeChecker
         check_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
         begin
-          if badge_earned_by_stats?(badge, user_stats)
-            # バッジを付与
-            UserBadge.create!(
-              user: user,
-              badge: badge,
-              earned_at: Time.current
-            )
-            results[:newly_earned] << badge
-            Rails.logger.info "[BadgeCheck] Badge '#{badge.name}' awarded to user #{user.id}"
+          if badge.earned_by_stats?(user_stats)
+            # award_badge メソッドを使用してバッジを授与する
+            awarded = UserBadge.award_badge(user, badge, user_stats: user_stats)
+            if awarded
+              results[:newly_earned] << badge
+              Rails.logger.info "[BadgeCheck] Badge '#{badge.name}' awarded to user #{user.id}"
+            else
+              Rails.logger.debug "[BadgeCheck] Badge '#{badge.name}' was not awarded (already exists or concurrent creation)"
+            end
           end
         rescue StandardError => e
           error_msg = "Failed to award badge '#{badge.name}': #{e.message}"
@@ -81,22 +81,6 @@ module BadgeChecker
       consecutive_days: calculate_max_consecutive_days(user),
       completion_rate: completion_rate
     }
-  end
-
-  # 事前計算された統計情報に基づいてバッジ条件を満たしているかチェック (step4で使うメソッド)
-  def badge_earned_by_stats?(badge, user_stats)
-    case badge.condition_type
-    when 'consecutive_days'
-      user_stats[:consecutive_days] >= badge.condition_value
-    when 'total_habits'
-      user_stats[:total_habits] >= badge.condition_value
-    when 'total_records'
-      user_stats[:total_records] >= badge.condition_value
-    when 'completion_rate'
-      user_stats[:completion_rate] >= badge.condition_value
-    else
-      false
-    end
   end
 
   def calculate_max_consecutive_days(user)
