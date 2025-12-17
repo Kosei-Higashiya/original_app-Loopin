@@ -13,7 +13,7 @@ class UserBadge < ApplicationRecord
     # すでにバッジを持っていたら付与しない (fast path)
     return nil if user.badge?(badge)
 
-     # 獲得条件をチェック: user_statsが提供されていればそれを使用、なければearnerd_by?を使用
+    # 獲得条件をチェック: user_statsが提供されていればそれを使用、なければearnerd_by?を使用
     earned = if user_stats
                badge.earned_by_stats?(user_stats)
              else
@@ -30,7 +30,7 @@ class UserBadge < ApplicationRecord
         badge: badge,
         earned_at: Time.current
       )
-    rescue ActiveRecord::RecordNotUnique => e
+    rescue ActiveRecord::RecordNotUnique
       Rails.logger.warn "[UserBadge] Badge '#{badge.name}' already awarded to user #{user.id} (concurrent creation prevented)"
       nil
     end
