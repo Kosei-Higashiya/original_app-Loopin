@@ -1,6 +1,6 @@
 # バッジチェックサービスクラス
 class BadgeService
-  # 高速バッジチェックメソッド
+  # ユーザーのバッジ獲得条件をチェックし、条件を満たすバッジを付与する
   def self.check_and_award_badges_for_user(user)
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     results = { newly_earned: [], errors: [], stats: {} }
@@ -60,7 +60,9 @@ class BadgeService
     results
   end
 
-  # ユーザーの統計情報を計算(step3で使うメソッド)
+  # ユーザーの統計情報を計算する
+  # バッジ獲得条件の判定に使用する統計データをまとめて計算することで、
+  # 各バッジ条件チェック時の個別クエリを削減する
   def self.calculate_user_stats(user)
     total_habits = user.habits.count
     thirty_days_ago = 30.days.ago.to_date
@@ -79,8 +81,10 @@ class BadgeService
     }
   end
 
+  # ユーザーの最大連続日数を取得する
+  # Userモデルのmax_consecutive_daysメソッドに処理を委譲する
   def self.calculate_max_consecutive_days(user)
-    # User インスタンスのメソッドを必ず呼ぶ
+    # User インスタンスのメソッドを呼び出す
     if user.respond_to?(:max_consecutive_days)
       user.max_consecutive_days
     else

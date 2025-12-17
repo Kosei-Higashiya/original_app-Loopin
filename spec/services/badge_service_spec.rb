@@ -107,7 +107,7 @@ RSpec.describe BadgeService, type: :service do
       let!(:badge) { create(:badge, condition_type: 'completion_rate', condition_value: 50.0, active: true) }
 
       before do
-        # 30日間のうち16日記録して50%以上達成 (16/31 = 51.6%)
+        # 過去31日間のうち16日記録して50%以上達成 (16/31 = 51.6%)
         16.times do |i|
           create(:habit_record,
                  user: user,
