@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  include BadgeChecker
-
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -117,8 +115,8 @@ class User < ApplicationRecord
   # 新しいバッジを自動的にチェックして付与
 
   def check_and_award_badges
-    # バッジチェックモジュール(BadgeChecker)に処理を投げる
-    results = check_and_award_badges_for_user(self)
+    # バッジチェックサービス(BadgeService)に処理を投げる
+    results = BadgeService.check_and_award_badges_for_user(self)
 
     Rails.logger.debug do
       "Badge check completed for user #{id}. Awarded #{results[:newly_earned].count} badges via optimized checker"

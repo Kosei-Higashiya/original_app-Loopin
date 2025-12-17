@@ -1,0 +1,170 @@
+require 'rails_helper'
+
+RSpec.describe BadgeService, type: :service do
+  describe '.check_and_award_badges_for_user' do
+    let(:user) { create(:user) }
+    let(:habit) { create(:habit, user: user) }
+
+    context 'バッジが獲得できる場合' do
+      let!(:badge) { create(:badge, condition_type: 'total_records', condition_value: 2, active: true) }
+
+      before do
+        create_list(:habit_record, 2, user: user, habit: habit, completed: true)
+      end
+
+      it '新しいバッジを付与すること' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:newly_earned].count).to eq(1)
+        expect(results[:newly_earned].first).to eq(badge)
+        expect(user.badges).to include(badge)
+      end
+
+      it '統計情報を返すこと' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:stats]).to be_present
+        expect(results[:stats][:total_habits]).to eq(user.habits.count)
+        expect(results[:stats][:total_records]).to eq(user.habit_records.count)
+      end
+
+      it 'エラーがないこと' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:errors]).to be_empty
+      end
+    end
+
+    context '既に獲得済みのバッジがある場合' do
+      let!(:badge) { create(:badge, condition_type: 'total_records', condition_value: 1, active: true) }
+
+      before do
+        create(:habit_record, user: user, habit: habit, completed: true)
+        UserBadge.award_badge(user, badge)
+      end
+
+      it '重複してバッジを付与しないこと' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:newly_earned]).to be_empty
+        expect(user.user_badges.where(badge: badge).count).to eq(1)
+      end
+    end
+
+    context '複数のバッジが獲得できる場合' do
+      let!(:badge1) { create(:badge, condition_type: 'total_records', condition_value: 2, active: true) }
+      let!(:badge2) { create(:badge, condition_type: 'total_habits', condition_value: 1, active: true) }
+
+      before do
+        create_list(:habit_record, 2, user: user, habit: habit, completed: true)
+      end
+
+      it '複数のバッジを付与すること' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:newly_earned].count).to eq(2)
+        expect(results[:newly_earned]).to include(badge1, badge2)
+      end
+    end
+
+    context 'バッジが非アクティブの場合' do
+      let!(:badge) { create(:badge, :inactive, condition_type: 'total_records', condition_value: 1) }
+
+      before do
+        create(:habit_record, user: user, habit: habit, completed: true)
+      end
+
+      it 'バッジを付与しないこと' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:newly_earned]).to be_empty
+        expect(user.badges).not_to include(badge)
+      end
+    end
+
+    context '連続日数バッジの場合' do
+      let!(:badge) { create(:badge, :consecutive_days_badge, condition_value: 3, active: true) }
+
+      before do
+        3.times do |i|
+          create(:habit_record,
+                 user: user,
+                 habit: habit,
+                 recorded_at: Date.current - i.days,
+                 completed: true)
+        end
+      end
+
+      it '連続日数を正しく計算してバッジを付与すること' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:newly_earned]).to include(badge)
+        expect(results[:stats][:consecutive_days]).to eq(3)
+      end
+    end
+
+    context '完了率バッジの場合' do
+      let!(:badge) { create(:badge, condition_type: 'completion_rate', condition_value: 50.0, active: true) }
+
+      before do
+        # 30日間のうち15日記録して50%達成
+        15.times do |i|
+          create(:habit_record,
+                 user: user,
+                 habit: habit,
+                 recorded_at: Date.current - i.days,
+                 completed: true)
+        end
+      end
+
+      it '完了率を正しく計算してバッジを付与すること' do
+        results = BadgeService.check_and_award_badges_for_user(user)
+
+        expect(results[:newly_earned]).to include(badge)
+        expect(results[:stats][:completion_rate]).to be >= 50.0
+      end
+    end
+  end
+
+  describe '.calculate_user_stats' do
+    let(:user) { create(:user) }
+    let(:habit) { create(:habit, user: user) }
+
+    before do
+      create_list(:habit_record, 5, user: user, habit: habit, completed: true)
+    end
+
+    it 'ユーザーの統計情報を計算すること' do
+      stats = BadgeService.send(:calculate_user_stats, user)
+
+      expect(stats[:total_habits]).to eq(user.habits.count)
+      expect(stats[:total_records]).to eq(user.habit_records.count)
+      expect(stats[:completed_records]).to be_present
+      expect(stats[:consecutive_days]).to be_present
+      expect(stats[:completion_rate]).to be_present
+    end
+  end
+
+  describe '.calculate_max_consecutive_days' do
+    let(:user) { create(:user) }
+
+    it 'ユーザーのmax_consecutive_daysメソッドを呼び出すこと' do
+      allow(user).to receive(:max_consecutive_days).and_return(7)
+
+      result = BadgeService.send(:calculate_max_consecutive_days, user)
+
+      expect(result).to eq(7)
+      expect(user).to have_received(:max_consecutive_days)
+    end
+
+    context 'max_consecutive_daysメソッドが存在しない場合' do
+      let(:user_without_method) { double('User', id: 1) }
+
+      it '0を返すこと' do
+        result = BadgeService.send(:calculate_max_consecutive_days, user_without_method)
+
+        expect(result).to eq(0)
+      end
+    end
+  end
+end
