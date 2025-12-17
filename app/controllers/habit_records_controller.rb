@@ -20,7 +20,7 @@ class HabitRecordsController < ApplicationController
 
     respond_to do |format|
       if @habit_record.save
-        # バッジ獲得チェックと通知設定
+        # バッジチェック実行（バッジ機能のフック。通知は session に積むだけ）
         newly_earned_badges = current_user.check_and_award_badges
         badge_notification(newly_earned_badges) if newly_earned_badges.any?
 
@@ -36,7 +36,7 @@ class HabitRecordsController < ApplicationController
   def update
     respond_to do |format|
       if @habit_record.update(habit_record_params)
-        # バッジ獲得チェックと通知設定
+        # バッジチェック実行（バッジ機能のフック。通知は session に積むだけ）
         newly_earned_badges = current_user.check_and_award_badges
         badge_notification(newly_earned_badges) if newly_earned_badges.any?
 

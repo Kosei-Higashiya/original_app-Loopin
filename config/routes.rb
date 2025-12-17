@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     end
     member do
       get :calendar, to: 'habits#individual_calendar'
-      post :toggle_record_for_date, to: 'habits#toggle_record_for_date'
+      post :toggle_daily_record, to: 'habits#toggle_daily_record'
     end
     resources :habit_records, except: %i[index new edit]
   end

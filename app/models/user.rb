@@ -115,10 +115,10 @@ class User < ApplicationRecord
   end
 
   # 新しいバッジを自動的にチェックして付与
-  # This method is kept for backward compatibility but delegates to the optimized BadgeChecker
+
   def check_and_award_badges
-    # バッジチェックを最適化したモジュール(BadgeChecker)を使用
-    results = perform_badge_check_for_user(self)
+    # バッジチェックモジュール(BadgeChecker)に処理を投げる
+    results = check_and_award_badges_for_user(self)
 
     Rails.logger.debug do
       "Badge check completed for user #{id}. Awarded #{results[:newly_earned].count} badges via optimized checker"

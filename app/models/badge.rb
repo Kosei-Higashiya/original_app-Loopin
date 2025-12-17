@@ -45,4 +45,27 @@ class Badge < ApplicationRecord
       false
     end
   end
+
+  # 事前計算された統計情報を使ってバッジ条件をチェック
+  def earned_by_stats?(user_stats)
+    return false unless user_stats
+
+    begin
+      case condition_type
+      when 'consecutive_days'
+        user_stats[:consecutive_days].to_i >= condition_value
+      when 'total_habits'
+        user_stats[:total_habits].to_i >= condition_value
+      when 'total_records'
+        user_stats[:total_records].to_i >= condition_value
+      when 'completion_rate'
+        user_stats[:completion_rate].to_f >= condition_value
+      else
+        false
+      end
+    rescue StandardError => e
+      Rails.logger.error "Error checking badge '#{name}' with stats: #{e.message}"
+      false
+    end
+  end
 end

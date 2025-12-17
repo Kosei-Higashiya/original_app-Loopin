@@ -2,7 +2,7 @@ class HabitsController < ApplicationController
   include BadgeNotifications
 
   before_action :authenticate_user!
-  before_action :set_habit, only: %i[show edit update destroy individual_calendar toggle_record_for_date]
+  before_action :set_habit, only: %i[show edit update destroy individual_calendar toggle_daily_record]
 
   def index
     @habits = current_user.habits.recent
@@ -38,8 +38,8 @@ class HabitsController < ApplicationController
     @habit_records = @habit.habit_records.includes(:habit)
   end
 
-  # 日付を指定して記録をトグル（完了⇔未記録）
-  def toggle_record_for_date
+  # カレンダーから日付をクリックしたときのメソッド（完了⇔未記録）
+  def toggle_daily_record
     begin
       date = Date.parse(params[:date])
     rescue ArgumentError => e
@@ -66,7 +66,7 @@ class HabitsController < ApplicationController
       )
 
       if new_record.save
-        # バッジ獲得チェックと通知設定
+        # バッジチェック実行（バッジ機能のフック。通知は session に積むだけ）
         newly_earned_badges = current_user.check_and_award_badges
         badge_notification(newly_earned_badges) if newly_earned_badges.any?
 
@@ -87,7 +87,7 @@ class HabitsController < ApplicationController
       format.json { render json: { success: true } }
     end
   rescue StandardError => e
-    Rails.logger.error "Unexpected error in toggle_record_for_date: #{e.class.name}: #{e.message}"
+    Rails.logger.error "Unexpected error in toggle_daily_record: #{e.class.name}: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     respond_to do |format|
       format.json do
@@ -108,7 +108,7 @@ class HabitsController < ApplicationController
     if @habit.save
       flash[:success] = '習慣が作成されました！'
 
-      # バッジチェック実行（通知は session に積むだけ）
+      # バッジチェック実行（バッジ機能のフック。通知は session に積むだけ）
       newly_earned = current_user.check_and_award_badges
       badge_notification(newly_earned) if newly_earned.any?
 
