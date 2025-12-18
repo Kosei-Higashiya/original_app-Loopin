@@ -70,7 +70,7 @@ class BadgeService
 
     total_possible_records = total_habits.positive? ? (today - thirty_days_ago + 1).to_i * total_habits : 0
     completed_records = user.habit_records.where(recorded_at: thirty_days_ago..today, completed: true).count
-    completion_rate = total_possible_records.positive? ? (completed_records.to_f / total_possible_records * 100).round(1) : 0.0
+    completion_rate = total_possible_records.positive? ? calculate_rate_percentage(completed_records, total_possible_records) : 0.0
 
     {
       total_habits: total_habits,
@@ -123,8 +123,13 @@ class BadgeService
 
     return 0.0 if total_possible_records.zero?
 
-    (completed_records.to_f / total_possible_records * 100).round(1)
+    calculate_rate_percentage(completed_records, total_possible_records)
   end
 
-  private_class_method :calculate_user_stats, :calculate_max_consecutive_days, :calculate_completion_rate
+  # 完了率を計算するヘルパーメソッド
+  def self.calculate_rate_percentage(completed, total)
+    (completed.to_f / total * 100).round(1)
+  end
+
+  private_class_method :calculate_user_stats, :calculate_max_consecutive_days, :calculate_completion_rate, :calculate_rate_percentage
 end

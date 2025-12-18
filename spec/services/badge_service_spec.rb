@@ -175,6 +175,7 @@ RSpec.describe BadgeService, type: :service do
 
     context '記録が飛び飛びの場合' do
       before do
+        # 現在、2日前、3日前に記録 -> 2日前と3日前が連続（2日間）
         create(:habit_record, user: user, habit: habit, recorded_at: Date.current, completed: true)
         create(:habit_record, user: user, habit: habit, recorded_at: Date.current - 2.days, completed: true)
         create(:habit_record, user: user, habit: habit, recorded_at: Date.current - 3.days, completed: true)
@@ -182,6 +183,7 @@ RSpec.describe BadgeService, type: :service do
 
       it '最大の連続日数を返すこと' do
         result = BadgeService.send(:calculate_max_consecutive_days, user)
+        # 2日前と3日前が連続しているので2を返す
         expect(result).to eq(2)
       end
     end
