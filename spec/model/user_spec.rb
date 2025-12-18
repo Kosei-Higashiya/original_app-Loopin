@@ -161,4 +161,36 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#check_and_award_badges' do
+    let(:user) { create(:user) }
+
+    it 'BadgeCheckerに処理を委譲すること' do
+      expect(BadgeChecker).to receive(:check_and_award_badges_for_user).with(user).and_return({
+        newly_earned: [],
+        errors: [],
+        stats: {}
+      })
+
+      user.check_and_award_badges
+    end
+
+    it '新しく獲得したバッジの配列を返すこと' do
+      badge = create(:badge, condition_type: 'total_records', condition_value: 1)
+      habit = create(:habit, user: user)
+      create(:habit_record, user: user, habit: habit, completed: true)
+
+      newly_earned = user.check_and_award_badges
+      expect(newly_earned).to be_an(Array)
+    end
+
+    context 'エラーが発生した場合' do
+      it '空の配列を返すこと' do
+        allow(BadgeChecker).to receive(:check_and_award_badges_for_user).and_raise(StandardError, 'Test error')
+
+        result = user.check_and_award_badges
+        expect(result).to eq([])
+      end
+    end
+  end
 end
