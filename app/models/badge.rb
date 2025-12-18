@@ -30,13 +30,13 @@ class Badge < ApplicationRecord
     begin
       case condition_type
       when 'consecutive_days'
-        user.max_consecutive_days >= condition_value
+        BadgeService.send(:calculate_max_consecutive_days, user) >= condition_value
       when 'total_habits'
         user.habits.count >= condition_value
       when 'total_records'
         user.habit_records.count >= condition_value
       when 'completion_rate'
-        user.overall_completion_rate >= condition_value
+        BadgeService.send(:calculate_completion_rate, user) >= condition_value
       else
         false
       end

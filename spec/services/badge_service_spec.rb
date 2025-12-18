@@ -147,23 +147,72 @@ RSpec.describe BadgeService, type: :service do
 
   describe '.calculate_max_consecutive_days' do
     let(:user) { create(:user) }
+    let(:habit) { create(:habit, user: user) }
 
-    it 'ユーザーのmax_consecutive_daysメソッドを呼び出すこと' do
-      allow(user).to receive(:max_consecutive_days).and_return(7)
+    context '連続した記録がある場合' do
+      before do
+        3.times do |i|
+          create(:habit_record,
+                 user: user,
+                 habit: habit,
+                 recorded_at: Date.current - i.days,
+                 completed: true)
+        end
+      end
 
-      result = BadgeService.send(:calculate_max_consecutive_days, user)
-
-      expect(result).to eq(7)
-      expect(user).to have_received(:max_consecutive_days)
+      it '正しい連続日数を計算すること' do
+        result = BadgeService.send(:calculate_max_consecutive_days, user)
+        expect(result).to eq(3)
+      end
     end
 
-    context 'max_consecutive_daysメソッドが存在しない場合' do
-      let(:user_without_method) { double('User', id: 1) }
-
+    context '記録がない場合' do
       it '0を返すこと' do
-        result = BadgeService.send(:calculate_max_consecutive_days, user_without_method)
-
+        result = BadgeService.send(:calculate_max_consecutive_days, user)
         expect(result).to eq(0)
+      end
+    end
+
+    context '記録が飛び飛びの場合' do
+      before do
+        create(:habit_record, user: user, habit: habit, recorded_at: Date.current, completed: true)
+        create(:habit_record, user: user, habit: habit, recorded_at: Date.current - 2.days, completed: true)
+        create(:habit_record, user: user, habit: habit, recorded_at: Date.current - 3.days, completed: true)
+      end
+
+      it '最大の連続日数を返すこと' do
+        result = BadgeService.send(:calculate_max_consecutive_days, user)
+        expect(result).to eq(2)
+      end
+    end
+  end
+
+  describe '.calculate_completion_rate' do
+    let(:user) { create(:user) }
+    let(:habit) { create(:habit, user: user) }
+
+    context '習慣がない場合' do
+      it '0を返すこと' do
+        result = BadgeService.send(:calculate_completion_rate, user)
+        expect(result).to eq(0.0)
+      end
+    end
+
+    context '記録がある場合' do
+      before do
+        # 過去31日間で15日記録 (15/31 = 48.4%)
+        15.times do |i|
+          create(:habit_record,
+                 user: user,
+                 habit: habit,
+                 recorded_at: Date.current - i.days,
+                 completed: true)
+        end
+      end
+
+      it '完了率を正しく計算すること' do
+        result = BadgeService.send(:calculate_completion_rate, user)
+        expect(result).to eq(48.4)
       end
     end
   end

@@ -81,17 +81,50 @@ class BadgeService
     }
   end
 
-  # ユーザーの最大連続日数を取得する
-  # Userモデルのmax_consecutive_daysメソッドに処理を委譲する
+  # ユーザーの最大連続日数を計算する
+  # 完了した習慣記録の日付から、最も長い連続日数を計算する
   def self.calculate_max_consecutive_days(user)
-    # User インスタンスのメソッドを呼び出す
-    if user.respond_to?(:max_consecutive_days)
-      user.max_consecutive_days
-    else
-      Rails.logger.error '[BadgeCheck] User instance does not respond to max_consecutive_days'
-      0
+    unique_dates = user.habit_records.where(completed: true)
+                       .pluck(:recorded_at)
+                       .uniq
+                       .sort
+
+    return 0 if unique_dates.empty?
+
+    max_streak = 1
+    current_streak = 1
+
+    unique_dates.each_cons(2) do |prev_date, curr_date|
+      if (curr_date - prev_date).to_i == 1
+        current_streak += 1
+        max_streak = [max_streak, current_streak].max
+      else
+        current_streak = 1
+      end
     end
+
+    max_streak
   end
 
-  private_class_method :calculate_user_stats, :calculate_max_consecutive_days
+  # ユーザーの全習慣の完了率を計算する
+  # 過去30日間での記録可能数に対する完了記録数の割合を返す
+  def self.calculate_completion_rate(user)
+    total_habits = user.habits.count
+    return 0.0 if total_habits.zero?
+
+    thirty_days_ago = 30.days.ago.to_date
+    today = Date.current
+    total_possible_records = (today - thirty_days_ago + 1).to_i * total_habits
+
+    completed_records = user.habit_records.where(
+      recorded_at: thirty_days_ago..today,
+      completed: true
+    ).count
+
+    return 0.0 if total_possible_records.zero?
+
+    (completed_records.to_f / total_possible_records * 100).round(1)
+  end
+
+  private_class_method :calculate_user_stats, :calculate_max_consecutive_days, :calculate_completion_rate
 end
