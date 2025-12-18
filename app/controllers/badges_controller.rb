@@ -1,6 +1,4 @@
 class BadgesController < ApplicationController
-  include BadgeChecker
-
   before_action :authenticate_user!
 
   def index

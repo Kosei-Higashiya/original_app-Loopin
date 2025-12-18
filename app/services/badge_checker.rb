@@ -1,9 +1,7 @@
-# バッジチェックの最適化モジュール
-module BadgeChecker
-  extend ActiveSupport::Concern
-
-  # 高速バッジチェックメソッド
-  def check_and_award_badges_for_user(user)
+# バッジ機能のサービスクラス
+class BadgeChecker
+  # ユーザーのバッジ獲得条件をチェックし、条件を満たすバッジを付与する
+  def self.check_and_award_badges_for_user(user)
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     results = { newly_earned: [], errors: [], stats: {} }
 
@@ -62,17 +60,15 @@ module BadgeChecker
     results
   end
 
-  private
-
   # ユーザーの統計情報を計算(step3で使うメソッド)
-  def calculate_user_stats(user)
+  def self.calculate_user_stats(user)
     total_habits = user.habits.count
     thirty_days_ago = 30.days.ago.to_date
     today = Date.current
 
     total_possible_records = total_habits.positive? ? (today - thirty_days_ago + 1).to_i * total_habits : 0
     completed_records = user.habit_records.where(recorded_at: thirty_days_ago..today, completed: true).count
-    completion_rate = total_possible_records.positive? ? (completed_records.to_f / total_possible_records * 100).round(1) : 0.0
+    completion_rate = total_possible_records.positive? ? calculate_rate_percentage(completed_records, total_possible_records) : 0.0
 
     {
       total_habits: total_habits,
@@ -83,13 +79,55 @@ module BadgeChecker
     }
   end
 
-  def calculate_max_consecutive_days(user)
-    # User インスタンスのメソッドを必ず呼ぶ
-    if user.respond_to?(:max_consecutive_days)
-      user.max_consecutive_days
-    else
-      Rails.logger.error '[BadgeCheck] User instance does not respond to max_consecutive_days'
-      0
+  # ユーザーの最大連続日数を計算する
+  # 完了した習慣記録の日付から、最も長い連続日数を計算する
+  def self.calculate_max_consecutive_days(user)
+    unique_dates = user.habit_records.where(completed: true)
+                       .pluck(:recorded_at)
+                       .uniq
+                       .sort
+
+    return 0 if unique_dates.empty?
+
+    max_streak = 1
+    current_streak = 1
+
+    unique_dates.each_cons(2) do |prev_date, curr_date|
+      if (curr_date - prev_date).to_i == 1
+        current_streak += 1
+        max_streak = [max_streak, current_streak].max
+      else
+        current_streak = 1
+      end
     end
+
+    max_streak
   end
+
+  # ユーザーの全習慣の完了率を計算する
+  # 過去30日間での記録可能数に対する完了記録数の割合を返す
+  def self.calculate_completion_rate(user)
+    total_habits = user.habits.count
+    return 0.0 if total_habits.zero?
+
+    thirty_days_ago = 30.days.ago.to_date
+    today = Date.current
+    total_possible_records = (today - thirty_days_ago + 1).to_i * total_habits
+
+    completed_records = user.habit_records.where(
+      recorded_at: thirty_days_ago..today,
+      completed: true
+    ).count
+
+    return 0.0 if total_possible_records.zero?
+
+    calculate_rate_percentage(completed_records, total_possible_records)
+  end
+
+  # 完了率を計算するヘルパーメソッド
+  def self.calculate_rate_percentage(completed, total)
+    (completed.to_f / total * 100).round(1)
+  end
+
+  private_class_method :calculate_user_stats, :calculate_max_consecutive_days, :calculate_completion_rate, :calculate_rate_percentage
 end
