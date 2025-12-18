@@ -67,20 +67,7 @@ class User < ApplicationRecord
     badges.joins(:user_badges).order('user_badges.earned_at DESC')
   end
 
-  # 統計メソッド（バッジ条件チェック用）
-  # BadgeServiceに処理を委譲
-  def max_consecutive_days
-    BadgeService.send(:calculate_max_consecutive_days, self)
-  end
-
-  # 全習慣の完了率を計算
-  # BadgeServiceに処理を委譲
-  def overall_completion_rate
-    BadgeService.send(:calculate_completion_rate, self)
-  end
-
   # 新しいバッジを自動的にチェックして付与
-
   def check_and_award_badges
     # バッジチェックサービス(BadgeService)に処理を投げる
     results = BadgeService.check_and_award_badges_for_user(self)
