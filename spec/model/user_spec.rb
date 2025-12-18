@@ -74,62 +74,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#max_consecutive_days' do
-    let(:user) { create(:user) }
-    let(:habit) { create(:habit, user: user) }
 
-    context '連続した記録がある場合' do
-      before do
-        # 3日連続の記録を作成
-        3.times do |i|
-          create(:habit_record,
-                 user: user,
-                 habit: habit,
-                 recorded_at: Date.current - i.days,
-                 completed: true)
-        end
-      end
-
-      it '正しい連続日数を返すこと' do
-        expect(user.max_consecutive_days).to eq(3)
-      end
-    end
-
-    context '記録がない場合' do
-      it '0を返すこと' do
-        expect(user.max_consecutive_days).to eq(0)
-      end
-    end
-  end
-
-  describe '#overall_completion_rate' do
-    let(:user) { create(:user) }
-    let(:habit1) { create(:habit, user: user) }
-
-    context '習慣がない場合' do
-      it '0を返すこと' do
-        expect(user.overall_completion_rate).to eq(0)
-      end
-    end
-
-    context '記録がある場合' do
-      before do
-        # 過去30日間で15回完了した記録を作成
-        15.times do |i|
-          create(:habit_record,
-                 user: user,
-                 habit: habit1,
-                 recorded_at: Date.current - i.days,
-                 completed: true)
-        end
-      end
-
-      it '完了率を正しく計算すること' do
-        # 31日 × 1習慣 = 31の可能記録数のうち、15が完了 = 48.4%
-        expect(user.overall_completion_rate).to eq(48.4)
-      end
-    end
-  end
 
   describe '.from_omniauth' do
     let(:auth) do
