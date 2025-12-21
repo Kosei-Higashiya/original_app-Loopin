@@ -28,6 +28,7 @@ AllCops:
    - 'config/initializers/devise.rb'
    - 'config/routes.rb'
    - 'app/helpers/habits_helper.rb'
+   - 'app/services/badge_checker.rb'
 
 # 行の長さに関する設定
 Layout/LineLength:
