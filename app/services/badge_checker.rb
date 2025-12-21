@@ -32,7 +32,7 @@ class BadgeChecker
               results[:newly_earned] << badge
               Rails.logger.info "[BadgeCheck] Badge '#{badge.name}' awarded to user #{user.id}"
             else
-              Rails.logger.debug "[BadgeCheck] Badge '#{badge.name}' was not awarded (already exists or concurrent creation)"
+              Rails.logger.debug { "[BadgeCheck] Badge '#{badge.name}' was not awarded (already exists or concurrent creation)" }
             end
           end
         rescue StandardError => e
