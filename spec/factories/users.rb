@@ -18,5 +18,9 @@ FactoryBot.define do
       uid { '123456789' }
       password { nil }
     end
+
+    trait :admin do
+      admin { true }
+    end
   end
 end

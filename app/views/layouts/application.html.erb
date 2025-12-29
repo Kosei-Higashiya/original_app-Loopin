@@ -60,6 +60,9 @@
           <div class="navbar-nav" data-navbar-target="menu">
             <%= link_to "使い方", how_to_use_path, class: "nav-link" %>
             <% if user_signed_in? %>
+              <% if current_user.admin? %>
+                <%= link_to "管理者モード", admin_users_path, class: "nav-link text-danger fw-bold" %>
+              <% end %>
               <%= link_to "ログアウト", destroy_user_session_path, "data-turbo-method": :delete, class: "nav-link" %>
               <%= link_to "プロフィール", edit_user_registration_path, class: "nav-link" %>
             <% else %>

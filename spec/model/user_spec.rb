@@ -159,4 +159,22 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#admin?' do
+    context '管理者ユーザーの場合' do
+      let(:admin_user) { build(:user, :admin) }
+
+      it '管理者であること' do
+        expect(admin_user.admin?).to be_truthy
+      end
+    end
+
+    context '一般ユーザーの場合' do
+      let(:normal_user) { build(:user) }
+
+      it '管理者でないこと' do
+        expect(normal_user.admin?).to be_falsey
+      end
+    end
+  end
 end

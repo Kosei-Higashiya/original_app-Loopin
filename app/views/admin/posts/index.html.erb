@@ -1,0 +1,48 @@
+<div class="container mt-4">
+  <h1>管理者モード - 投稿管理</h1>
+  
+  <div class="mb-3">
+    <%= link_to "ユーザー管理", admin_users_path, class: "btn btn-primary" %>
+    <%= link_to "ダッシュボードに戻る", dashboard_path, class: "btn btn-secondary" %>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">投稿一覧（全<%= @posts.count %>件）</h5>
+      
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>投稿者</th>
+              <th>習慣</th>
+              <th>内容</th>
+              <th>投稿日</th>
+              <th>いいね数</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @posts.each do |post| %>
+              <tr>
+                <td><%= post.id %></td>
+                <td><%= post.user.display_name %></td>
+                <td><%= post.habit.title %></td>
+                <td><%= truncate(post.content, length: 50) %></td>
+                <td><%= l(post.created_at, format: :short) %></td>
+                <td><%= post.likes.count %></td>
+                <td>
+                  <%= button_to "削除", admin_post_path(post), 
+                      method: :delete,
+                      data: { turbo_confirm: "投稿ID「#{post.id}」を削除しますか？" },
+                      class: "btn btn-danger btn-sm" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
