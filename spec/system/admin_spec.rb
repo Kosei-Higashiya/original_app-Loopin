@@ -100,6 +100,15 @@ RSpec.describe '管理者モード', type: :system do
         expect(page).not_to have_button('削除')
       end
     end
+
+    it '別の管理者ユーザーも削除ボタンが表示されないこと' do
+      other_admin = create(:user, :admin, email: 'admin2@example.com')
+      visit admin_users_path
+      
+      within("tr", text: other_admin.email) do
+        expect(page).not_to have_button('削除')
+      end
+    end
   end
 
   describe '投稿削除機能' do

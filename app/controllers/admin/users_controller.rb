@@ -1,7 +1,7 @@
 module Admin
   class UsersController < Admin::BaseController
     def index
-      @users = User.order(created_at: :desc)
+      @users = User.includes(:posts, :habits).order(created_at: :desc)
     end
 
     def destroy
@@ -12,8 +12,16 @@ module Admin
         return
       end
 
-      @user.destroy
-      redirect_to admin_users_path, notice: 'ユーザーを削除しました。'
+      if @user == current_user
+        redirect_to admin_users_path, alert: '自分自身を削除することはできません。'
+        return
+      end
+
+      if @user.destroy
+        redirect_to admin_users_path, notice: 'ユーザーを削除しました。'
+      else
+        redirect_to admin_users_path, alert: 'ユーザーの削除に失敗しました。'
+      end
     end
   end
 end
