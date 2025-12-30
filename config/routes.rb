@@ -43,4 +43,9 @@ Rails.application.routes.draw do
 
   # バッジ関連のルーティング
   resources :badges, only: %i[index show]
+
+  # 管理者用のルーティング
+  namespace :admin do
+    resources :posts, only: %i[index destroy]
+  end
 end
