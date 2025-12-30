@@ -20,14 +20,7 @@ RSpec.describe '管理者モード', type: :system do
       end
 
       it '管理者モードのリンクが表示されること' do
-        expect(page).to have_link('管理者モード', href: admin_users_path)
-      end
-
-      it 'ユーザー管理画面にアクセスできること' do
-        visit admin_users_path
-        expect(page).to have_content('管理者モード - ユーザー管理')
-        expect(page).to have_content(admin_user.email)
-        expect(page).to have_content(normal_user.email)
+        expect(page).to have_link('管理者モード', href: admin_posts_path)
       end
 
       it '投稿管理画面にアクセスできること' do
@@ -50,12 +43,6 @@ RSpec.describe '管理者モード', type: :system do
         expect(page).not_to have_link('管理者モード')
       end
 
-      it 'ユーザー管理画面にアクセスできないこと' do
-        visit admin_users_path
-        expect(page).to have_content('管理者権限が必要です')
-        expect(current_path).to eq(root_path)
-      end
-
       it '投稿管理画面にアクセスできないこと' do
         visit admin_posts_path
         expect(page).to have_content('管理者権限が必要です')
@@ -64,49 +51,9 @@ RSpec.describe '管理者モード', type: :system do
     end
 
     context 'ログインしていない場合' do
-      it 'ユーザー管理画面にアクセスできないこと' do
-        visit admin_users_path
+      it '投稿管理画面にアクセスできないこと' do
+        visit admin_posts_path
         expect(current_path).to eq(new_user_session_path)
-      end
-    end
-  end
-
-  describe 'ユーザー削除機能' do
-    before do
-      visit new_user_session_path
-      fill_in 'user[email]', with: 'admin@example.com'
-      fill_in 'user[password]', with: 'password123'
-      click_button 'ログイン'
-      visit admin_users_path
-    end
-
-    it '一般ユーザーを削除できること' do
-      expect(page).to have_content(normal_user.email)
-      
-      # Find the delete button for the specific user
-      within("tr", text: normal_user.email) do
-        accept_confirm do
-          click_button '削除'
-        end
-      end
-
-      expect(page).to have_content('ユーザーを削除しました')
-      expect(page).not_to have_content(normal_user.email)
-      expect(User.exists?(normal_user.id)).to be_falsey
-    end
-
-    it '管理者ユーザーは削除ボタンが表示されないこと' do
-      within("tr", text: admin_user.email) do
-        expect(page).not_to have_button('削除')
-      end
-    end
-
-    it '別の管理者ユーザーも削除ボタンが表示されないこと' do
-      other_admin = create(:user, :admin, email: 'admin2@example.com')
-      visit admin_users_path
-      
-      within("tr", text: other_admin.email) do
-        expect(page).not_to have_button('削除')
       end
     end
   end

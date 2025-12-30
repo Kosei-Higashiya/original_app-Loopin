@@ -46,7 +46,6 @@ Rails.application.routes.draw do
 
   # 管理者用のルーティング
   namespace :admin do
-    resources :users, only: %i[index destroy]
     resources :posts, only: %i[index destroy]
   end
 end

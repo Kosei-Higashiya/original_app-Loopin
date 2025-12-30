@@ -87,17 +87,15 @@ end
 
 Rails.logger.debug { "Created #{Badge.count} badges" }
 
-# 開発環境でのみ管理者ユーザーを作成
-if Rails.env.development?
-  admin_email = 'admin@example.com'
-  unless User.exists?(email: admin_email)
-    User.create!(
-      email: admin_email,
-      password: 'password123',
-      password_confirmation: 'password123',
-      name: '管理者',
-      admin: true
-    )
-    Rails.logger.debug { "Created admin user: #{admin_email}" }
-  end
+# 管理者ユーザーを作成
+admin_email = 'admin@example.com'
+unless User.exists?(email: admin_email)
+  User.create!(
+    email: admin_email,
+    password: 'password123',
+    password_confirmation: 'password123',
+    name: '管理者',
+    admin: true
+  )
+  Rails.logger.debug { "Created admin user: #{admin_email}" }
 end
