@@ -40,7 +40,11 @@ class User < ApplicationRecord
     user
   end
 
-
+  # 管理者権限チェック
+  def admin?
+    admin
+  end
+  
   # 名前が空の場合、ゲストを表示名として返す
   def display_name
     name.presence || 'ゲスト'
