@@ -129,7 +129,7 @@
 
 
 ### ER図
-[![Image from Gyazo](https://i.gyazo.com/18143bdca96c738980b30943e30d13b7.png)](https://gyazo.com/18143bdca96c738980b30943e30d13b7)
+[![Image from Gyazo](https://i.gyazo.com/0108cd91aca36203909e6d9f0e3fba04.png)](https://gyazo.com/0108cd91aca36203909e6d9f0e3fba04)
 
 
 ### 画面遷移図
