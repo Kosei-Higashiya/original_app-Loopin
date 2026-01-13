@@ -4,19 +4,11 @@ module Users
     skip_before_action :verify_authenticity_token, only: [:create]
 
     def create
-      Rails.logger.debug '=== RegistrationsController#create called ==='
-      Rails.logger.debug { "=== sign_up_params: #{sign_up_params.inspect} ===" }
-
       super
-
-      Rails.logger.debug { "=== after super, resource.persisted? #{resource.persisted?} ===" }
     end
 
     def destroy
-      Rails.logger.debug '=== RegistrationsController#destroy called ==='
-      Rails.logger.debug { "=== current_user: #{current_user.inspect} ===" }
-
-      # Ensure user is authenticated before destroying account
+      # ログインしているユーザーのみ削除を許可
       if user_signed_in?
         super
       else
