@@ -6,15 +6,11 @@ class BadgeChecker
     results = { newly_earned: [], errors: [], stats: {} }
 
     begin
-      Rails.logger.info "[BadgeCheck] Starting for user #{user.id} at #{Time.current}"
-
       # Step 1: ユーザーが既に獲得しているバッジIDを取得
       earned_badge_ids = user.user_badges.pluck(:badge_id)
-      Rails.logger.debug { "[BadgeCheck] User has #{earned_badge_ids.count} existing badges" }
 
       # Step 2: 獲得していないすべてのアクティブなバッジを取得
       available_badges = Badge.active.where.not(id: earned_badge_ids).limit(20)
-      Rails.logger.debug { "[BadgeCheck] Checking #{available_badges.count} available badges" }
 
       # Step 3: ユーザーの統計情報を事前計算
       user_stats = calculate_user_stats(user)
@@ -30,7 +26,6 @@ class BadgeChecker
             awarded = UserBadge.award_badge(user, badge, user_stats: user_stats)
             if awarded
               results[:newly_earned] << badge
-              Rails.logger.info "[BadgeCheck] Badge '#{badge.name}' awarded to user #{user.id}"
             else
               Rails.logger.debug { "[BadgeCheck] Badge '#{badge.name}' was not awarded (already exists or concurrent creation)" }
             end
@@ -53,8 +48,6 @@ class BadgeChecker
     ensure
       end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       total_duration = ((end_time - start_time) * 1000).round(2)
-      Rails.logger.info "[BadgeCheck] Completed for user #{user.id} in #{total_duration}ms. " \
-                        "Awarded: #{results[:newly_earned].count}, Errors: #{results[:errors].count}"
     end
 
     results

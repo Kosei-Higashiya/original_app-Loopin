@@ -44,7 +44,7 @@ class User < ApplicationRecord
   def admin?
     admin
   end
-  
+
   # 名前が空の場合、ゲストを表示名として返す
   def display_name
     name.presence || 'ゲスト'
@@ -71,7 +71,6 @@ class User < ApplicationRecord
   end
 
   # 新しいバッジを自動的にチェックして付与
-
   def check_and_award_badges
     # バッジチェッククラスに(BadgeChecker)に処理を投げる
     results = BadgeChecker.check_and_award_badges_for_user(self)

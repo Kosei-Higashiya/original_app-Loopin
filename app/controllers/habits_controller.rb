@@ -56,7 +56,6 @@ class HabitsController < ApplicationController
     if record
       # 既存の記録があれば削除（未記録に戻す）
       record.destroy!
-      Rails.logger.info "Deleted habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
     else
       # 新しい完了記録を作成
       new_record = @habit.habit_records.build(
@@ -69,8 +68,6 @@ class HabitsController < ApplicationController
         # バッジチェック実行（バッジ機能のフック。通知は session に積むだけ）
         newly_earned_badges = current_user.check_and_award_badges
         badge_notification(newly_earned_badges) if newly_earned_badges.any?
-
-        Rails.logger.info "Created habit record for habit #{@habit.id}, date #{date}, user #{current_user.id}"
       else
         Rails.logger.error "Failed to create habit record: #{new_record.errors.full_messages.join(', ')}"
         respond_to do |format|

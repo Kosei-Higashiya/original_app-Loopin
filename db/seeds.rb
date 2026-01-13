@@ -85,8 +85,6 @@ badges_data.each do |badge_data|
   end
 end
 
-Rails.logger.debug { "Created #{Badge.count} badges" }
-
 # 管理者ユーザーを作成
 admin_email = 'admin@example.com'
 unless User.exists?(email: admin_email)
@@ -97,5 +95,4 @@ unless User.exists?(email: admin_email)
     name: '管理者',
     admin: true
   )
-  Rails.logger.debug { "Created admin user: #{admin_email}" }
 end

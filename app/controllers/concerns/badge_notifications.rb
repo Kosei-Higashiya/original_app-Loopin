@@ -36,7 +36,6 @@ module BadgeNotifications
     # セッションをクリア
     session.delete(:newly_earned_badges)
 
-    Rails.logger.info "Badge notifications cleared from session: #{notifications.pluck('name').join(', ')}" if notifications.any?
     notifications
   rescue StandardError => e
     # セッション関連エラーをキャッチして本番環境での問題を防ぐ
