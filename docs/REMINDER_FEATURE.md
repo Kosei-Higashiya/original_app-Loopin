@@ -4,6 +4,8 @@
 
 週次リマインダー機能は、今週まだ習慣の記録をつけていないユーザーに対して、週1回自動的にリマインドメールを送信します。
 
+メールは**Gmail経由**で、ユーザーが登録時に使用したメールアドレスに送信されます。
+
 ## 機能の詳細
 
 ### 対象ユーザー
@@ -21,6 +23,9 @@
 
 ### メール内容
 
+- **送信元**: noreply@loopin-app.com（ApplicationMailerで設定）
+- **送信先**: ユーザーの登録メールアドレス
+- **配信方法**: Gmail SMTP経由
 - **件名**: 【Loopin】今週の記録をつけましょう！
 - **本文**: 
   - ユーザーの名前（またはゲスト）
@@ -35,6 +40,7 @@
 - **whenever gem**: cronジョブの管理
 - **Action Mailer**: メール送信
 - **Active Job**: 非同期メール配信
+- **Gmail SMTP**: メール配信サービス（本番環境）
 
 ### ファイル構成
 
@@ -69,7 +75,32 @@ spec/
 bundle install
 ```
 
-### 2. Cronジョブの更新
+### 2. Gmail SMTP設定（本番環境）
+
+リマインダーメールは、ユーザー登録時に使用されたメールアドレスにGmail経由で送信されます。
+
+本番環境で以下の環境変数を設定してください：
+
+```bash
+SMTP_ADDRESS=smtp.gmail.com          # デフォルト値
+SMTP_PORT=587                         # デフォルト値
+SMTP_DOMAIN=app-loopin.com           # デフォルト値
+SMTP_USERNAME=your-gmail@gmail.com   # 必須：Gmail アカウント
+SMTP_PASSWORD=your-app-password      # 必須：Gmail アプリパスワード
+SMTP_AUTHENTICATION=plain             # デフォルト値
+SMTP_ENABLE_STARTTLS_AUTO=true       # デフォルト値
+```
+
+**Gmail アプリパスワードの取得方法：**
+
+1. Googleアカウントの「セキュリティ」設定にアクセス
+2. 「2段階認証プロセス」を有効化（まだの場合）
+3. 「アプリパスワード」を生成
+4. 生成されたパスワードを `SMTP_PASSWORD` に設定
+
+**重要**: 通常のGmailパスワードではなく、アプリパスワードを使用してください。
+
+### 3. Cronジョブの更新
 
 本番環境でcronジョブを設定するには、以下のコマンドを実行します：
 
@@ -77,7 +108,7 @@ bundle install
 bundle exec whenever --update-crontab
 ```
 
-### 3. Cronジョブの確認
+### 4. Cronジョブの確認
 
 設定されたcronジョブを確認するには：
 
@@ -91,7 +122,7 @@ bundle exec whenever
 crontab -l
 ```
 
-### 4. Cronジョブの削除
+### 5. Cronジョブの削除
 
 cronジョブを削除するには：
 
@@ -160,20 +191,38 @@ RAILS_ENV=staging bundle exec whenever --update-crontab
 
 ### メールが送信されない
 
-1. cronジョブが正しく設定されているか確認
+1. **Gmail SMTP認証情報を確認**
+   ```bash
+   # 環境変数が正しく設定されているか確認
+   echo $SMTP_USERNAME
+   echo $SMTP_PASSWORD  # 表示されることを確認（パスワードは表示されません）
+   ```
+   
+   - Gmail アプリパスワードが正しく設定されているか
+   - 2段階認証が有効になっているか
+   - 通常のパスワードではなくアプリパスワードを使用しているか
+
+2. **cronジョブが正しく設定されているか確認**
    ```bash
    crontab -l
    ```
 
-2. ログファイルを確認
+3. **ログファイルを確認**
    ```bash
    tail -f log/whenever.log
    tail -f log/whenever_error.log
+   tail -f log/production.log  # メール送信エラーの詳細
    ```
 
-3. メール設定を確認
+4. **メール設定を確認**
    - `config/environments/production.rb`のAction Mailer設定
    - SMTP設定が正しいか確認
+
+### Gmail から「安全性の低いアプリ」エラーが出る場合
+
+- 通常のGmailパスワードを使用している可能性があります
+- **必ずアプリパスワード**を使用してください
+- アプリパスワードの生成方法は上記のセットアップを参照
 
 ### 特定のユーザーにメールが送信されない
 
