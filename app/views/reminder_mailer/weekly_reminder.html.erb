@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h2>こんにちは、<%= @user.display_name %> さん</h2>
+
+    <p>今週はまだ習慣の記録をつけていないようです。</p>
+
+    <p>継続は力なり！今日から記録をつけてみましょう。</p>
+
+    <p>
+      <a href="<%= root_url %>" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+        Loopinにアクセス
+      </a>
+    </p>
+
+    <hr>
+
+    <p style="color: #666; font-size: 12px;">
+      このメールは、今週まだ記録をつけていないユーザーに自動送信されています。
+    </p>
+
+    <p style="color: #666; font-size: 12px;">
+      Loopin - あなたの習慣形成をサポートします
+    </p>
+  </body>
+</html>
