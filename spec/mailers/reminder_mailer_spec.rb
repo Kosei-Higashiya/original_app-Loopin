@@ -18,22 +18,26 @@ RSpec.describe ReminderMailer, type: :mailer do
     end
 
     it 'メール本文にユーザーの名前を含むこと' do
-      expect(mail.body.encoded).to match(user.display_name)
+      expect(mail.html_part.body.to_s).to match(user.display_name)
+      expect(mail.text_part.body.to_s).to match(user.display_name)
     end
 
     it 'メール本文に今週の記録に関するメッセージを含むこと' do
-      expect(mail.body.encoded).to match(/今週はまだ習慣の記録をつけていないようです/)
+      expect(mail.html_part.body.to_s).to match(/今週はまだ習慣の記録をつけていないようです/)
+      expect(mail.text_part.body.to_s).to match(/今週はまだ習慣の記録をつけていないようです/)
     end
 
     it 'メール本文にLoopinへのリンクを含むこと' do
-      expect(mail.body.encoded).to match(/Loopinにアクセス/)
+      expect(mail.html_part.body.to_s).to match(/Loopinにアクセス/)
+      expect(mail.text_part.body.to_s).to match(/Loopinにアクセス/)
     end
 
     context 'ユーザー名がない場合' do
       let(:user) { create(:user, :guest, email: 'guest@example.com') }
 
       it 'メール本文に「ゲスト」と表示されること' do
-        expect(mail.body.encoded).to match('ゲスト')
+        expect(mail.html_part.body.to_s).to match('ゲスト')
+        expect(mail.text_part.body.to_s).to match('ゲスト')
       end
     end
   end

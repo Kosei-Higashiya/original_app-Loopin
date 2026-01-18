@@ -6,7 +6,7 @@ namespace :reminders do
 
     # 今週まだ記録をつけていないユーザーを取得
     inactive_users = User.where.not(
-      id: HabitRecord.where('created_at >= ?', week_start).select(:user_id)
+      id: HabitRecord.where('recorded_at >= ?', week_start).select(:user_id)
     ).where.not(
       id: Post.where('created_at >= ?', week_start).select(:user_id)
     )
