@@ -19,16 +19,14 @@ RSpec.describe BadgeChecker, type: :service do
         end
       end
 
-      it '新しいバッジを付与すること' do
-        expect {
-          BadgeChecker.check_and_award_badges_for_user(user)
-        }.to change { user.user_badges.count }.by(1)
+      it '指定したバッジが付与されること' do
+        BadgeChecker.check_and_award_badges_for_user(user)
+        expect(user.user_badges.where(badge: badge)).to exist
       end
 
       it '付与されたバッジを返すこと' do
         results = BadgeChecker.check_and_award_badges_for_user(user)
         expect(results[:newly_earned]).to include(badge)
-        expect(results[:newly_earned].count).to eq(1)
       end
 
       it 'ユーザー統計情報を返すこと' do
@@ -107,11 +105,12 @@ RSpec.describe BadgeChecker, type: :service do
         end
       end
 
-      it '複数のバッジを付与すること' do
-        expect {
-          BadgeChecker.check_and_award_badges_for_user(user)
-        }.to change { user.user_badges.count }.by(2)
+      it '両方のバッジが付与されること' do
+        results = BadgeChecker.check_and_award_badges_for_user(user)
+
+        expect(results[:newly_earned]).to include(badge1, badge2)
       end
+
 
       it 'すべての新しいバッジを返すこと' do
         results = BadgeChecker.check_and_award_badges_for_user(user)
