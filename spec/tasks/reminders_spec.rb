@@ -13,14 +13,15 @@ RSpec.describe 'reminders:send_weekly', type: :task do
     Rake::Task['reminders:send_weekly'].reenable
   end
 
-  let(:week_start) { Time.current.beginning_of_week }
+  let(:last_week_start) { Date.current.beginning_of_week - 1.week }
+  let(:last_week_end) { last_week_start.end_of_week }
 
-  describe '今週活動していないユーザーへのリマインダー送信' do
-    context '今週記録をつけていないユーザーが存在する場合' do
+  describe '先週活動していないユーザーへのリマインダー送信' do
+    context '先週記録をつけていないユーザーが存在する場合' do
       let!(:inactive_user) { create(:user, email: 'inactive@example.com') }
 
       before do
-        # 今週の記録は作成しない
+        # 先週の記録は作成しない
         # ActiveJobのテストヘルパーを使用
         ActiveJob::Base.queue_adapter = :test
       end
@@ -33,10 +34,10 @@ RSpec.describe 'reminders:send_weekly', type: :task do
       end
     end
 
-    context '今週HabitRecordを作成したユーザーがいる場合' do
+    context '先週HabitRecordを作成したユーザーがいる場合' do
       let!(:active_user) { create(:user, email: 'active@example.com') }
       let!(:habit) { create(:habit, user: active_user) }
-      let!(:habit_record) { create(:habit_record, user: active_user, habit: habit, recorded_at: Date.current) }
+      let!(:habit_record) { create(:habit_record, user: active_user, habit: habit, recorded_at: last_week_start) }
 
       before do
         ActiveJob::Base.queue_adapter = :test
@@ -50,10 +51,10 @@ RSpec.describe 'reminders:send_weekly', type: :task do
       end
     end
 
-    context '今週Postを作成したユーザーがいる場合' do
+    context '先週Postを作成したユーザーがいる場合' do
       let!(:active_user) { create(:user, email: 'poster@example.com') }
       let!(:habit) { create(:habit, user: active_user) }
-      let!(:post) { create(:post, user: active_user, habit: habit, created_at: Time.current) }
+      let!(:post) { create(:post, user: active_user, habit: habit, created_at: last_week_start.to_time) }
 
       before do
         ActiveJob::Base.queue_adapter = :test
@@ -67,12 +68,12 @@ RSpec.describe 'reminders:send_weekly', type: :task do
       end
     end
 
-    context '今週活動していないユーザーと活動しているユーザーが混在する場合' do
+    context '先週活動していないユーザーと活動しているユーザーが混在する場合' do
       let!(:inactive_user1) { create(:user, email: 'inactive1@example.com') }
       let!(:inactive_user2) { create(:user, email: 'inactive2@example.com') }
       let!(:active_user) { create(:user, email: 'active@example.com') }
       let!(:habit) { create(:habit, user: active_user) }
-      let!(:habit_record) { create(:habit_record, user: active_user, habit: habit, recorded_at: Date.current) }
+      let!(:habit_record) { create(:habit_record, user: active_user, habit: habit, recorded_at: last_week_start) }
 
       before do
         ActiveJob::Base.queue_adapter = :test
@@ -96,10 +97,10 @@ RSpec.describe 'reminders:send_weekly', type: :task do
       end
     end
 
-    context '先週記録をつけたが今週はつけていないユーザーがいる場合' do
-      let!(:last_week_user) { create(:user, email: 'lastweek@example.com') }
-      let!(:habit) { create(:habit, user: last_week_user) }
-      let!(:last_week_record) { create(:habit_record, user: last_week_user, habit: habit, recorded_at: 1.week.ago.to_date) }
+    context '2週間前に記録をつけたが先週はつけていないユーザーがいる場合' do
+      let!(:two_weeks_ago_user) { create(:user, email: 'twoweeksago@example.com') }
+      let!(:habit) { create(:habit, user: two_weeks_ago_user) }
+      let!(:two_weeks_ago_record) { create(:habit_record, user: two_weeks_ago_user, habit: habit, recorded_at: 2.weeks.ago.to_date) }
 
       before do
         ActiveJob::Base.queue_adapter = :test
@@ -109,7 +110,7 @@ RSpec.describe 'reminders:send_weekly', type: :task do
         expect {
           Rake::Task['reminders:send_weekly'].invoke
         }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
-          .with('ReminderMailer', 'weekly_reminder', 'deliver_now', { args: [last_week_user] })
+          .with('ReminderMailer', 'weekly_reminder', 'deliver_now', { args: [two_weeks_ago_user] })
       end
     end
   end
