@@ -9,7 +9,7 @@ set :output, { error: 'log/whenever_error.log', standard: 'log/whenever.log' }
 # 環境設定
 set :environment, ENV.fetch('RAILS_ENV', 'production')
 
-# 毎週月曜日の夜6時に、今週活動していないユーザーにリマインダーを送信
+# 毎週月曜日の夜6時に、先週活動していないユーザーにリマインダーを送信
 every :monday, at: '6:00 pm' do
   rake 'reminders:send_weekly'
 end
