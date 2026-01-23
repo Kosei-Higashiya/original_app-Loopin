@@ -9,7 +9,7 @@ namespace :reminders do
     inactive_users = User.where.not(
       id: HabitRecord.where(recorded_at: last_week_start..last_week_end).select(:user_id)
     ).where.not(
-      id: Post.where(created_at: last_week_start..last_week_end).select(:user_id)
+      id: Post.where(created_at: last_week_start.beginning_of_day..last_week_end.end_of_day).select(:user_id)
     )
 
     # 各ユーザーにリマインダーメールを送信
