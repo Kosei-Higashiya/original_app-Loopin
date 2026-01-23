@@ -54,7 +54,7 @@ RSpec.describe 'reminders:send_weekly', type: :task do
     context '先週Postを作成したユーザーがいる場合' do
       let!(:active_user) { create(:user, email: 'poster@example.com') }
       let!(:habit) { create(:habit, user: active_user) }
-      let!(:post) { create(:post, user: active_user, habit: habit, created_at: (last_week_start + 3.days).to_time) }
+      let!(:post) { create(:post, user: active_user, habit: habit, created_at: last_week_start.beginning_of_day + 3.days) }
 
       before do
         ActiveJob::Base.queue_adapter = :test
